@@ -3,16 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ZAU Framework | ZetaGo-Aurum Unified Fullstack Engine</title>
-  <meta name="description" content="Modern Python-first fullstack web framework with native 3D spatial canvas, integrated async ORM, and dual-asset styling engine.">
-  
-  <!-- Fonts -->
+  <title>ZAU Framework | Modern Python-First Fullstack & Native 3D Spatial Canvas</title>
+  <meta name="description" content="ZetaGo-Aurum Unified Fullstack Web Framework (ZAU) - Python ASGI Core, Native 3D Spatial Canvas, Integrated Asynchronous ORM, and Dual Asset Styling Engine.">
+  <meta name="author" content="ZetaGo-Aurum (admin@zetagoaurum.com)">
+  <link rel="canonical" href="https://zau-framework.vercel.app">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%2309090b'/><text x='50%' y='68%' font-size='56' font-weight='900' fill='%23f59e0b' text-anchor='middle' font-family='sans-serif'>Z</text></svg>">
+
+  <!-- Preconnect & Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Dual Styling Pipeline: Bootstrap 5.3 + Tailwind CSS -->
+  <!-- Dual Asset Styling Pipeline: Bootstrap 5.3 + Bootstrap Icons + Tailwind CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -37,11 +43,17 @@
     }
   </script>
 
-  <!-- Three.js + OrbitControls for 3D Spatial Canvas -->
+  <!-- External Vendor Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Syntax Highlighting Stylesheet for .zau -->
+  <!-- Chunk Module Preloads (Next-Gen Architecture) -->
+  <link rel="modulepreload" href="/_zau/static/chunks/runtime.js">
+  <link rel="modulepreload" href="/_zau/static/chunks/vendor-three.js">
+  <link rel="modulepreload" href="/_zau/static/chunks/spatial-engine.js">
+  <link rel="modulepreload" href="/_zau/static/chunks/syntax-highlighter.js">
+  <link rel="modulepreload" href="/_zau/static/chunks/main-app.js">
+
   <style>
     body {
       background-color: #09090b;
@@ -54,7 +66,7 @@
       color: #e4e4e7;
     }
     .zau-tok-keyword { color: #c084fc; font-weight: 600; }
-    .zau-tok-spatial { color: #f59e0b; font-weight: 700; text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    .zau-tok-spatial { color: #f59e0b; font-weight: 700; text-shadow: 0 0 12px rgba(245, 158, 11, 0.4); }
     .zau-tok-tag { color: #38bdf8; font-weight: 500; }
     .zau-tok-directive { color: #fb7185; font-weight: 600; }
     .zau-tok-attribute { color: #34d399; }
@@ -70,326 +82,512 @@
 </head>
 <body class="min-h-screen bg-[#09090b] text-neutral-100 antialiased selection:bg-amber-500 selection:text-black">
 
-  <!-- Navbar -->
-  <header class="border-b border-neutral-800/80 bg-[#0a0b0e]/85 backdrop-blur-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <a href="/" class="flex items-center space-x-3 text-decoration-none">
-          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-black shadow-lg shadow-amber-500/20 text-base">
-            Z
-          </div>
-          <div class="flex items-baseline space-x-2">
-            <span class="font-extrabold text-white text-lg tracking-tight">ZAU</span>
-            <span class="text-xs text-neutral-400 font-mono hidden sm:inline">Framework</span>
-            <span class="px-2 py-0.5 text-[10px] rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono">v1.0.0</span>
-          </div>
-        </a>
-      </div>
-
-      <nav class="hidden md:flex items-center space-x-7 text-xs font-medium text-neutral-300">
-        <a href="#quickstart" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Quick Start</a>
-        <a href="#architecture" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Architecture</a>
-        <a href="#spatial" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">3D Spatial</a>
-        <a href="#orm" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Async ORM</a>
-        <a href="#interpreter" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">.zau Interpreter</a>
-        <a href="#deployment" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Deploy</a>
-      </nav>
-
-      <div class="flex items-center space-x-3">
-        <a href="/__zau/studio" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-amber-500/50 text-xs font-mono text-neutral-300 transition text-decoration-none hidden sm:inline-flex items-center space-x-1.5 bg-[#121318]">
-          <span>⚡ DB Studio</span>
-        </a>
-        <a href="https://github.com/ZetaGo-Aurum/zau-framework" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-neutral-300 transition text-decoration-none bg-[#121318] flex items-center space-x-1.5">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-          <span>GitHub</span>
-        </a>
-        <a href="https://zetagoaurum.com" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition text-decoration-none shadow-sm shadow-amber-500/20">
-          Atelier
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="relative overflow-hidden border-b border-neutral-800/80 pt-16 pb-20">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        <div class="lg:col-span-7 space-y-6">
-          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono">
-            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-            <span>ZetaGo-Aurum Unified Fullstack Web Framework</span>
-          </div>
-
-          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Python-First Fullstack <br>
-            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">
-              Native 3D Spatial Canvas
-            </span>
-          </h1>
-
-          <p class="text-neutral-400 text-base sm:text-lg leading-relaxed max-w-2xl">
-            A radical departure from the fragmented JS toolchain. ZAU unites high-speed Python ASGI (FastAPI/Starlette syntax) on the server with native declarative WebGL 3D spatial primitives, integrated asynchronous ORM, and dual-engine styling (Tailwind CSS + Bootstrap 5).
-          </p>
-
-          <div class="flex flex-wrap items-center gap-3 pt-2">
-            <div class="bg-[#121318] border border-neutral-800 rounded-xl px-4 py-2.5 flex items-center space-x-3 text-xs font-mono text-neutral-300">
-              <span class="text-amber-500">$</span>
-              <span>npm create zau@latest</span>
-              <button onclick="navigator.clipboard.writeText('npm create zau@latest'); alert('Copied to clipboard!')" class="text-neutral-500 hover:text-white transition">📋</button>
+  <div id="__zau">
+    <!-- Navbar -->
+    <header class="border-b border-neutral-800/80 bg-[#09090b]/85 backdrop-blur-md sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <a href="/" class="flex items-center space-x-3 text-decoration-none">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-amber-500 to-yellow-600 flex items-center justify-center font-bold text-black shadow-lg shadow-amber-500/20 text-base">
+              Z
             </div>
-            <a href="#quickstart" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs transition text-decoration-none shadow-lg shadow-amber-500/20">
-              Read Documentation
-            </a>
-          </div>
-
-          <div class="flex items-center space-x-6 text-xs text-neutral-400 pt-2 font-mono">
-            <div class="flex items-center space-x-1.5">
-              <span class="text-emerald-400">✓</span>
-              <span>Zero-Config ORM</span>
+            <div class="flex items-baseline space-x-2">
+              <span class="font-extrabold text-white text-lg tracking-tight">ZAU</span>
+              <span class="text-xs text-neutral-400 font-mono hidden sm:inline">Framework</span>
+              <span class="px-2 py-0.5 text-[10px] rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono">v1.0.1</span>
             </div>
-            <div class="flex items-center space-x-1.5">
-              <span class="text-emerald-400">✓</span>
-              <span>TypeScript Native</span>
-            </div>
-            <div class="flex items-center space-x-1.5">
-              <span class="text-emerald-400">✓</span>
-              <span>3D WebGL Built-in</span>
-            </div>
-          </div>
+          </a>
         </div>
 
-        <!-- Hero 3D Canvas Mount -->
-        <div class="lg:col-span-5">
-          <div class="relative rounded-3xl overflow-hidden border border-neutral-800 bg-[#0e0f14] shadow-2xl p-1">
-            <div class="absolute top-4 left-5 z-10 flex items-center space-x-2">
-              <span class="px-2.5 py-0.5 rounded-md bg-black/70 backdrop-blur text-[11px] font-mono text-amber-400 border border-amber-500/30">
-                &lt;ZAU.Canvas3D&gt;
+        <nav class="hidden md:flex items-center space-x-6 text-xs font-medium text-neutral-300">
+          <a href="#quickstart" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-rocket-takeoff text-amber-400"></i>
+            <span>Quick Start</span>
+          </a>
+          <a href="#architecture" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-diagram-3 text-sky-400"></i>
+            <span>Architecture</span>
+          </a>
+          <a href="#spatial" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-box text-amber-400"></i>
+            <span>3D Spatial</span>
+          </a>
+          <a href="#orm" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-database text-emerald-400"></i>
+            <span>Async ORM</span>
+          </a>
+          <a href="#interpreter" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-code-square text-rose-400"></i>
+            <span>.zau Interpreter</span>
+          </a>
+          <a href="#deployment" class="hover:text-amber-400 transition text-decoration-none text-neutral-300 flex items-center gap-1.5">
+            <i class="bi bi-cloud-arrow-up text-purple-400"></i>
+            <span>Deploy</span>
+          </a>
+        </nav>
+
+        <div class="flex items-center space-x-3">
+          <a href="/__zau/studio" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-amber-500/50 text-xs font-mono text-neutral-300 transition text-decoration-none hidden sm:inline-flex items-center space-x-1.5 bg-[#121318]">
+            <i class="bi bi-lightning-charge-fill text-amber-400"></i>
+            <span>DB Studio</span>
+          </a>
+          <a href="https://github.com/ZetaGo-Aurum/zau-framework" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-neutral-300 transition text-decoration-none bg-[#121318] flex items-center space-x-1.5">
+            <i class="bi bi-github text-white"></i>
+            <span>GitHub</span>
+          </a>
+          <a href="https://zetagoaurum.com" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition text-decoration-none shadow-sm shadow-amber-500/20 flex items-center gap-1">
+            <i class="bi bi-gem"></i>
+            <span>Atelier</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden border-b border-neutral-800/80 pt-16 pb-20">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono">
+              <i class="bi bi-stars animate-spin text-amber-400"></i>
+              <span>Dual-Tier Unified Engine &middot; Python ASGI Core</span>
+            </div>
+
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+              Python-First Fullstack <br>
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">
+                Native 3D Spatial Canvas
               </span>
-              <span class="text-[10px] font-mono text-neutral-400 bg-black/50 px-2 py-0.5 rounded" id="hero-fps">60 FPS</span>
+            </h1>
+
+            <p class="text-neutral-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+              Sebuah terobosan arsitektural di luar fragmentasi ekosistem JavaScript. ZAU menyatukan kecepatan asynchronous Python di backend (FastAPI/Starlette) dengan kompilasi client reaktif, native WebGL 3D spatial primitives, native asynchronous ORM, dan dual-engine styling (Tailwind CSS + Bootstrap 5.3).
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <div class="bg-[#121318] border border-neutral-800 rounded-xl px-4 py-2.5 flex items-center space-x-3 text-xs font-mono text-neutral-300 shadow-inner">
+                <i class="bi bi-terminal text-amber-400"></i>
+                <span class="text-amber-500">$</span>
+                <span>npm create zau@latest</span>
+                <button onclick="navigator.clipboard.writeText('npm create zau@latest'); alert('Copied: npm create zau@latest')" class="text-neutral-500 hover:text-white transition" title="Copy Command">
+                  <i class="bi bi-copy"></i>
+                </button>
+              </div>
+              <a href="#quickstart" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs transition text-decoration-none shadow-lg shadow-amber-500/20 flex items-center gap-1.5">
+                <i class="bi bi-book-half"></i>
+                <span>Mulai Membaca Dokumentasi</span>
+              </a>
             </div>
-            <div id="hero-3d-mount" class="w-full h-96 rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing"></div>
-            <div class="p-3 border-t border-neutral-800/80 bg-[#121318]/70 flex items-center justify-between text-xs text-neutral-400">
-              <span class="font-mono text-[11px]">Cyber-Core Spatial Geometry</span>
-              <span class="text-[10px] text-amber-500 font-mono">Drag to rotate &middot; Scroll to zoom</span>
+
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t border-neutral-800/80 font-mono text-xs text-neutral-400">
+              <div class="flex items-center space-x-2">
+                <i class="bi bi-check-circle-fill text-emerald-400"></i>
+                <span>Zero-Config ORM</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <i class="bi bi-check-circle-fill text-emerald-400"></i>
+                <span>Native TypeScript</span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <i class="bi bi-check-circle-fill text-emerald-400"></i>
+                <span>3D WebGL Core</span>
+              </div>
             </div>
           </div>
-        </div>
 
-      </div>
-    </div>
-  </section>
-
-  <!-- Live .zau Syntax Highlighting Interpreter Section -->
-  <section id="interpreter" class="py-20 border-b border-neutral-800/80">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="mb-10 text-center max-w-3xl mx-auto">
-        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase tracking-wider">
-          Rich Syntax Interpreter
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
-          Native .zau Code Highlighting
-        </h2>
-        <p class="text-neutral-400 text-sm mt-2">
-          No dull gray monospace text. ZAU provides a custom token-level lexer and syntax interpreter for <code class="text-amber-400">.zau</code> Single File Components, recognizing spatial primitives, directives, and dual-engine tokens.
-        </p>
-      </div>
-
-      <!-- Code Showcase Container -->
-      <div class="bg-[#0e0f14] border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl">
-        <!-- Tabs Header -->
-        <div class="flex items-center justify-between border-b border-neutral-800 bg-[#12141a] px-4 py-2">
-          <div class="flex items-center space-x-2">
-            <button onclick="switchTab('component')" id="tab-btn-component" class="px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition">
-              Viewer3D.zau
-            </button>
-            <button onclick="switchTab('page')" id="tab-btn-page" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
-              index.zau
-            </button>
-            <button onclick="switchTab('backend')" id="tab-btn-backend" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
-              backend/app.py
-            </button>
-            <button onclick="switchTab('model')" id="tab-btn-model" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
-              database/models.py
-            </button>
+          <!-- Hero 3D Spatial Canvas Mount -->
+          <div class="lg:col-span-5" id="spatial">
+            <div class="relative rounded-3xl overflow-hidden border border-neutral-800 bg-[#0e0f14] shadow-2xl p-1">
+              <div class="absolute top-4 left-5 z-10 flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-md bg-black/70 backdrop-blur text-[11px] font-mono text-amber-400 border border-amber-500/30 flex items-center gap-1">
+                  <i class="bi bi-box-fill text-amber-400"></i>
+                  <span>&lt;ZAU.Canvas3D&gt;</span>
+                </span>
+                <span class="text-[10px] font-mono text-neutral-400 bg-black/50 px-2 py-0.5 rounded border border-neutral-800" id="hero-fps">
+                  60 FPS &middot; WebGL PBR
+                </span>
+              </div>
+              <div id="hero-3d-mount" class="w-full h-96 rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing"></div>
+              <div class="p-3 border-t border-neutral-800/80 bg-[#121318]/70 flex items-center justify-between text-xs text-neutral-400">
+                <span class="font-mono text-[11px] flex items-center gap-1.5">
+                  <i class="bi bi-gem text-amber-400"></i>
+                  <span>Atelier Gyroscopic Core (PBR Obsidian & Aurum)</span>
+                </span>
+                <span class="text-[10px] text-amber-500 font-mono flex items-center gap-1">
+                  <i class="bi bi-arrows-move"></i>
+                  <span>Interactive 3D</span>
+                </span>
+              </div>
+            </div>
           </div>
-          <div class="flex items-center space-x-2 text-neutral-500 text-xs font-mono">
-            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span>Interpreter Active</span>
-          </div>
-        </div>
 
-        <!-- Highlighted Code View -->
-        <div id="code-output" class="p-6 overflow-x-auto text-xs font-mono leading-relaxed bg-[#0b0c10]">
-          <!-- Injected via JavaScript -->
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Quick Start & CLI -->
-  <section id="quickstart" class="py-20 border-b border-neutral-800/80">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        <div class="lg:col-span-5 space-y-5">
-          <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
-            Quick Start
+    <!-- Code Interpreter & Live Playground Section -->
+    <section id="interpreter" class="py-20 border-b border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+          <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 w-fit mx-auto">
+            <i class="bi bi-code-slash"></i>
+            <span>Rich Syntax Interpreter</span>
           </span>
-          <h2 class="text-3xl font-extrabold text-white">Scaffold in Seconds</h2>
-          <p class="text-neutral-400 text-sm leading-relaxed">
-            Get started with a single command via npm or pip. ZAU scaffolds a production-grade fullstack project equipped with async ORM, 3D spatial canvas, and hot reload.
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+            Highlighting Kode .zau Tanpa Teks Abu-Abu
+          </h2>
+          <p class="text-neutral-400 text-sm mt-2">
+            Bukan sekadar teks monokrom abu-abu biasa. Framework ZAU mengintegrasikan token-level lexer yang mengenali tag spasial 3D deklaratif, direktif event (<code class="text-amber-400">@click</code>, <code class="text-amber-400">:bind</code>), serta binding kode Python dan TypeScript dengan palet warna semantik kontras tinggi.
           </p>
-          <div class="space-y-3">
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
-              <span class="text-xs text-neutral-500 uppercase font-mono tracking-wider">Node / NPM Workflow</span>
-              <pre class="mt-2 text-xs font-mono text-amber-400 overflow-x-auto">npm create zau@latest my-app
+        </div>
+
+        <div class="bg-[#0e0f14] border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl">
+          <!-- Tabs Header -->
+          <div class="flex items-center justify-between border-b border-neutral-800 bg-[#12141a] px-4 py-2.5">
+            <div class="flex items-center space-x-2">
+              <button onclick="switchTab('component')" id="tab-btn-component" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition font-bold border border-neutral-700 flex items-center gap-1.5">
+                <i class="bi bi-file-earmark-code text-amber-400"></i>
+                <span>Viewer3D.zau</span>
+              </button>
+              <button onclick="switchTab('page')" id="tab-btn-page" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition flex items-center gap-1.5">
+                <i class="bi bi-layout-text-window-reverse text-sky-400"></i>
+                <span>index.zau</span>
+              </button>
+              <button onclick="switchTab('backend')" id="tab-btn-backend" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition flex items-center gap-1.5">
+                <i class="bi bi-filetype-py text-yellow-400"></i>
+                <span>backend/app.py</span>
+              </button>
+              <button onclick="switchTab('model')" id="tab-btn-model" class="px-3.5 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition flex items-center gap-1.5">
+                <i class="bi bi-database text-emerald-400"></i>
+                <span>models/user.py</span>
+              </button>
+            </div>
+            <div class="flex items-center space-x-2 text-neutral-400 text-xs font-mono">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Lexer Token Engine Active</span>
+            </div>
+          </div>
+
+          <!-- Highlighted Code Output -->
+          <div id="code-output" class="bg-[#0b0c10] min-h-[340px]">
+            <!-- Injected via JavaScript Chunk -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start & CLI Workflows -->
+    <section id="quickstart" class="py-20 border-b border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          <div class="lg:col-span-5 space-y-5">
+            <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase flex items-center gap-1.5 w-fit">
+              <i class="bi bi-play-circle-fill"></i>
+              <span>Alur Kerja Cepat</span>
+            </span>
+            <h2 class="text-3xl font-extrabold text-white">Inisialisasi Proyek dalam Hitungan Detik</h2>
+            <p class="text-neutral-400 text-sm leading-relaxed">
+              ZAU dirancang tanpa boilerplate manual. Cukup jalankan perintah tunggal melalui NPM atau Python Pip untuk menghasilkan arsitektur siap produksi dengan native 3D spatial canvas dan async ORM.
+            </p>
+            
+            <div class="space-y-3">
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs text-neutral-400 uppercase font-mono tracking-wider flex items-center gap-1.5">
+                    <i class="bi bi-box-arrow-in-down text-amber-400"></i>
+                    <span>Node / NPM Scaffolder (create-zau)</span>
+                  </span>
+                  <span class="badge bg-amber-500/20 text-amber-300 font-mono text-[10px]">npm latest</span>
+                </div>
+                <pre class="text-xs font-mono text-amber-400 overflow-x-auto m-0 p-2 bg-black/40 rounded-lg">npm create zau@latest my-app
 cd my-app
 zau dev --port 8000</pre>
-            </div>
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
-              <span class="text-xs text-neutral-500 uppercase font-mono tracking-wider">Python / Pip Workflow</span>
-              <pre class="mt-2 text-xs font-mono text-sky-400 overflow-x-auto">pip install zau-framework
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
+                <div class="flex items-center justify-between mb-2">
+                  <span class="text-xs text-neutral-400 uppercase font-mono tracking-wider flex items-center gap-1.5">
+                    <i class="bi bi-terminal text-sky-400"></i>
+                    <span>Python Pip Workflow</span>
+                  </span>
+                  <span class="badge bg-sky-500/20 text-sky-300 font-mono text-[10px]">Python 3.11+</span>
+                </div>
+                <pre class="text-xs font-mono text-sky-400 overflow-x-auto m-0 p-2 bg-black/40 rounded-lg">pip install zau-framework
 zau create my-app --template fullstack-3d
 cd my-app
 zau dev</pre>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="lg:col-span-7 space-y-4">
-          <h3 class="text-xl font-bold text-white mb-2">CLI Commands Reference</h3>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
-              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau dev --port 8000</div>
-              <p class="text-xs text-neutral-400">Launch local development server with Python ASGI hot-reload and 3D HMR.</p>
+          <div class="lg:col-span-7 space-y-4">
+            <h3 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+              <i class="bi bi-cpu text-amber-400"></i>
+              <span>Perintah Terpadu ZAU CLI</span>
+            </h3>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80 hover:border-neutral-700 transition">
+                <div class="font-mono text-xs text-amber-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="bi bi-play-fill"></i>
+                  <span>zau dev --port 8000</span>
+                </div>
+                <p class="text-xs text-neutral-400 m-0">Menjalankan server ASGI Python hot-reload dan live preview 3D WebGL secara bersamaan.</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80 hover:border-neutral-700 transition">
+                <div class="font-mono text-xs text-amber-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="bi bi-database-gear"></i>
+                  <span>zau db studio</span>
+                </div>
+                <p class="text-xs text-neutral-400 m-0">Membuka UI web database inspector bawaan untuk melihat tabel, record data, dan eksekusi raw SQL.</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80 hover:border-neutral-700 transition">
+                <div class="font-mono text-xs text-amber-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="bi bi-arrow-repeat"></i>
+                  <span>zau db migrate / upgrade</span>
+                </div>
+                <p class="text-xs text-neutral-400 m-0">Inspeksi skema ORM otomatis dan migrasi database tanpa perlu menulis SQL secara manual.</p>
+              </div>
+
+              <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80 hover:border-neutral-700 transition">
+                <div class="font-mono text-xs text-amber-400 font-bold mb-1 flex items-center gap-1.5">
+                  <i class="bi bi-building-fill-check"></i>
+                  <span>zau build / start</span>
+                </div>
+                <p class="text-xs text-neutral-400 m-0">Kompilasi artefak chunk frontend, type bridge, dan eksekusi ASGI cluster multi-worker di server.</p>
+              </div>
             </div>
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
-              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau db studio</div>
-              <p class="text-xs text-neutral-400">Opens the built-in database inspector to browse tables, records, and run SQL.</p>
-            </div>
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
-              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau db migrate / upgrade</div>
-              <p class="text-xs text-neutral-400">Inspect ORM model schema changes and automatically apply database migrations.</p>
-            </div>
-            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
-              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau build / start</div>
-              <p class="text-xs text-neutral-400">Compile frontend assets, type bridges, and run multi-worker production cluster.</p>
+
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
+              <div class="font-mono text-xs text-emerald-400 font-bold mb-1 flex items-center gap-1.5">
+                <i class="bi bi-palette"></i>
+                <span>zau highlight &lt;file.zau&gt; [--ansi | --html]</span>
+              </div>
+              <p class="text-xs text-neutral-400 m-0">Merender sintaks file komponen .zau langsung ke terminal ANSI atau menghasilkan HTML berkelas semantik tinggi.</p>
             </div>
           </div>
+
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Architecture & 3D Spatial Details -->
-  <section id="architecture" class="py-20 border-b border-neutral-800/80">
-    <div class="max-w-7xl mx-auto px-6 space-y-12">
-      <div class="text-center max-w-3xl mx-auto">
-        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
-          RFC-001 Standard
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
-          Dual-Tier Unified Architecture
-        </h2>
-        <p class="text-neutral-400 text-sm mt-2">
-          Eliminating the rift between backend Python APIs and client reactive interfaces.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
-            01
-          </div>
-          <h3 class="text-lg font-bold text-white">FastAPI-Grade Python Core</h3>
-          <p class="text-xs text-neutral-400 leading-relaxed">
-            ASGI uvloop micro-kernel running asynchronous Server Actions (<code class="text-amber-400">@app.action</code>) with type validation, automatic serialization, and bidirectional WebSockets.
+    <!-- Architecture RFC-001 Section -->
+    <section id="architecture" class="py-20 border-b border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-6 space-y-12">
+        <div class="text-center max-w-3xl mx-auto">
+          <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase flex items-center gap-1.5 w-fit mx-auto">
+            <i class="bi bi-shield-check"></i>
+            <span>Standar Arsitektur Resmi RFC-001</span>
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+            Dual-Tier Unified Engine
+          </h2>
+          <p class="text-neutral-400 text-sm mt-2">
+            Menghilangkan code-bloat dan menjamin performa asynchronous tinggi tanpa mengorbankan kesederhanaan sintaks.
           </p>
         </div>
 
-        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
-            02
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold">
+              <i class="bi bi-braces-asterisk"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">FastAPI-Style Python Core</h3>
+            <p class="text-xs text-neutral-400 leading-relaxed">
+              ASGI uvloop event loop kernel menjalankan Server Actions (<code class="text-amber-400">@app.action</code>) dengan validasi tipe otomatis, dependency injection, dan WebSocket bidireksional tanpa Redux atau Axios manual.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white">Native 3D Spatial Canvas</h3>
-          <p class="text-xs text-neutral-400 leading-relaxed">
-            First-class <code class="text-amber-400">&lt;ZAU.Canvas3D&gt;</code> primitive embedding WebGL/WebGPU render loops directly inside component lifecycles, ready for GLTF/GLB asset loading.
-          </p>
-        </div>
 
-        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
-            03
+          <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold">
+              <i class="bi bi-box-seam"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Native 3D Spatial Canvas</h3>
+            <p class="text-xs text-neutral-400 leading-relaxed">
+              Primitif deklaratif <code class="text-amber-400">&lt;ZAU.Canvas3D&gt;</code> terhubung langsung dengan lifecycle komponen, mendukung material PBR, dynamic studio lighting, orbital controls, dan pemuatan model GLTF/GLB.
+            </p>
           </div>
-          <h3 class="text-lg font-bold text-white">Dual Styling Engine</h3>
-          <p class="text-xs text-neutral-400 leading-relaxed">
-            Zero-friction interoperability: atomic utility classes from Tailwind CSS combined with structural grid and component tokens from Bootstrap 5.3 without CSS collisions.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Deployment Section -->
-  <section id="deployment" class="py-20 border-b border-neutral-800/80">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="mb-10">
-        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
-          DevOps & Cloud
-        </span>
-        <h2 class="text-3xl font-extrabold text-white mt-3">Multi-Platform Deployment</h2>
-        <p class="text-neutral-400 text-sm mt-2">Ready out of the box for modern serverless and container clouds.</p>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
-          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
-            <span>▲ Vercel</span>
+          <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl font-bold">
+              <i class="bi bi-layers-fill"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Dual Styling Engine</h3>
+            <p class="text-xs text-neutral-400 leading-relaxed">
+              Harmonisasi tanpa benturan CSS: kelas utilitas atomik mikro dari Tailwind CSS dikombinasikan dengan token komponen dan sistem grid Bootstrap 5.3 dalam 1 aplikasi.
+            </p>
           </div>
-          <p class="text-xs text-neutral-400 mb-3">Serverless Python execution with automatic routing via <code class="text-amber-400 font-mono">vercel.json</code>.</p>
-          <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Zero-Config</span>
-        </div>
-
-        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
-          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
-            <span>🚀 Render</span>
-          </div>
-          <p class="text-xs text-neutral-400 mb-3">Blueprint infrastructure-as-code with managed PostgreSQL via <code class="text-amber-400 font-mono">render.yaml</code>.</p>
-          <span class="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">render.yaml</span>
-        </div>
-
-        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
-          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
-            <span>⚡ Replit</span>
-          </div>
-          <p class="text-xs text-neutral-400 mb-3">Instant browser-based development and cloud deployment via <code class="text-amber-400 font-mono">.replit</code>.</p>
-          <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">.replit Ready</span>
-        </div>
-
-        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
-          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
-            <span>🐳 Docker</span>
-          </div>
-          <p class="text-xs text-neutral-400 mb-3">Multi-stage lightweight production container running on <code class="text-amber-400 font-mono">python:3.12-slim</code>.</p>
-          <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">Multi-Stage</span>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer class="border-t border-neutral-800/80 bg-[#08090c] py-12 text-xs text-neutral-500 font-mono">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div>
-        <span class="text-neutral-300 font-bold">ZAU Framework</span> &middot; Chief Architect: <a href="https://zetagoaurum.com" class="text-amber-400 hover:underline">ZetaGo-Aurum</a>
-      </div>
-      <div>
-        Contact: <a href="mailto:admin@zetagoaurum.com" class="text-neutral-400 hover:text-white">admin@zetagoaurum.com</a> &middot; Released under MIT License
-      </div>
-    </div>
-  </footer>
+    <!-- Asynchronous Database ORM Section -->
+    <section id="orm" class="py-20 border-b border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <div class="lg:col-span-6 space-y-5">
+            <span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono uppercase flex items-center gap-1.5 w-fit">
+              <i class="bi bi-database-check"></i>
+              <span>Native Asynchronous ORM</span>
+            </span>
+            <h2 class="text-3xl font-extrabold text-white">Zero-Config Database Layer</h2>
+            <p class="text-neutral-400 text-sm leading-relaxed">
+              ZAU DB menghilangkan konfigurasi ORM eksternal yang rumit. Menggunakan SQLite asinkron bawaan untuk pengembangan cepat dan dapat dialihkan ke PostgreSQL atau MySQL di production hanya melalui 1 baris environment variable <code class="text-amber-400 font-mono">DATABASE_URL</code>.
+            </p>
 
-  <!-- Code Snippets Data & Script -->
+            <div class="space-y-2 font-mono text-xs text-neutral-300">
+              <div class="flex items-center gap-2">
+                <i class="bi bi-check-lg text-emerald-400"></i>
+                <span>Model, Field, Relationship deklaratif berbasis Python</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="bi bi-check-lg text-emerald-400"></i>
+                <span>Connection pool asinkron dengan proteksi auto-rollback</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <i class="bi bi-check-lg text-emerald-400"></i>
+                <span>ZAU DB Studio: Web GUI database inspector interaktif</span>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <a href="/__zau/studio" target="_blank" class="px-4 py-2.5 rounded-xl bg-[#181920] border border-amber-500/40 text-amber-400 hover:bg-amber-500 hover:text-black font-semibold text-xs font-mono transition text-decoration-none inline-flex items-center gap-2 shadow-lg">
+                <i class="bi bi-window-fullscreen"></i>
+                <span>Buka Live DB Studio Inspector</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6">
+            <div class="rounded-2xl border border-neutral-800 bg-[#0e0f14] overflow-hidden shadow-2xl p-4">
+              <div class="flex items-center justify-between border-b border-neutral-800 pb-3 mb-3 text-xs font-mono text-neutral-400">
+                <span class="flex items-center gap-1.5 text-white">
+                  <i class="bi bi-table text-amber-400"></i>
+                  <span>backend/database/models/user.py</span>
+                </span>
+                <span class="text-[10px] text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">SQLAlchemy 2.0 Async</span>
+              </div>
+              <pre class="font-mono text-xs text-neutral-300 leading-relaxed overflow-x-auto m-0"><code><span class="zau-tok-keyword">from</span> zau.db <span class="zau-tok-keyword">import</span> Model, Field, Relationship
+<span class="zau-tok-keyword">from</span> typing <span class="zau-tok-keyword">import</span> Optional, List
+<span class="zau-tok-keyword">from</span> datetime <span class="zau-tok-keyword">import</span> datetime
+
+<span class="zau-tok-keyword">class</span> <span class="zau-tok-function">User</span>(Model, table=<span class="zau-tok-keyword">True</span>):
+    id: Optional[<span class="zau-tok-tag">int</span>] = Field(default=<span class="zau-tok-keyword">None</span>, primary_key=<span class="zau-tok-keyword">True</span>)
+    username: <span class="zau-tok-tag">str</span> = Field(index=<span class="zau-tok-keyword">True</span>, unique=<span class="zau-tok-keyword">True</span>, max_length=<span class="zau-tok-number">50</span>)
+    email: <span class="zau-tok-tag">str</span> = Field(unique=<span class="zau-tok-keyword">True</span>, index=<span class="zau-tok-keyword">True</span>)
+    password_hash: <span class="zau-tok-tag">str</span>
+    is_active: <span class="zau-tok-tag">bool</span> = Field(default=<span class="zau-tok-keyword">True</span>)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    <span class="zau-tok-comment"># Relasi Asinkron Otomatis</span>
+    projects: List[<span class="zau-tok-string">"Project"</span>] = Relationship(back_populates=<span class="zau-tok-string">"owner"</span>)</code></pre>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Deployment Platforms Section -->
+    <section id="deployment" class="py-20 border-b border-neutral-800/80">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="mb-10 text-center max-w-3xl mx-auto">
+          <span class="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono uppercase flex items-center gap-1.5 w-fit mx-auto">
+            <i class="bi bi-cloud-check-fill"></i>
+            <span>Cloud & DevOps Readiness</span>
+          </span>
+          <h2 class="text-3xl font-extrabold text-white mt-3">Dukungan Multi-Platform Produksi</h2>
+          <p class="text-neutral-400 text-sm mt-2">Template konfigurasi siap rilis untuk serverless, container, dan platform cloud terkemuka.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition">
+            <div class="text-white font-bold text-base mb-2 flex items-center space-x-2">
+              <i class="bi bi-triangle-fill text-white text-sm"></i>
+              <span>Vercel</span>
+            </div>
+            <p class="text-xs text-neutral-400 mb-3 leading-relaxed">Eksekusi serverless Python dengan modular chunk routing via <code class="text-amber-400 font-mono">vercel.json</code>.</p>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Production Ready</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition">
+            <div class="text-white font-bold text-base mb-2 flex items-center space-x-2">
+              <i class="bi bi-hdd-network-fill text-sky-400"></i>
+              <span>Render</span>
+            </div>
+            <p class="text-xs text-neutral-400 mb-3 leading-relaxed">Infrastructure-as-code terpadu dengan managed PostgreSQL melalui <code class="text-amber-400 font-mono">render.yaml</code>.</p>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">render.yaml</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition">
+            <div class="text-white font-bold text-base mb-2 flex items-center space-x-2">
+              <i class="bi bi-terminal-split text-amber-400"></i>
+              <span>Replit</span>
+            </div>
+            <p class="text-xs text-neutral-400 mb-3 leading-relaxed">Pengembangan instan di browser dan instant deployment melalui konfigurasi <code class="text-amber-400 font-mono">.replit</code>.</p>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">.replit Active</span>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition">
+            <div class="text-white font-bold text-base mb-2 flex items-center space-x-2">
+              <i class="bi bi-box2-fill text-blue-400"></i>
+              <span>Docker</span>
+            </div>
+            <p class="text-xs text-neutral-400 mb-3 leading-relaxed">Multi-stage build ringan dengan footprint memori minimal pada <code class="text-amber-400 font-mono">python:3.12-slim</code>.</p>
+            <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">Multi-Stage</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-800/80 bg-[#08090c] py-12 text-xs text-neutral-400 font-mono">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+          <span class="text-neutral-200 font-bold">ZAU Framework</span>
+          <span>&middot; Chief Architect: <a href="https://zetagoaurum.com" class="text-amber-400 hover:underline">ZetaGo-Aurum</a></span>
+        </div>
+        <div class="flex items-center space-x-4">
+          <span>Kontak: <a href="mailto:admin@zetagoaurum.com" class="text-neutral-300 hover:text-white">admin@zetagoaurum.com</a></span>
+          <span>&middot; Lisensi Resmi MIT</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Hydration Data Script (Next.js / Enterprise style chunk payload) -->
+  <script id="__ZAU_DATA__" type="application/json">
+    {
+      "page": "/",
+      "buildId": "zau_release_1_0_1",
+      "props": {
+        "framework": "ZAU (ZetaGo-Aurum Unified)",
+        "version": "1.0.1",
+        "engine": "Python ASGI Core (FastAPI/Starlette)",
+        "spatial": "Three.js WebGL/WebGPU Gyroscopic Core",
+        "database": "SQLAlchemy 2.0 Async ORM",
+        "styling": "Tailwind CSS + Bootstrap 5.3 Dual Adapter",
+        "author": "ZetaGo-Aurum",
+        "atelier": "https://zetagoaurum.com",
+        "contact": "admin@zetagoaurum.com"
+      }
+    }
+  </script>
+
+  <!-- Chunked JavaScript Modules -->
+  <script type="module" src="/_zau/static/chunks/runtime.js"></script>
+  <script type="module" src="/_zau/static/chunks/vendor-three.js"></script>
+  <script type="module" src="/_zau/static/chunks/spatial-engine.js"></script>
+  <script type="module" src="/_zau/static/chunks/syntax-highlighter.js"></script>
+  <script type="module" src="/_zau/static/chunks/main-app.js"></script>
+
+  <!-- In-page code samples for real-time tab switching -->
   <script>
     const SAMPLES = {
       component: `<!-- frontend/components/spatial/Viewer3D.zau -->
@@ -399,8 +597,9 @@ zau dev</pre>
      camera={{ position: [0, 2, 5], fov: 60 }} 
      className="w-full h-96 rounded-2xl bg-neutral-900 border border-neutral-800"
   >
-    <ZAU.AmbientLight intensity={0.6} />
-    <ZAU.DirectionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+    <ZAU.AmbientLight intensity={0.65} />
+    <ZAU.DirectionalLight position={[6, 12, 8]} intensity={2.5} castShadow />
+    <ZAU.PointLight position={[-6, 4, -4]} intensity={3.0} color="#38bdf8" />
     <ZAU.OrbitControls enableZoom={true} autoRotate={!hovered} />
     
     <ZAU.Model 
@@ -446,21 +645,26 @@ export default function Viewer3D({ modelPath, initialSpeed = 1.0 }) {
       <div class="col-md-4 text-md-end">
         <button class="btn btn-dark px-4 py-2 hover:scale-105 transition-transform shadow-md"
                 @click="refreshData">
-          Sync Database
+          <i class="bi bi-arrow-repeat me-1"></i> Sync Database
         </button>
       </div>
     </header>
 
     <main class="row g-4">
       <div class="col-lg-7">
+        <!-- Native 3D Spatial Canvas Component -->
         <Viewer3D modelPath="/models/cyber_core.glb" initialSpeed="1.2" />
       </div>
       <div class="col-lg-5">
         <div class="card shadow-sm border-0 rounded-2xl p-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur">
           <h3 class="text-xl font-semibold mb-3 border-b pb-2">Status Server</h3>
           <div class="flex items-center justify-between py-2">
-            <span class="badge bg-success">Python ASGI Active</span>
+            <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> Python ASGI Active</span>
             <span class="text-sm text-gray-500 font-mono">Latency: 3.8ms</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-gray-600 dark:text-gray-300">Styling Pipeline</span>
+            <span class="badge bg-primary font-mono">Tailwind + Bootstrap</span>
           </div>
         </div>
       </div>
@@ -476,7 +680,7 @@ from typing import List
 
 app = ZAUApp(
     title="ZAU Production Suite",
-    version="1.0.0",
+    version="1.0.1",
     client_dir="../frontend"
 )
 
@@ -532,136 +736,22 @@ class Project(Model, table=True):
     owner: Optional[User] = Relationship(back_populates="projects")`
     };
 
-    // Client-side Token Highlighter for instantaneous rendering
-    function highlightClientCode(code) {
-      function escapeHtml(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-      }
-
-      // Tokenize
-      let res = '';
-      const lines = code.split('\n');
-      for (let line of lines) {
-        let l = escapeHtml(line);
-        // Comments
-        if (l.trim().startsWith('//') || l.trim().startsWith('#') || l.trim().startsWith('&lt;!--')) {
-          res += '<span class="zau-tok-comment">' + l + '</span>\n';
-          continue;
-        }
-        // Directives
-        l = l.replace(/(@[a-zA-Z0-9_-]+)/g, '<span class="zau-tok-directive">$1</span>');
-        // Spatial tags
-        l = l.replace(/(&lt;\/?)(ZAU\.[a-zA-Z0-9]+|Viewer3D|SceneControls)/g, '$1<span class="zau-tok-spatial">$2</span>');
-        // HTML Tags
-        l = l.replace(/(&lt;\/?)([a-zA-Z0-9_-]+)/g, '$1<span class="zau-tok-tag">$2</span>');
-        // Strings
-        l = l.replace(/(&quot;.*?&quot;|'.*?')/g, '<span class="zau-tok-string">$1</span>');
-        // Keywords
-        l = l.replace(/\b(import|from|export|default|function|const|let|var|return|async|await|def|class|True|False|None)\b/g, '<span class="zau-tok-keyword">$1</span>');
-        // Functions / Builtins
-        l = l.replace(/\b(useState|useFrame|useEffect|ZAUApp|Depends|get_session|select|Model|Field|Relationship)\b/g, '<span class="zau-tok-function">$1</span>');
-        res += l + '\n';
-      }
-      return '<pre><code>' + res + '</code></pre>';
-    }
-
-    function switchTab(key) {
+    window.switchTab = function(key) {
       ['component', 'page', 'backend', 'model'].forEach(k => {
         const btn = document.getElementById('tab-btn-' + k);
         if (btn) {
           if (k === key) {
-            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition font-bold border border-neutral-700';
+            btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition font-bold border border-neutral-700 flex items-center gap-1.5';
           } else {
-            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition';
+            btn.className = 'px-3.5 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition flex items-center gap-1.5';
           }
         }
       });
       const code = SAMPLES[key] || '';
-      document.getElementById('code-output').innerHTML = highlightClientCode(code);
-    }
-
-    // Hero 3D Canvas
-    function initHero3D() {
-      const container = document.getElementById('hero-3d-mount');
-      if (!container || !window.THREE) return;
-
-      const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
-      camera.position.set(0, 1.8, 4.5);
-
-      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.shadowMap.enabled = true;
-      container.appendChild(renderer.domElement);
-
-      const controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.autoRotate = true;
-      controls.autoRotateSpeed = 1.8;
-
-      const ambLight = new THREE.AmbientLight(0xffffff, 0.75);
-      scene.add(ambLight);
-
-      const dirLight = new THREE.DirectionalLight(0xf59e0b, 2.5);
-      dirLight.position.set(6, 10, 6);
-      scene.add(dirLight);
-
-      const pointLight = new THREE.PointLight(0x38bdf8, 3.0, 10);
-      pointLight.position.set(-4, 3, -3);
-      scene.add(pointLight);
-
-      // Cyber Geometry (Icosahedron + Wireframe cage)
-      const geom = new THREE.IcosahedronGeometry(1.3, 1);
-      const mat = new THREE.MeshStandardMaterial({
-        color: 0x12131a,
-        metalness: 0.85,
-        roughness: 0.15
-      });
-      const mesh = new THREE.Mesh(geom, mat);
-      scene.add(mesh);
-
-      const cageGeom = new THREE.IcosahedronGeometry(1.5, 0);
-      const cageMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true, transparent: true, opacity: 0.45 });
-      const cageMesh = new THREE.Mesh(cageGeom, cageMat);
-      scene.add(cageMesh);
-
-      let last = performance.now();
-      let frames = 0;
-      const fpsEl = document.getElementById('hero-fps');
-
-      function animate() {
-        requestAnimationFrame(animate);
-        mesh.rotation.y += 0.005;
-        mesh.rotation.x += 0.002;
-        cageMesh.rotation.y -= 0.003;
-        cageMesh.rotation.z += 0.002;
-        controls.update();
-        renderer.render(scene, camera);
-
-        frames++;
-        const now = performance.now();
-        if (now - last >= 1000) {
-          if (fpsEl) fpsEl.innerText = frames + ' FPS';
-          frames = 0;
-          last = now;
-        }
+      if (window.__ZAU_HIGHLIGHTER__) {
+        document.getElementById('code-output').innerHTML = window.__ZAU_HIGHLIGHTER__.highlight(code);
       }
-      animate();
-
-      window.addEventListener('resize', () => {
-        if (!container) return;
-        camera.aspect = container.clientWidth / container.clientHeight;
-        camera.updateProjectionMatrix();
-        renderer.setSize(container.clientWidth, container.clientHeight);
-      });
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      switchTab('component');
-      initHero3D();
-    });
+    };
   </script>
 </body>
 </html>

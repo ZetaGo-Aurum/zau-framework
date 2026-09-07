@@ -2,7 +2,7 @@
   "name": "vscode-zau",
   "displayName": "ZAU Framework Language Support",
   "description": "Rich syntax highlighting, spatial tags autocomplete, and tooling for .zau Single File Components",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "zetago-aurum",
   "engines": {
     "vscode": "^1.75.0"

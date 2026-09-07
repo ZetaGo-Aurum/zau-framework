@@ -23,6 +23,7 @@ from starlette.staticfiles import StaticFiles
 from zau.db.studio import create_studio_app
 from zau.compiler.bridge import generate_typescript_definitions
 from zau.compiler.sfc import SFCParser
+from zau.compiler.bundler import generate_chunks
 from zau.syntax.highlighter import ZAUSyntaxHighlighter
 
 class Depends:
@@ -34,7 +35,7 @@ class ZAUApp:
     def __init__(
         self,
         title: str = "ZAU Application",
-        version: str = "1.0.0",
+        version: str = "1.0.1",
         client_dir: Optional[str] = None,
         cors_origins: Optional[List[str]] = None,
         debug: bool = True
@@ -124,7 +125,14 @@ class ZAUApp:
         routes.append(Route("/__zau/api/highlight", self._highlight_api_handler, methods=["POST"]))
         routes.append(Mount("/__zau/studio", app=create_studio_app()))
 
-        # 5. Client static and page resolution
+        # 5. Serve modern modular chunk assets
+        zau_static_dir = os.path.join(os.getcwd(), "_zau", "static")
+        if not os.path.exists(zau_static_dir):
+            generate_chunks(os.getcwd())
+        if os.path.exists(zau_static_dir):
+            routes.append(Mount("/_zau/static", app=StaticFiles(directory=zau_static_dir), name="zau_static"))
+
+        # 6. Client static and page resolution
         if self.client_dir and os.path.exists(self.client_dir):
             routes.append(Mount("/static", app=StaticFiles(directory=self.client_dir), name="static"))
             routes.append(Route("/", self._client_root_handler))

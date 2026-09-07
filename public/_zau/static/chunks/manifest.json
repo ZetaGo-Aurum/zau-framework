@@ -1,0 +1,10 @@
+{
+  "release": "1.0.1",
+  "chunks": {
+    "runtime": "/_zau/static/chunks/runtime.js",
+    "spatial-engine": "/_zau/static/chunks/spatial-engine.js",
+    "syntax-highlighter": "/_zau/static/chunks/syntax-highlighter.js",
+    "main-app": "/_zau/static/chunks/main-app.js",
+    "vendor-three": "/_zau/static/chunks/vendor-three.js"
+  }
+}
