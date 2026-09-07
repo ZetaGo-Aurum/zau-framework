@@ -273,7 +273,12 @@ class SpatialHotspot(Model):
 `<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <zau-camera :position="[-1.24, 1.18, 1.45]" :fov="70" />
+      <!-- Kamera dengan titik tumpu terkunci tepat di kursi bundar hitam -->
+      <zau-camera
+        :position="[-1.05, 1.15, 2.50]"
+        :target="[-1.05, 0.70, 1.38]"
+        :fov="70"
+      />
       <zau-light type="ambient" :intensity="1.25" />
       <zau-light type="directional" :position="[2, 6, -2]" :intensity="1.0" />
       <zau-model
@@ -282,7 +287,15 @@ class SpatialHotspot(Model):
         tier="auto"
         @load="onModelLoaded"
       />
-      <zau-orbit-controls enableDamping="true" :dampingFactor="0.05" />
+      <!-- OrbitControls dengan anti-wall clipping: maxDistance 2.2m -->
+      <zau-orbit-controls
+        :target="[-1.05, 0.70, 1.38]"
+        :maxDistance="2.2"
+        :minDistance="0.15"
+        :maxPolarAngle="1.69"
+        enableDamping="true"
+        :dampingFactor="0.05"
+      />
     </zau-canvas>
 
     <div class="hud-overlay">
@@ -341,7 +354,12 @@ export default {
 {`<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <zau-camera :position="[-1.24, 1.18, 1.45]" :fov="70" />
+      <!-- Kamera dengan titik tumpu terkunci tepat di kursi bundar hitam -->
+      <zau-camera
+        :position="[-1.05, 1.15, 2.50]"
+        :target="[-1.05, 0.70, 1.38]"
+        :fov="70"
+      />
       <zau-light type="ambient" :intensity="1.25" />
       <zau-light type="directional" :position="[2, 6, -2]" :intensity="1.0" />
       <zau-model
@@ -350,7 +368,15 @@ export default {
         tier="auto"
         @load="onModelLoaded"
       />
-      <zau-orbit-controls enableDamping="true" :dampingFactor="0.05" />
+      <!-- OrbitControls dengan anti-wall clipping: maxDistance 2.2m -->
+      <zau-orbit-controls
+        :target="[-1.05, 0.70, 1.38]"
+        :maxDistance="2.2"
+        :minDistance="0.15"
+        :maxPolarAngle="1.69"
+        enableDamping="true"
+        :dampingFactor="0.05"
+      />
     </zau-canvas>
 
     <div class="hud-overlay">
@@ -386,6 +412,81 @@ export default {
 .hud-overlay { position: absolute; top: 2rem; left: 2rem; z-index: 10; }
 </style>`}
             </pre>
+          </div>
+
+          {/* Sub-Section: Spatial Camera Pivot & Anti-Wall Clipping */}
+          <div className="p-5 rounded-2xl bg-zinc-900/80 border border-amber-500/20 shadow-xl space-y-4">
+            <div className="flex items-center space-x-2.5 text-amber-400">
+              <i className="bi bi-camera-reels-fill text-lg" />
+              <h3 className="text-base sm:text-lg font-bold text-white">
+                Fisika Kamera 3D: Titik Tumpu Kursi Bundar &amp; Anti-Wall Clipping
+              </h3>
+            </div>
+
+            <p className="text-xs text-zinc-300 leading-relaxed">
+              Pada lingkungan 3D interior (seperti <em>Salt Tower Lower Room</em> dengan diameter chamber ~9 meter), penentuan <strong>titik tumpu rotasi (Orbit Target / Pivot Point)</strong> adalah faktor penentu apakah perputaran kamera terasa natural atau justru menembus dinding keluar ruangan.
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+              <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/30 space-y-2">
+                <span className="text-red-400 font-bold flex items-center space-x-1.5">
+                  <i className="bi bi-x-octagon-fill" />
+                  <span>Masalah: Titik Tumpu di Pinggir Tembok</span>
+                </span>
+                <p className="text-zinc-400 text-[11px] leading-normal font-sans">
+                  Jika target rotasi diletakkan di pinggir dinding (misal <code className="text-red-300">Z = 3.5</code>), maka saat kamera mengitari target dengan radius 2 meter, separuh lintasan bola kamera akan mengayun ke <code className="text-red-300">Z = 5.5</code> yang berada di luar dinding batu (tembus keluar ruangan / void hitam).
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2">
+                <span className="text-emerald-400 font-bold flex items-center space-x-1.5">
+                  <i className="bi bi-check-circle-fill" />
+                  <span>Solusi ZAU: Titik Tumpu di Kursi Bundar</span>
+                </span>
+                <p className="text-zinc-400 text-[11px] leading-normal font-sans">
+                  Mengunci target rotasi tepat pada koordinat bangku hitam <code className="text-emerald-300">[-1.05, 0.70, 1.38]</code> di tengah ruangan. Dikombinasikan dengan <code className="text-emerald-300">maxDistance = 2.2m</code>, kamera memiliki margin aman 1.75m - 4.2m dari dinding terdekat, sehingga <strong>secara fisik mustahil menembus tembok</strong>.
+                </p>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs font-mono border-collapse border border-zinc-800 rounded-xl overflow-hidden">
+                <thead>
+                  <tr className="bg-zinc-950 text-amber-400">
+                    <th className="p-2.5 border-b border-zinc-800">Parameter</th>
+                    <th className="p-2.5 border-b border-zinc-800">Nilai Optimal</th>
+                    <th className="p-2.5 border-b border-zinc-800">Fungsi &amp; Penjelasan Fisika</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/60 text-zinc-300 text-[11px]">
+                  <tr>
+                    <td className="p-2.5 font-bold text-amber-300">controls.target</td>
+                    <td className="p-2.5 text-zinc-200">[-1.05, 0.70, 1.38]</td>
+                    <td className="p-2.5 font-sans">Titik tumpu rotasi utama tepat di permukaan bangku duduk kayu hitam.</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-bold text-amber-300">camera.position</td>
+                    <td className="p-2.5 text-zinc-200">[-1.05, 1.15, 2.50]</td>
+                    <td className="p-2.5 font-sans">Posisi awal sejajar pandangan mata (height 1.15m) menghadap bangku dan pintu lengkung Norman.</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-bold text-amber-300">controls.maxDistance</td>
+                    <td className="p-2.5 text-zinc-200">2.2 meter</td>
+                    <td className="p-2.5 font-sans">Batas jarak zoom keluar terjauh. Mencegah kamera terseret melewati radius dinding terdekat (2.82m).</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-bold text-amber-300">controls.minDistance</td>
+                    <td className="p-2.5 text-zinc-200">0.05 - 0.15 meter</td>
+                    <td className="p-2.5 font-sans">Batas zoom terdekat untuk beralih ke mode pengamatan duduk di kursi (Seated POV).</td>
+                  </tr>
+                  <tr>
+                    <td className="p-2.5 font-bold text-amber-300">controls.maxPolarAngle</td>
+                    <td className="p-2.5 text-zinc-200">Math.PI / 2 + 0.12 (~97°)</td>
+                    <td className="p-2.5 font-sans">Klem sudut elevasi vertikal untuk mencegah kamera tenggelam ke bawah ubin lantai batu.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* Sub-Section: Multi-Editor Setup Tabs */}
@@ -430,10 +531,10 @@ export default {
                   </p>
                   <pre className="p-3 rounded-lg bg-zinc-950 text-amber-300 overflow-x-auto">
 {`# 1. Install ekstensi dari binary paket VSIX
-code --install-extension dist/extensions/zau-1.0.2.vsix
+code --install-extension dist/extensions/zau-1.0.3.vsix
 
 # 2. Atau install via Open-VSX (VSCodium)
-codium --install-extension dist/extensions/zau-1.0.2.vsix`}
+codium --install-extension dist/extensions/zau-1.0.3.vsix`}
                   </pre>
                   <ul className="text-[11px] text-zinc-400 space-y-1">
                     <li>• Fitur: Semantic Tokens, Tag Autocomplete, Diagnostics, Formatter, Hover Cards</li>

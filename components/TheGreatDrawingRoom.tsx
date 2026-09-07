@@ -59,8 +59,8 @@ export default function TheGreatDrawingRoom({
 
     // Initial Camera viewpoint seated at the black stool
     const camera = new THREE.PerspectiveCamera(70, width / height, 0.05, 500);
-    // Positioned right at the black round stool
-    camera.position.set(-1.24, 1.18, 1.45);
+    // Positioned at eye-level in front of the black stool looking at the seated pivot
+    camera.position.set(-1.05, 1.15, 2.50);
     cameraRef.current = camera;
 
     // WebGL Renderer calibrated for high-fidelity photogrammetry
@@ -84,19 +84,22 @@ export default function TheGreatDrawingRoom({
       return;
     }
 
-    // OrbitControls initialized looking across the room from the stool
+    // OrbitControls initialized with pivot point ("titik tumpu") anchored right on the black stool
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
     controls.autoRotate = true;
     controls.autoRotateSpeed = 0.35;
     controls.enableZoom = true;
-    controls.minDistance = 0.05;
-    controls.maxDistance = 12;
+    controls.minDistance = 0.15;
+    // Anti-wall clipping: room radius is ~4.5m, maxDistance of 2.2m prevents camera from penetrating any wall
+    controls.maxDistance = 2.2;
+    controls.maxPolarAngle = Math.PI / 2 + 0.12;
+    controls.minPolarAngle = 0.15;
     controls.rotateSpeed = isMobile ? 0.6 : 0.75;
     controls.zoomSpeed = 0.85;
-    // Look across towards the medieval door and archways
-    controls.target.set(-1.20, 0.85, 3.5);
+    // Titik tumpu kamera duduk tepat di kursi bundar hitam
+    controls.target.set(-1.05, 0.70, 1.38);
     controlsRef.current = controls;
 
     // Balanced Lighting for Baked Photogrammetry Textures
@@ -115,11 +118,11 @@ export default function TheGreatDrawingRoom({
     const hotspots: Hotspot[] = [
       {
         id: 'stool-anchor',
-        title: 'Black Stool Viewpoint Anchor',
-        category: 'Observation Origin',
+        title: 'Kursi Bundar Hitam (Titik Tumpu Utama)',
+        category: 'Titik Tumpu Pengamatan',
         description:
-          'Primary seated coordinate (-1.24, 1.18, 1.45) offering 360-degree line-of-sight to the chamber entry and Norman archways.',
-        position: new THREE.Vector3(-1.24, 0.45, 1.95),
+          'Titik tumpu utama rotasi kamera tepat di atas kursi bundar hitam (-1.05, 0.70, 1.38). Batas jarak orbit 2.2m memastikan perputaran kamera 360 derajat tetap berada di dalam ruangan tanpa menembus dinding.',
+        position: new THREE.Vector3(-1.05, 0.65, 1.38),
       },
       {
         id: 'portal',
@@ -342,6 +345,8 @@ export default function TheGreatDrawingRoom({
     };
   }, []);
 
+  const [isSeatedView, setIsSeatedView] = useState<boolean>(false);
+
   const handleToggleAutoRotate = () => {
     if (controlsRef.current) {
       controlsRef.current.autoRotate = !controlsRef.current.autoRotate;
@@ -349,12 +354,36 @@ export default function TheGreatDrawingRoom({
     }
   };
 
+  const handleToggleSeatedView = () => {
+    if (controlsRef.current && cameraRef.current) {
+      if (!isSeatedView) {
+        // Seated viewpoint: camera sits right on the stool looking across the chamber
+        cameraRef.current.position.set(-1.05, 1.15, 1.40);
+        controlsRef.current.target.set(-1.05, 1.12, 1.60);
+        controlsRef.current.minDistance = 0.05;
+        controlsRef.current.maxDistance = 2.2;
+        setIsSeatedView(true);
+      } else {
+        // Orbit viewpoint around the stool
+        cameraRef.current.position.set(-1.05, 1.15, 2.50);
+        controlsRef.current.target.set(-1.05, 0.70, 1.38);
+        controlsRef.current.minDistance = 0.15;
+        controlsRef.current.maxDistance = 2.2;
+        setIsSeatedView(false);
+      }
+      controlsRef.current.update();
+    }
+  };
+
   const handleResetCamera = () => {
     if (controlsRef.current && cameraRef.current) {
-      // Return camera directly to the black stool
-      cameraRef.current.position.set(-1.24, 1.18, 1.45);
-      controlsRef.current.target.set(-1.20, 0.85, 3.5);
+      // Return camera directly to the black stool orbit center
+      cameraRef.current.position.set(-1.05, 1.15, 2.50);
+      controlsRef.current.target.set(-1.05, 0.70, 1.38);
+      controlsRef.current.minDistance = 0.15;
+      controlsRef.current.maxDistance = 2.2;
       controlsRef.current.update();
+      setIsSeatedView(false);
     }
   };
 
@@ -464,8 +493,20 @@ export default function TheGreatDrawingRoom({
               <i className={`bi ${isAutoRotating ? 'bi-pause-fill' : 'bi-play-fill'} text-sm`} />
             </button>
             <button
+              onClick={handleToggleSeatedView}
+              title={isSeatedView ? 'Beralih ke Orbit Kursi' : 'Duduk di Kursi (Pandangan Seated POV)'}
+              className={`px-2 py-1 sm:py-1.5 rounded-lg text-xs font-mono transition flex items-center space-x-1.5 ${
+                isSeatedView
+                  ? 'text-amber-300 bg-amber-500/20 border border-amber-500/30'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <i className={`bi ${isSeatedView ? 'bi-person-check-fill text-amber-400' : 'bi-person'} text-sm`} />
+              <span className="hidden md:inline">{isSeatedView ? 'Duduk di Kursi' : 'Duduk di Kursi'}</span>
+            </button>
+            <button
               onClick={handleResetCamera}
-              title="Reset Viewpoint to Stool"
+              title="Reset Titik Tumpu ke Kursi"
               className="p-1.5 sm:p-2 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 transition"
             >
               <i className="bi bi-arrow-counterclockwise text-sm" />
