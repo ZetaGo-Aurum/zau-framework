@@ -135,6 +135,35 @@ export default function ModelViewerPlayground() {
     ring.position.y = 0.005;
     scene.add(ring);
 
+    // 5b. Micro-LOD Vehicle Proxy (Instant paint < 2ms, eliminates loading wait)
+    const proxyGroup = new THREE.Group();
+    proxyGroup.name = '__zau_microlod_car__';
+
+    const chassisGeo = new THREE.BoxGeometry(1.9, 0.45, 4.2);
+    const cabinGeo = new THREE.BoxGeometry(1.4, 0.45, 2.0);
+    chassisGeo.computeVertexNormals();
+    cabinGeo.computeVertexNormals();
+
+    const proxyMat = new THREE.MeshStandardMaterial({
+      color: 0x1c1e24,
+      roughness: 0.35,
+      metalness: 0.75
+    });
+
+    const chassisMesh = new THREE.Mesh(chassisGeo, proxyMat);
+    chassisMesh.position.y = 0.35;
+    chassisMesh.castShadow = true;
+    chassisMesh.receiveShadow = true;
+    proxyGroup.add(chassisMesh);
+
+    const cabinMesh = new THREE.Mesh(cabinGeo, proxyMat);
+    cabinMesh.position.set(0, 0.75, -0.2);
+    cabinMesh.castShadow = true;
+    cabinMesh.receiveShadow = true;
+    proxyGroup.add(cabinMesh);
+
+    scene.add(proxyGroup);
+
     // 6. Draco GLTF Loader for Porsche 992 GT3 R
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath('/draco/gltf/');
@@ -199,6 +228,7 @@ export default function ModelViewerPlayground() {
           }
         });
 
+        scene.remove(proxyGroup);
         scene.add(model);
         setIsLoaded(true);
         setLoadProgress(100);
@@ -354,15 +384,15 @@ export default function ModelViewerPlayground() {
         <div className="relative w-full h-[400px] sm:h-[500px] bg-zinc-950">
           <div ref={mountRef} className="w-full h-full cursor-grab active:cursor-grabbing" />
 
-          {/* Loading Indicator */}
+          {/* Non-blocking Progressive Stream Telemetry */}
           {!isLoaded && (
-            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-zinc-950/90 backdrop-blur-sm font-mono text-xs text-amber-400 space-y-3">
-              <i className="bi bi-car-front text-3xl animate-bounce text-amber-400" />
+            <div className="absolute top-14 left-1/2 -translate-x-1/2 z-30 flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full bg-zinc-950/85 backdrop-blur-md border border-amber-500/30 font-mono text-[11px] text-amber-400 shadow-xl pointer-events-none animate-in fade-in duration-300">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
               <span>Streaming Porsche 992 GT3 R ({loadProgress}%)...</span>
-              <div className="w-48 h-1.5 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+              <div className="w-16 h-1 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
                 <div
                   className="h-full bg-amber-400 transition-all duration-200"
-                  style={{ width: `${loadProgress}%` }}
+                  style={{ width: `${Math.max(loadProgress, 10)}%` }}
                 />
               </div>
             </div>
