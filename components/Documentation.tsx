@@ -273,10 +273,10 @@ class SpatialHotspot(Model):
 `<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <!-- Kamera dengan titik tumpu terkunci tepat di kursi bundar hitam -->
+      <!-- Kamera dengan titik tumpu terkunci tepat di sumbu pusat kursi bundar hitam -->
       <zau-camera
-        :position="[-1.05, 1.15, 2.50]"
-        :target="[-1.05, 0.70, 1.38]"
+        :position="[-0.885, 1.15, 2.25]"
+        :target="[-0.885, 0.70, 1.08]"
         :fov="70"
       />
       <zau-light type="ambient" :intensity="1.25" />
@@ -289,7 +289,7 @@ class SpatialHotspot(Model):
       />
       <!-- OrbitControls dengan anti-wall clipping: maxDistance 2.2m -->
       <zau-orbit-controls
-        :target="[-1.05, 0.70, 1.38]"
+        :target="[-0.885, 0.70, 1.08]"
         :maxDistance="2.2"
         :minDistance="0.15"
         :maxPolarAngle="1.69"
@@ -354,10 +354,10 @@ export default {
 {`<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <!-- Kamera dengan titik tumpu terkunci tepat di kursi bundar hitam -->
+      <!-- Kamera dengan titik tumpu terkunci tepat di sumbu pusat kursi bundar hitam -->
       <zau-camera
-        :position="[-1.05, 1.15, 2.50]"
-        :target="[-1.05, 0.70, 1.38]"
+        :position="[-0.885, 1.15, 2.25]"
+        :target="[-0.885, 0.70, 1.08]"
         :fov="70"
       />
       <zau-light type="ambient" :intensity="1.25" />
@@ -370,7 +370,7 @@ export default {
       />
       <!-- OrbitControls dengan anti-wall clipping: maxDistance 2.2m -->
       <zau-orbit-controls
-        :target="[-1.05, 0.70, 1.38]"
+        :target="[-0.885, 0.70, 1.08]"
         :maxDistance="2.2"
         :minDistance="0.15"
         :maxPolarAngle="1.69"
@@ -444,7 +444,7 @@ export default {
                   <span>Solusi ZAU: Titik Tumpu di Kursi Bundar</span>
                 </span>
                 <p className="text-zinc-400 text-[11px] leading-normal font-sans">
-                  Mengunci target rotasi tepat pada koordinat bangku hitam <code className="text-emerald-300">[-1.05, 0.70, 1.38]</code> di tengah ruangan. Dikombinasikan dengan <code className="text-emerald-300">maxDistance = 2.2m</code>, kamera memiliki margin aman 1.75m - 4.2m dari dinding terdekat, sehingga <strong>secara fisik mustahil menembus tembok</strong>.
+                  Mengunci target rotasi tepat pada sumbu pusat bangku hitam <code className="text-emerald-300">[-0.885, 0.70, 1.08]</code> di tengah ruangan. Dikombinasikan dengan <code className="text-emerald-300">maxDistance = 2.2m</code>, kamera memiliki margin aman 2.2m - 5.6m dari dinding terdekat, sehingga <strong>secara fisik mustahil menembus tembok</strong>.
                 </p>
               </div>
             </div>
@@ -461,12 +461,12 @@ export default {
                 <tbody className="divide-y divide-zinc-800/60 text-zinc-300 text-[11px]">
                   <tr>
                     <td className="p-2.5 font-bold text-amber-300">controls.target</td>
-                    <td className="p-2.5 text-zinc-200">[-1.05, 0.70, 1.38]</td>
+                    <td className="p-2.5 text-zinc-200">[-0.885, 0.70, 1.08]</td>
                     <td className="p-2.5 font-sans">Titik tumpu rotasi utama tepat di permukaan bangku duduk kayu hitam.</td>
                   </tr>
                   <tr>
                     <td className="p-2.5 font-bold text-amber-300">camera.position</td>
-                    <td className="p-2.5 text-zinc-200">[-1.05, 1.15, 2.50]</td>
+                    <td className="p-2.5 text-zinc-200">[-0.885, 1.15, 2.25]</td>
                     <td className="p-2.5 font-sans">Posisi awal sejajar pandangan mata (height 1.15m) menghadap bangku dan pintu lengkung Norman.</td>
                   </tr>
                   <tr>

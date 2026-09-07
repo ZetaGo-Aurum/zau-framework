@@ -59,8 +59,8 @@ export default function TheGreatDrawingRoom({
 
     // Initial Camera viewpoint seated at the black stool
     const camera = new THREE.PerspectiveCamera(70, width / height, 0.05, 500);
-    // Positioned at eye-level in front of the black stool looking at the seated pivot
-    camera.position.set(-1.05, 1.15, 2.50);
+    // Positioned at eye-level in front of the black stool looking directly at its center axis
+    camera.position.set(-0.885, 1.15, 2.25);
     cameraRef.current = camera;
 
     // WebGL Renderer calibrated for high-fidelity photogrammetry
@@ -84,7 +84,7 @@ export default function TheGreatDrawingRoom({
       return;
     }
 
-    // OrbitControls initialized with pivot point ("titik tumpu") anchored right on the black stool
+    // OrbitControls initialized with pivot point ("titik tumpu") anchored dead-center on the black stool axis
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -98,8 +98,8 @@ export default function TheGreatDrawingRoom({
     controls.minPolarAngle = 0.15;
     controls.rotateSpeed = isMobile ? 0.6 : 0.75;
     controls.zoomSpeed = 0.85;
-    // Titik tumpu kamera duduk tepat di kursi bundar hitam
-    controls.target.set(-1.05, 0.70, 1.38);
+    // Titik tumpu kamera tepat pada sumbu pusat kursi bundar hitam
+    controls.target.set(-0.885, 0.70, 1.08);
     controlsRef.current = controls;
 
     // Balanced Lighting for Baked Photogrammetry Textures
@@ -121,8 +121,8 @@ export default function TheGreatDrawingRoom({
         title: 'Kursi Bundar Hitam (Titik Tumpu Utama)',
         category: 'Titik Tumpu Pengamatan',
         description:
-          'Titik tumpu utama rotasi kamera tepat di atas kursi bundar hitam (-1.05, 0.70, 1.38). Batas jarak orbit 2.2m memastikan perputaran kamera 360 derajat tetap berada di dalam ruangan tanpa menembus dinding.',
-        position: new THREE.Vector3(-1.05, 0.65, 1.38),
+          'Titik tumpu utama rotasi kamera tepat pada sumbu pusat kursi bundar hitam (-0.885, 0.70, 1.08). Batas jarak orbit 2.2m memastikan perputaran kamera 360 derajat tetap berada di dalam ruangan tanpa menembus dinding.',
+        position: new THREE.Vector3(-0.885, 0.68, 1.08),
       },
       {
         id: 'portal',
@@ -357,16 +357,16 @@ export default function TheGreatDrawingRoom({
   const handleToggleSeatedView = () => {
     if (controlsRef.current && cameraRef.current) {
       if (!isSeatedView) {
-        // Seated viewpoint: camera sits right on the stool looking across the chamber
-        cameraRef.current.position.set(-1.05, 1.15, 1.40);
-        controlsRef.current.target.set(-1.05, 1.12, 1.60);
+        // Seated viewpoint: camera sits right above the stool center looking across the chamber
+        cameraRef.current.position.set(-0.885, 1.15, 1.08);
+        controlsRef.current.target.set(-0.885, 1.12, 1.30);
         controlsRef.current.minDistance = 0.05;
         controlsRef.current.maxDistance = 2.2;
         setIsSeatedView(true);
       } else {
         // Orbit viewpoint around the stool
-        cameraRef.current.position.set(-1.05, 1.15, 2.50);
-        controlsRef.current.target.set(-1.05, 0.70, 1.38);
+        cameraRef.current.position.set(-0.885, 1.15, 2.25);
+        controlsRef.current.target.set(-0.885, 0.70, 1.08);
         controlsRef.current.minDistance = 0.15;
         controlsRef.current.maxDistance = 2.2;
         setIsSeatedView(false);
@@ -378,8 +378,8 @@ export default function TheGreatDrawingRoom({
   const handleResetCamera = () => {
     if (controlsRef.current && cameraRef.current) {
       // Return camera directly to the black stool orbit center
-      cameraRef.current.position.set(-1.05, 1.15, 2.50);
-      controlsRef.current.target.set(-1.05, 0.70, 1.38);
+      cameraRef.current.position.set(-0.885, 1.15, 2.25);
+      controlsRef.current.target.set(-0.885, 0.70, 1.08);
       controlsRef.current.minDistance = 0.15;
       controlsRef.current.maxDistance = 2.2;
       controlsRef.current.update();
