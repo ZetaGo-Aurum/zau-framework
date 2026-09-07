@@ -1,5 +1,5 @@
 {
-  "release": "1.0.1",
+  "release": "1.0.2",
   "chunks": {
     "runtime": "/_zau/static/chunks/runtime.js",
     "spatial-engine": "/_zau/static/chunks/spatial-engine.js",

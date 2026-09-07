@@ -71,6 +71,9 @@ export function useFrame(callback: (state: any, delta: number) => void): void {
   requestAnimationFrame(loop);
 }
 
+export * from './spatial/index.js';
+import { ZAUSpatialEngine, HighPolyMeshPipeline } from './spatial/index.js';
+
 /**
  * ZAU Global Runtime Namespace
  */
@@ -79,7 +82,9 @@ export const ZAU = {
   useState,
   useEffect,
   useFrame,
-  version: '1.0.0'
+  SpatialEngine: ZAUSpatialEngine,
+  HighPolyPipeline: HighPolyMeshPipeline,
+  version: '1.0.2'
 };
 
 export default ZAU;

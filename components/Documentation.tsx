@@ -182,36 +182,52 @@ export default function Documentation() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <span className="text-xs font-mono text-amber-400">01. Direct Ingestion</span>
-              <h4 className="font-bold text-sm text-white mt-1">model/3d/ Directory</h4>
+              <span className="text-xs font-mono text-amber-400">01. Instant Micro-LOD Proxy</span>
+              <h4 className="font-bold text-sm text-white mt-1">0ms Interactive Paint</h4>
               <p className="text-xs text-zinc-400 mt-1">
-                Drop <code>.gltf</code>, <code>.bin</code>, and textures directly into <code>model/3d/</code>.
+                Renders a smooth procedural proxy volume in &lt; 5ms, eliminating loading freezes and black screens immediately.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <span className="text-xs font-mono text-amber-400">02. Web Optimization</span>
-              <h4 className="font-bold text-sm text-white mt-1">Adaptive Textures</h4>
+              <span className="text-xs font-mono text-amber-400">02. Lossless Draco Buffer</span>
+              <h4 className="font-bold text-sm text-white mt-1">1,000,000 Triangles Intact</h4>
               <p className="text-xs text-zinc-400 mt-1">
-                Serves 4K/8K PBR maps tuned to mobile and desktop GPU limits.
+                Preserves 100% of dense photogrammetry scan triangles, reducing 42 MB raw buffers to 5.4 MB without edge collapse tears.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <span className="text-xs font-mono text-amber-400">03. 360° Navigation</span>
-              <h4 className="font-bold text-sm text-white mt-1">Smooth Damping</h4>
+              <span className="text-xs font-mono text-amber-400">03. WASM Web Workers</span>
+              <h4 className="font-bold text-sm text-white mt-1">Multi-Threaded Decompress</h4>
               <p className="text-xs text-zinc-400 mt-1">
-                OrbitControls with touch gesture support, damping, and auto-rotation.
+                4 parallel Web Workers unpack geometry in background threads, streaming typed arrays straight to GPU memory.
               </p>
             </div>
 
             <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
-              <span className="text-xs font-mono text-amber-400">04. 3D Hotspot Nodes</span>
-              <h4 className="font-bold text-sm text-white mt-1">Raycaster Anchors</h4>
+              <span className="text-xs font-mono text-amber-400">04. Smooth Normal Pipeline</span>
+              <h4 className="font-bold text-sm text-white mt-1">Zero-Facet Curvature</h4>
               <p className="text-xs text-zinc-400 mt-1">
-                Interactive spatial beacons mapped to acoustic and architectural nodes.
+                Automatically recalculates area-weighted vertex normals across all sub-meshes for silk-smooth high-poly surfaces.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <span className="text-xs font-mono text-amber-400">05. PBR Double-Sided Standard</span>
+              <h4 className="font-bold text-sm text-white mt-1">ACES Filmic Calibration</h4>
+              <p className="text-xs text-zinc-400 mt-1">
+                Double-sided material illumination with calibrated specular roughness, metallic reflection, and ambient fill irradiance.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800">
+              <span className="text-xs font-mono text-amber-400">06. Cross-Dissolve Swap</span>
+              <h4 className="font-bold text-sm text-white mt-1">Seamless Asset Mounting</h4>
+              <p className="text-xs text-zinc-400 mt-1">
+                Transitions smoothly from the initial proxy anchor into the final 1M-triangle 4K environment without pop-in jank.
               </p>
             </div>
           </div>

@@ -46,7 +46,7 @@
   }
 
   global.__ZAU_RUNTIME__ = {
-    version: '1.0.1',
+    version: '1.0.2',
     useState,
     useEffect,
     callAction,

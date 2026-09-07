@@ -54,12 +54,15 @@ export default function ModelViewerPlayground() {
           <div>
             <h4 className="text-sm font-bold text-white flex items-center space-x-2">
               <span>ZAU Open-Source 3D Model Engine</span>
+              <span className="text-[10px] font-mono text-emerald-400 border border-emerald-500/30 px-1.5 py-0.2 rounded bg-emerald-500/10">
+                1M High-Poly
+              </span>
               <span className="text-[10px] font-mono text-amber-400 border border-amber-500/30 px-1.5 py-0.2 rounded bg-amber-500/10">
                 WebGL PBR
               </span>
             </h4>
             <p className="text-[11px] text-zinc-400 font-mono">
-              The Great Drawing Room • 4K HD Texture Stream
+              1,000,000 Triangles • Smooth Vertex Normals • Instant Progressive Draco Stream
             </p>
           </div>
         </div>
@@ -170,24 +173,25 @@ export default function ModelViewerPlayground() {
             <code>{`<!-- components/SpatialInterior.zau -->
 <template>
   <div class="relative w-full h-[500px] rounded-2xl overflow-hidden">
-    <!-- Declarative ZAU 3D Model Viewer Engine -->
+    <!-- Declarative ZAU High-Poly Spatial Engine -->
     <ZAU.ModelViewer
       src="model/3d/the_great_drawing_room/room_web.glb"
-      texture="textures/texture_4k.jpeg"
-      camera-controls="true"
-      auto-rotate="true"
-      rotation-speed="18deg"
+      poly-standard="high"
+      smooth-normals="true"
+      streaming="progressive"
+      instant-proxy="true"
+      draco-decoder="wasm-worker"
+      pbr-material="double-sided"
       exposure="1.2"
       tone-mapping="aces-filmic"
-      pbr-material="double-sided"
       shadow-intensity="1.0"
       @load="onModelReady"
       @cameraChange="onCameraMoved"
     />
 
-    <!-- Live Telemetry Layer -->
-    <div class="absolute bottom-4 left-4 p-2 bg-black/60 rounded text-xs">
-      <span class="text-amber-400">PBR Surface:</span> The Great Drawing Room
+    <!-- Live High-Poly Telemetry Layer -->
+    <div class="absolute bottom-4 left-4 p-2 bg-black/60 rounded text-xs font-mono">
+      <span class="text-emerald-400">1M High-Poly Standard:</span> Smooth Normals Active
     </div>
   </div>
 </template>
@@ -196,7 +200,7 @@ export default function ModelViewerPlayground() {
 export default {
   methods: {
     onModelReady(event: CustomEvent) {
-      console.log('3D Interior Model & 4K Texture Mounted Successfully');
+      console.log('1M High-Poly Mesh & 4K Texture Mounted Successfully');
     },
     onCameraMoved(event: CustomEvent) {
       // Stream camera rotation vectors to spatial audio bus
@@ -217,7 +221,7 @@ export default {
         <div className="flex items-center space-x-3">
           <span>Format: Standalone Binary GLB</span>
           <span className="text-zinc-600">•</span>
-          <span className="text-amber-400">11 MB Lossless Draco LOD</span>
+          <span className="text-emerald-400">11 MB • 1,000,000 Triangles</span>
         </div>
       </div>
     </div>

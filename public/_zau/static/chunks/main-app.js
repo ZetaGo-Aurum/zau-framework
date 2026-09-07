@@ -12,7 +12,7 @@
       try { zauData = JSON.parse(dataEl.textContent); }
       catch (e) { console.error('Failed to parse __ZAU_DATA__', e); }
     }
-    console.log('%c[ZAU Framework v1.0.1]%c Chunk Hydration Completed cleanly.', 'color:#f59e0b; font-weight:bold;', 'color:#38bdf8;');
+    console.log('%c[ZAU Framework v1.0.2]%c Chunk Hydration Completed cleanly.', 'color:#f59e0b; font-weight:bold;', 'color:#38bdf8;');
 
     // Initialize 3D Spatial Canvas if container present
     if (global.__ZAUSpatialRenderer__ && document.getElementById('hero-3d-mount')) {
