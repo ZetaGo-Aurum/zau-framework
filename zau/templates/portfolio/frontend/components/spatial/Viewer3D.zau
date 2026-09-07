@@ -1,0 +1,37 @@
+<!-- frontend/components/spatial/Viewer3D.zau -->
+<template>
+  <ZAU.Canvas3D 
+     shadows 
+     camera={{ position: [0, 2, 5], fov: 60 }} 
+     className="w-full h-96 rounded-2xl bg-neutral-900 border border-neutral-700 relative overflow-hidden"
+  >
+    <ZAU.AmbientLight intensity={0.6} />
+    <ZAU.DirectionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+    <ZAU.OrbitControls enableZoom={true} autoRotate={!hovered} />
+    
+    <ZAU.Model 
+       src={modelPath} 
+       position={[0, 0, 0]} 
+       rotation={[rotation.x, rotation.y, rotation.z]} 
+       scale={hovered ? 1.1 : 1.0}
+       onPointerEnter={() => setHovered(true)}
+       onPointerLeave={() => setHovered(false)}
+       fallback={<ZAU.Spinner3D label="Memuat Objek 3D..." />}
+    />
+  </ZAU.Canvas3D>
+</template>
+
+<script lang="ts">
+import { ZAU, useState, useFrame } from '@zau/core';
+
+export default function Viewer3D({ modelPath, initialSpeed = 1.0 }) {
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state, delta) => {
+    setRotation(prev => ({ ...prev, y: prev.y + (delta * initialSpeed) }));
+  });
+
+  return { rotation, hovered, setHovered };
+}
+</script>

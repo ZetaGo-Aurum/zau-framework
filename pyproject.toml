@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zau-framework"
+version = "1.0.0"
+description = "ZAU Framework (ZetaGo-Aurum Unified) - Modern Python-first fullstack web framework with native 3D spatial canvas and dual asset styling."
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "ZetaGo-Aurum", email = "admin@zetagoaurum.com" }
+]
+requires-python = ">=3.11"
+keywords = [
+    "zau",
+    "fullstack",
+    "python",
+    "webgl",
+    "threejs",
+    "spatial-web",
+    "fastapi",
+    "starlette",
+    "tailwind",
+    "bootstrap",
+    "orm"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+    "Topic :: Internet :: WWW/HTTP :: WSGI :: Application"
+]
+
+dependencies = [
+    "starlette>=0.36.0",
+    "uvicorn[standard]>=0.28.0",
+    "pydantic>=2.5.0",
+    "click>=8.1.0",
+    "jinja2>=3.1.0",
+    "sqlalchemy>=2.0.28",
+    "aiosqlite>=0.20.0"
+]
+
+[project.urls]
+Homepage = "https://zetagoaurum.com"
+Documentation = "https://zau-framework.vercel.app"
+Repository = "https://github.com/ZetaGo-Aurum/zau-framework"
+
+[project.scripts]
+zau = "zau.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["zau*"]
+
+[tool.setuptools.package-data]
+"zau" = ["templates/**/*", "syntax/**/*"]

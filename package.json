@@ -1,0 +1,22 @@
+{
+  "name": "zau-framework-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ZetaGo-Aurum Unified Fullstack Web Framework",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "zau dev",
+    "build": "zau build",
+    "start": "zau start"
+  },
+  "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
+  "license": "MIT",
+  "homepage": "https://zetagoaurum.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZetaGo-Aurum/zau-framework.git"
+  }
+}

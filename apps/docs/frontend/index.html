@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZAU Framework | ZetaGo-Aurum Unified Fullstack Engine</title>
+  <meta name="description" content="Modern Python-first fullstack web framework with native 3D spatial canvas, integrated async ORM, and dual-asset styling engine.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Dual Styling Pipeline: Bootstrap 5.3 + Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#f59e0b',
+              amber: '#d97706',
+              dark: '#09090b',
+              card: '#111216',
+              border: '#24252b'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Three.js + OrbitControls for 3D Spatial Canvas -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Syntax Highlighting Stylesheet for .zau -->
+  <style>
+    body {
+      background-color: #09090b;
+      color: #f4f4f5;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .zau-code-block {
+      font-family: 'JetBrains Mono', monospace;
+      background-color: #0c0d12;
+      color: #e4e4e7;
+    }
+    .zau-tok-keyword { color: #c084fc; font-weight: 600; }
+    .zau-tok-spatial { color: #f59e0b; font-weight: 700; text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+    .zau-tok-tag { color: #38bdf8; font-weight: 500; }
+    .zau-tok-directive { color: #fb7185; font-weight: 600; }
+    .zau-tok-attribute { color: #34d399; }
+    .zau-tok-string { color: #a3e635; }
+    .zau-tok-number { color: #fb923c; }
+    .zau-tok-function { color: #60a5fa; }
+    .zau-tok-comment { color: #71717a; font-style: italic; }
+    .zau-tok-punctuation { color: #a1a1aa; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
+  </style>
+</head>
+<body class="min-h-screen bg-[#09090b] text-neutral-100 antialiased selection:bg-amber-500 selection:text-black">
+
+  <!-- Navbar -->
+  <header class="border-b border-neutral-800/80 bg-[#0a0b0e]/85 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="flex items-center space-x-3 text-decoration-none">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center font-bold text-black shadow-lg shadow-amber-500/20 text-base">
+            Z
+          </div>
+          <div class="flex items-baseline space-x-2">
+            <span class="font-extrabold text-white text-lg tracking-tight">ZAU</span>
+            <span class="text-xs text-neutral-400 font-mono hidden sm:inline">Framework</span>
+            <span class="px-2 py-0.5 text-[10px] rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono">v1.0.0</span>
+          </div>
+        </a>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-7 text-xs font-medium text-neutral-300">
+        <a href="#quickstart" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Quick Start</a>
+        <a href="#architecture" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Architecture</a>
+        <a href="#spatial" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">3D Spatial</a>
+        <a href="#orm" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Async ORM</a>
+        <a href="#interpreter" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">.zau Interpreter</a>
+        <a href="#deployment" class="hover:text-amber-400 transition text-decoration-none text-neutral-300">Deploy</a>
+      </nav>
+
+      <div class="flex items-center space-x-3">
+        <a href="/__zau/studio" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-amber-500/50 text-xs font-mono text-neutral-300 transition text-decoration-none hidden sm:inline-flex items-center space-x-1.5 bg-[#121318]">
+          <span>⚡ DB Studio</span>
+        </a>
+        <a href="https://github.com/ZetaGo-Aurum/zau-framework" target="_blank" class="px-3 py-1.5 rounded-lg border border-neutral-800 hover:border-neutral-700 text-xs font-mono text-neutral-300 transition text-decoration-none bg-[#121318] flex items-center space-x-1.5">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://zetagoaurum.com" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition text-decoration-none shadow-sm shadow-amber-500/20">
+          Atelier
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden border-b border-neutral-800/80 pt-16 pb-20">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            <span>ZetaGo-Aurum Unified Fullstack Web Framework</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+            Python-First Fullstack <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-yellow-500">
+              Native 3D Spatial Canvas
+            </span>
+          </h1>
+
+          <p class="text-neutral-400 text-base sm:text-lg leading-relaxed max-w-2xl">
+            A radical departure from the fragmented JS toolchain. ZAU unites high-speed Python ASGI (FastAPI/Starlette syntax) on the server with native declarative WebGL 3D spatial primitives, integrated asynchronous ORM, and dual-engine styling (Tailwind CSS + Bootstrap 5).
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <div class="bg-[#121318] border border-neutral-800 rounded-xl px-4 py-2.5 flex items-center space-x-3 text-xs font-mono text-neutral-300">
+              <span class="text-amber-500">$</span>
+              <span>npm create zau@latest</span>
+              <button onclick="navigator.clipboard.writeText('npm create zau@latest'); alert('Copied to clipboard!')" class="text-neutral-500 hover:text-white transition">📋</button>
+            </div>
+            <a href="#quickstart" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-semibold text-xs transition text-decoration-none shadow-lg shadow-amber-500/20">
+              Read Documentation
+            </a>
+          </div>
+
+          <div class="flex items-center space-x-6 text-xs text-neutral-400 pt-2 font-mono">
+            <div class="flex items-center space-x-1.5">
+              <span class="text-emerald-400">✓</span>
+              <span>Zero-Config ORM</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="text-emerald-400">✓</span>
+              <span>TypeScript Native</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="text-emerald-400">✓</span>
+              <span>3D WebGL Built-in</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero 3D Canvas Mount -->
+        <div class="lg:col-span-5">
+          <div class="relative rounded-3xl overflow-hidden border border-neutral-800 bg-[#0e0f14] shadow-2xl p-1">
+            <div class="absolute top-4 left-5 z-10 flex items-center space-x-2">
+              <span class="px-2.5 py-0.5 rounded-md bg-black/70 backdrop-blur text-[11px] font-mono text-amber-400 border border-amber-500/30">
+                &lt;ZAU.Canvas3D&gt;
+              </span>
+              <span class="text-[10px] font-mono text-neutral-400 bg-black/50 px-2 py-0.5 rounded" id="hero-fps">60 FPS</span>
+            </div>
+            <div id="hero-3d-mount" class="w-full h-96 rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing"></div>
+            <div class="p-3 border-t border-neutral-800/80 bg-[#121318]/70 flex items-center justify-between text-xs text-neutral-400">
+              <span class="font-mono text-[11px]">Cyber-Core Spatial Geometry</span>
+              <span class="text-[10px] text-amber-500 font-mono">Drag to rotate &middot; Scroll to zoom</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Live .zau Syntax Highlighting Interpreter Section -->
+  <section id="interpreter" class="py-20 border-b border-neutral-800/80">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="mb-10 text-center max-w-3xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase tracking-wider">
+          Rich Syntax Interpreter
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+          Native .zau Code Highlighting
+        </h2>
+        <p class="text-neutral-400 text-sm mt-2">
+          No dull gray monospace text. ZAU provides a custom token-level lexer and syntax interpreter for <code class="text-amber-400">.zau</code> Single File Components, recognizing spatial primitives, directives, and dual-engine tokens.
+        </p>
+      </div>
+
+      <!-- Code Showcase Container -->
+      <div class="bg-[#0e0f14] border border-neutral-800 rounded-2xl overflow-hidden shadow-2xl">
+        <!-- Tabs Header -->
+        <div class="flex items-center justify-between border-b border-neutral-800 bg-[#12141a] px-4 py-2">
+          <div class="flex items-center space-x-2">
+            <button onclick="switchTab('component')" id="tab-btn-component" class="px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition">
+              Viewer3D.zau
+            </button>
+            <button onclick="switchTab('page')" id="tab-btn-page" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
+              index.zau
+            </button>
+            <button onclick="switchTab('backend')" id="tab-btn-backend" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
+              backend/app.py
+            </button>
+            <button onclick="switchTab('model')" id="tab-btn-model" class="px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition">
+              database/models.py
+            </button>
+          </div>
+          <div class="flex items-center space-x-2 text-neutral-500 text-xs font-mono">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Interpreter Active</span>
+          </div>
+        </div>
+
+        <!-- Highlighted Code View -->
+        <div id="code-output" class="p-6 overflow-x-auto text-xs font-mono leading-relaxed bg-[#0b0c10]">
+          <!-- Injected via JavaScript -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start & CLI -->
+  <section id="quickstart" class="py-20 border-b border-neutral-800/80">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <div class="lg:col-span-5 space-y-5">
+          <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
+            Quick Start
+          </span>
+          <h2 class="text-3xl font-extrabold text-white">Scaffold in Seconds</h2>
+          <p class="text-neutral-400 text-sm leading-relaxed">
+            Get started with a single command via npm or pip. ZAU scaffolds a production-grade fullstack project equipped with async ORM, 3D spatial canvas, and hot reload.
+          </p>
+          <div class="space-y-3">
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
+              <span class="text-xs text-neutral-500 uppercase font-mono tracking-wider">Node / NPM Workflow</span>
+              <pre class="mt-2 text-xs font-mono text-amber-400 overflow-x-auto">npm create zau@latest my-app
+cd my-app
+zau dev --port 8000</pre>
+            </div>
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800">
+              <span class="text-xs text-neutral-500 uppercase font-mono tracking-wider">Python / Pip Workflow</span>
+              <pre class="mt-2 text-xs font-mono text-sky-400 overflow-x-auto">pip install zau-framework
+zau create my-app --template fullstack-3d
+cd my-app
+zau dev</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-4">
+          <h3 class="text-xl font-bold text-white mb-2">CLI Commands Reference</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
+              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau dev --port 8000</div>
+              <p class="text-xs text-neutral-400">Launch local development server with Python ASGI hot-reload and 3D HMR.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
+              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau db studio</div>
+              <p class="text-xs text-neutral-400">Opens the built-in database inspector to browse tables, records, and run SQL.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
+              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau db migrate / upgrade</div>
+              <p class="text-xs text-neutral-400">Inspect ORM model schema changes and automatically apply database migrations.</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#111216] border border-neutral-800/80">
+              <div class="font-mono text-xs text-amber-400 font-bold mb-1">zau build / start</div>
+              <p class="text-xs text-neutral-400">Compile frontend assets, type bridges, and run multi-worker production cluster.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture & 3D Spatial Details -->
+  <section id="architecture" class="py-20 border-b border-neutral-800/80">
+    <div class="max-w-7xl mx-auto px-6 space-y-12">
+      <div class="text-center max-w-3xl mx-auto">
+        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
+          RFC-001 Standard
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+          Dual-Tier Unified Architecture
+        </h2>
+        <p class="text-neutral-400 text-sm mt-2">
+          Eliminating the rift between backend Python APIs and client reactive interfaces.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
+            01
+          </div>
+          <h3 class="text-lg font-bold text-white">FastAPI-Grade Python Core</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            ASGI uvloop micro-kernel running asynchronous Server Actions (<code class="text-amber-400">@app.action</code>) with type validation, automatic serialization, and bidirectional WebSockets.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
+            02
+          </div>
+          <h3 class="text-lg font-bold text-white">Native 3D Spatial Canvas</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            First-class <code class="text-amber-400">&lt;ZAU.Canvas3D&gt;</code> primitive embedding WebGL/WebGPU render loops directly inside component lifecycles, ready for GLTF/GLB asset loading.
+          </p>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-[#111216] border border-neutral-800 hover:border-neutral-700 transition space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-mono font-bold">
+            03
+          </div>
+          <h3 class="text-lg font-bold text-white">Dual Styling Engine</h3>
+          <p class="text-xs text-neutral-400 leading-relaxed">
+            Zero-friction interoperability: atomic utility classes from Tailwind CSS combined with structural grid and component tokens from Bootstrap 5.3 without CSS collisions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Deployment Section -->
+  <section id="deployment" class="py-20 border-b border-neutral-800/80">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="mb-10">
+        <span class="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono uppercase">
+          DevOps & Cloud
+        </span>
+        <h2 class="text-3xl font-extrabold text-white mt-3">Multi-Platform Deployment</h2>
+        <p class="text-neutral-400 text-sm mt-2">Ready out of the box for modern serverless and container clouds.</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
+          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
+            <span>▲ Vercel</span>
+          </div>
+          <p class="text-xs text-neutral-400 mb-3">Serverless Python execution with automatic routing via <code class="text-amber-400 font-mono">vercel.json</code>.</p>
+          <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">Zero-Config</span>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
+          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
+            <span>🚀 Render</span>
+          </div>
+          <p class="text-xs text-neutral-400 mb-3">Blueprint infrastructure-as-code with managed PostgreSQL via <code class="text-amber-400 font-mono">render.yaml</code>.</p>
+          <span class="px-2 py-0.5 rounded text-[10px] bg-sky-500/10 text-sky-400 border border-sky-500/20 font-mono">render.yaml</span>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
+          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
+            <span>⚡ Replit</span>
+          </div>
+          <p class="text-xs text-neutral-400 mb-3">Instant browser-based development and cloud deployment via <code class="text-amber-400 font-mono">.replit</code>.</p>
+          <span class="px-2 py-0.5 rounded text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono">.replit Ready</span>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-[#111216] border border-neutral-800">
+          <div class="text-white font-bold text-base mb-1 flex items-center space-x-2">
+            <span>🐳 Docker</span>
+          </div>
+          <p class="text-xs text-neutral-400 mb-3">Multi-stage lightweight production container running on <code class="text-amber-400 font-mono">python:3.12-slim</code>.</p>
+          <span class="px-2 py-0.5 rounded text-[10px] bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">Multi-Stage</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-neutral-800/80 bg-[#08090c] py-12 text-xs text-neutral-500 font-mono">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span class="text-neutral-300 font-bold">ZAU Framework</span> &middot; Chief Architect: <a href="https://zetagoaurum.com" class="text-amber-400 hover:underline">ZetaGo-Aurum</a>
+      </div>
+      <div>
+        Contact: <a href="mailto:admin@zetagoaurum.com" class="text-neutral-400 hover:text-white">admin@zetagoaurum.com</a> &middot; Released under MIT License
+      </div>
+    </div>
+  </footer>
+
+  <!-- Code Snippets Data & Script -->
+  <script>
+    const SAMPLES = {
+      component: `<!-- frontend/components/spatial/Viewer3D.zau -->
+<template>
+  <ZAU.Canvas3D 
+     shadows 
+     camera={{ position: [0, 2, 5], fov: 60 }} 
+     className="w-full h-96 rounded-2xl bg-neutral-900 border border-neutral-800"
+  >
+    <ZAU.AmbientLight intensity={0.6} />
+    <ZAU.DirectionalLight position={[10, 10, 5]} intensity={1.5} castShadow />
+    <ZAU.OrbitControls enableZoom={true} autoRotate={!hovered} />
+    
+    <ZAU.Model 
+       src={modelPath} 
+       position={[0, 0, 0]} 
+       rotation={[rotation.x, rotation.y, rotation.z]} 
+       scale={hovered ? 1.1 : 1.0}
+       onPointerEnter={() => setHovered(true)}
+       onPointerLeave={() => setHovered(false)}
+       fallback={<ZAU.Spinner3D label="Memuat Objek 3D..." />}
+    />
+  </ZAU.Canvas3D>
+</template>
+
+<script lang="ts">
+import { ZAU, useState, useFrame } from '@zau/core';
+
+export default function Viewer3D({ modelPath, initialSpeed = 1.0 }) {
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
+  const [hovered, setHovered] = useState(false);
+
+  // Hook render loop 60fps / 120fps otomatis
+  useFrame((state, delta) => {
+    setRotation(prev => ({ ...prev, y: prev.y + (delta * initialSpeed) }));
+  });
+
+  return { rotation, hovered, setHovered };
+}
+<\/script>`,
+
+      page: `<!-- frontend/pages/index.zau -->
+<template>
+  <div class="container py-5">
+    <header class="row mb-4 items-center">
+      <div class="col-md-8">
+        <h1 class="display-4 font-bold tracking-tight text-gray-900 dark:text-white">
+          ZAU Unified Dashboard
+        </h1>
+        <p class="lead text-muted dark:text-gray-400">
+          Pusat kendali komputasi web spasial & database server | zetagoaurum.com
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <button class="btn btn-dark px-4 py-2 hover:scale-105 transition-transform shadow-md"
+                @click="refreshData">
+          Sync Database
+        </button>
+      </div>
+    </header>
+
+    <main class="row g-4">
+      <div class="col-lg-7">
+        <Viewer3D modelPath="/models/cyber_core.glb" initialSpeed="1.2" />
+      </div>
+      <div class="col-lg-5">
+        <div class="card shadow-sm border-0 rounded-2xl p-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur">
+          <h3 class="text-xl font-semibold mb-3 border-b pb-2">Status Server</h3>
+          <div class="flex items-center justify-between py-2">
+            <span class="badge bg-success">Python ASGI Active</span>
+            <span class="text-sm text-gray-500 font-mono">Latency: 3.8ms</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</template>`,
+
+      backend: `# backend/app.py
+from zau import ZAUApp, Depends
+from zau.db import get_session, AsyncSession, select
+from backend.database.models.user import User, Project
+from typing import List
+
+app = ZAUApp(
+    title="ZAU Production Suite",
+    version="1.0.0",
+    client_dir="../frontend"
+)
+
+# Endpoint Server Action yang dapat langsung dipanggil dari Frontend ZAU
+@app.action("/api/projects/list")
+async def list_projects(
+    limit: int = 10, 
+    session: AsyncSession = Depends(get_session)
+) -> List[dict]:
+    statement = select(Project).limit(limit)
+    result = await session.execute(statement)
+    projects = result.scalars().all()
+    
+    return [
+        {
+            "id": p.id,
+            "title": p.title,
+            "model_url": p.model_3d_url,
+            "owner": p.owner_id
+        }
+        for p in projects
+    ]
+
+# WebSocket untuk manipulasi rotasi objek 3D real-time antar pengguna
+@app.websocket("/ws/spatial-sync")
+async def spatial_sync(ws):
+    await ws.accept()
+    while True:
+        data = await ws.receive_json()
+        await app.broadcast_json({"user": data["user"], "transform": data["transform"]})`,
+
+      model: `# backend/database/models/user.py
+from zau.db import Model, Field, Relationship
+from typing import Optional, List
+from datetime import datetime
+
+class User(Model, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    username: str = Field(index=True, unique=True, max_length=50)
+    email: str = Field(unique=True, index=True)
+    password_hash: str
+    is_active: bool = Field(default=True)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # Hubungan Relasional Otomatis
+    projects: List["Project"] = Relationship(back_populates="owner")
+
+class Project(Model, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str = Field(max_length=100)
+    model_3d_url: str = Field(description="Path aset GLTF 3D")
+    owner_id: int = Field(foreign_key="users.id")
+    owner: Optional[User] = Relationship(back_populates="projects")`
+    };
+
+    // Client-side Token Highlighter for instantaneous rendering
+    function highlightClientCode(code) {
+      function escapeHtml(str) {
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+
+      // Tokenize
+      let res = '';
+      const lines = code.split('\n');
+      for (let line of lines) {
+        let l = escapeHtml(line);
+        // Comments
+        if (l.trim().startsWith('//') || l.trim().startsWith('#') || l.trim().startsWith('&lt;!--')) {
+          res += '<span class="zau-tok-comment">' + l + '</span>\n';
+          continue;
+        }
+        // Directives
+        l = l.replace(/(@[a-zA-Z0-9_-]+)/g, '<span class="zau-tok-directive">$1</span>');
+        // Spatial tags
+        l = l.replace(/(&lt;\/?)(ZAU\.[a-zA-Z0-9]+|Viewer3D|SceneControls)/g, '$1<span class="zau-tok-spatial">$2</span>');
+        // HTML Tags
+        l = l.replace(/(&lt;\/?)([a-zA-Z0-9_-]+)/g, '$1<span class="zau-tok-tag">$2</span>');
+        // Strings
+        l = l.replace(/(&quot;.*?&quot;|'.*?')/g, '<span class="zau-tok-string">$1</span>');
+        // Keywords
+        l = l.replace(/\b(import|from|export|default|function|const|let|var|return|async|await|def|class|True|False|None)\b/g, '<span class="zau-tok-keyword">$1</span>');
+        // Functions / Builtins
+        l = l.replace(/\b(useState|useFrame|useEffect|ZAUApp|Depends|get_session|select|Model|Field|Relationship)\b/g, '<span class="zau-tok-function">$1</span>');
+        res += l + '\n';
+      }
+      return '<pre><code>' + res + '</code></pre>';
+    }
+
+    function switchTab(key) {
+      ['component', 'page', 'backend', 'model'].forEach(k => {
+        const btn = document.getElementById('tab-btn-' + k);
+        if (btn) {
+          if (k === key) {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono text-white bg-neutral-800 transition font-bold border border-neutral-700';
+          } else {
+            btn.className = 'px-3 py-1.5 rounded-lg text-xs font-mono text-neutral-400 hover:text-white transition';
+          }
+        }
+      });
+      const code = SAMPLES[key] || '';
+      document.getElementById('code-output').innerHTML = highlightClientCode(code);
+    }
+
+    // Hero 3D Canvas
+    function initHero3D() {
+      const container = document.getElementById('hero-3d-mount');
+      if (!container || !window.THREE) return;
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(50, container.clientWidth / container.clientHeight, 0.1, 1000);
+      camera.position.set(0, 1.8, 4.5);
+
+      const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      container.appendChild(renderer.domElement);
+
+      const controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.8;
+
+      const ambLight = new THREE.AmbientLight(0xffffff, 0.75);
+      scene.add(ambLight);
+
+      const dirLight = new THREE.DirectionalLight(0xf59e0b, 2.5);
+      dirLight.position.set(6, 10, 6);
+      scene.add(dirLight);
+
+      const pointLight = new THREE.PointLight(0x38bdf8, 3.0, 10);
+      pointLight.position.set(-4, 3, -3);
+      scene.add(pointLight);
+
+      // Cyber Geometry (Icosahedron + Wireframe cage)
+      const geom = new THREE.IcosahedronGeometry(1.3, 1);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0x12131a,
+        metalness: 0.85,
+        roughness: 0.15
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      scene.add(mesh);
+
+      const cageGeom = new THREE.IcosahedronGeometry(1.5, 0);
+      const cageMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b, wireframe: true, transparent: true, opacity: 0.45 });
+      const cageMesh = new THREE.Mesh(cageGeom, cageMat);
+      scene.add(cageMesh);
+
+      let last = performance.now();
+      let frames = 0;
+      const fpsEl = document.getElementById('hero-fps');
+
+      function animate() {
+        requestAnimationFrame(animate);
+        mesh.rotation.y += 0.005;
+        mesh.rotation.x += 0.002;
+        cageMesh.rotation.y -= 0.003;
+        cageMesh.rotation.z += 0.002;
+        controls.update();
+        renderer.render(scene, camera);
+
+        frames++;
+        const now = performance.now();
+        if (now - last >= 1000) {
+          if (fpsEl) fpsEl.innerText = frames + ' FPS';
+          frames = 0;
+          last = now;
+        }
+      }
+      animate();
+
+      window.addEventListener('resize', () => {
+        if (!container) return;
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      switchTab('component');
+      initHero3D();
+    });
+  </script>
+</body>
+</html>

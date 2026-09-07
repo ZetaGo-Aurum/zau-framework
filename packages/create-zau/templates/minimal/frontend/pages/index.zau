@@ -1,0 +1,71 @@
+<!-- frontend/pages/index.zau -->
+<template>
+  <div class="container py-5">
+    <header class="row mb-4 items-center">
+      <div class="col-md-8">
+        <h1 class="display-4 font-bold tracking-tight text-gray-900 dark:text-white">
+          ZAU Unified Dashboard
+        </h1>
+        <p class="lead text-muted dark:text-gray-400">
+          Pusat kendali komputasi web spasial & database server | zetagoaurum.com
+        </p>
+      </div>
+      <div class="col-md-4 text-md-end">
+        <button class="btn btn-dark px-4 py-2 hover:scale-105 transition-transform shadow-md"
+                @click="refreshData">
+          Sync Database
+        </button>
+      </div>
+    </header>
+
+    <main class="row g-4">
+      <div class="col-lg-7">
+        <!-- Canvas 3D Native -->
+        <Viewer3D modelPath="/models/cyber_core.glb" initialSpeed="1.2" />
+      </div>
+      <div class="col-lg-5">
+        <!-- Card Bootstrap dengan Utility Tailwind -->
+        <div class="card shadow-sm border-0 rounded-2xl p-4 bg-white/80 dark:bg-neutral-900/80 backdrop-blur border border-neutral-200 dark:border-neutral-800">
+          <h3 class="text-xl font-semibold mb-3 border-b pb-2 text-gray-900 dark:text-white">Status Server</h3>
+          <div class="flex items-center justify-between py-2">
+            <span class="badge bg-success">Python ASGI Active</span>
+            <span class="text-sm text-gray-500 font-mono">Latency: 3.8ms</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-gray-600 dark:text-gray-300">Spatial Engine</span>
+            <span class="badge bg-warning text-dark font-mono">WebGL / Three.js</span>
+          </div>
+          <div class="flex items-center justify-between py-2">
+            <span class="text-sm text-gray-600 dark:text-gray-300">Styling System</span>
+            <span class="badge bg-primary font-mono">Tailwind + Bootstrap</span>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script lang="ts">
+import { ZAU, useState, useEffect } from '@zau/core';
+
+export default function IndexPage() {
+  const [status, setStatus] = useState('Checking...');
+
+  const refreshData = async () => {
+    const data = await ZAU.callAction('/api/status');
+    setStatus(data.engine);
+  };
+
+  useEffect(() => {
+    refreshData();
+  }, []);
+
+  return { refreshData, status };
+}
+</script>
+
+<style>
+.container {
+  max-width: 1200px;
+}
+</style>

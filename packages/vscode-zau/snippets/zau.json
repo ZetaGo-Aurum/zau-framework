@@ -1,0 +1,43 @@
+{
+  "ZAU Component": {
+    "prefix": "zau-component",
+    "body": [
+      "<!-- ${1:ComponentName}.zau -->",
+      "<template>",
+      "  <div class=\"container py-4\">",
+      "    <h1 class=\"text-2xl font-bold\">${2:Title}</h1>",
+      "    <slot />",
+      "  </div>",
+      "</template>",
+      "",
+      "<script lang=\"ts\">",
+      "import { ZAU, useState } from '@zau/core';",
+      "",
+      "export default function ${1:ComponentName}() {",
+      "  const [state, setState] = useState(null);",
+      "  return { state };",
+      "}",
+      "</script>",
+      "",
+      "<style scoped>",
+      "</style>"
+    ],
+    "description": "Scaffold a new ZAU Single File Component"
+  },
+  "ZAU Spatial Canvas 3D": {
+    "prefix": "zau-canvas3d",
+    "body": [
+      "<ZAU.Canvas3D",
+      "  shadows",
+      "  camera={{ position: [0, 2, 5], fov: 60 }}",
+      "  className=\"w-full h-96 rounded-2xl bg-neutral-900 border border-neutral-800\"",
+      ">",
+      "  <ZAU.AmbientLight intensity={0.6} />",
+      "  <ZAU.DirectionalLight position={[10, 10, 5]} intensity={1.5} castShadow />",
+      "  <ZAU.OrbitControls enableZoom={true} />",
+      "  <ZAU.Model src=\"${1:/models/cyber_core.glb}\" scale={1.0} />",
+      "</ZAU.Canvas3D>"
+    ],
+    "description": "Insert a Native 3D Spatial Canvas"
+  }
+}

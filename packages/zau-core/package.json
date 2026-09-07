@@ -1,0 +1,35 @@
+{
+  "name": "@zau/core",
+  "version": "1.0.0",
+  "description": "Client runtime, Signals reactivity, and Native 3D Spatial Canvas for ZAU Framework",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [
+    "zau",
+    "zau-framework",
+    "signals",
+    "spatial-canvas",
+    "threejs",
+    "webgl",
+    "reactivity"
+  ],
+  "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
+  "license": "MIT",
+  "homepage": "https://zetagoaurum.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZetaGo-Aurum/zau-framework.git"
+  },
+  "dependencies": {
+    "three": "^0.160.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/three": "^0.160.0"
+  }
+}

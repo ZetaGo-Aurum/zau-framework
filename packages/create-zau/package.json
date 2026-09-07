@@ -1,0 +1,38 @@
+{
+  "name": "create-zau",
+  "version": "1.0.0",
+  "description": "Scaffold modern Python-first fullstack web applications with Native 3D Spatial Canvas using ZAU Framework",
+  "type": "module",
+  "main": "bin/create-zau.js",
+  "bin": {
+    "create-zau": "bin/create-zau.js"
+  },
+  "files": [
+    "bin",
+    "templates",
+    "README.md"
+  ],
+  "scripts": {
+    "test": "node bin/create-zau.js --help"
+  },
+  "keywords": [
+    "zau",
+    "create-zau",
+    "fullstack",
+    "python",
+    "fastapi",
+    "threejs",
+    "webgl",
+    "tailwind",
+    "bootstrap",
+    "scaffold",
+    "boilerplate"
+  ],
+  "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
+  "license": "MIT",
+  "homepage": "https://zetagoaurum.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ZetaGo-Aurum/zau-framework.git"
+  }
+}

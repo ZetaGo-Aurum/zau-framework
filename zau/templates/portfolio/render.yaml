@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: zau-production-app
+    env: python
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: zau start --host 0.0.0.0 --port $PORT --workers 2
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zau-db
+          property: connectionString
+
+databases:
+  - name: zau-db
+    plan: free
