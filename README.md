@@ -24,76 +24,82 @@
 </p>
 
 <p align="center">
-  <a href="#-daftar-isi--table-of-contents">Daftar Isi</a> &bull;
-  <a href="#-arsitektur-utama-rfc-001-specification">Arsitektur</a> &bull;
-  <a href="#-tutorial-pemasangan-installation">Pemasangan</a> &bull;
-  <a href="#-tutorial-pembuatan-project-project-creation">Pembuatan Project</a> &bull;
-  <a href="#-tutorial-deploy-ke-production">Panduan Deploy</a> &bull;
-  <a href="#-dukungan-multi-editor--lsp">Editor & LSP</a>
+  <strong>Language / Bahasa:</strong>
+  <strong>English (Default)</strong> &bull;
+  <a href="README.id.md">Bahasa Indonesia</a>
 </p>
 
 <p align="center">
-  <strong>Web Atelier Resmi:</strong> <a href="https://zetagoaurum.com">zetagoaurum.com</a> &middot;
-  <strong>Dokumentasi Live:</strong> <a href="https://zau-framework.vercel.app">zau-framework.vercel.app</a> &middot;
-  <strong>Email Kontak:</strong> <a href="mailto:admin@zetagoaurum.com">admin@zetagoaurum.com</a>
+  <a href="#table-of-contents">Table of Contents</a> &bull;
+  <a href="#architecture-specification-rfc-001">Architecture</a> &bull;
+  <a href="#installation-tutorial">Installation</a> &bull;
+  <a href="#project-creation-tutorial">Project Creation</a> &bull;
+  <a href="#production-deployment-guide">Deployment</a> &bull;
+  <a href="#multi-editor--lsp-support">Editor & LSP</a>
+</p>
+
+<p align="center">
+  <strong>Official Atelier:</strong> <a href="https://zetagoaurum.com">zetagoaurum.com</a> &middot;
+  <strong>Live Documentation:</strong> <a href="https://zau-framework.vercel.app">zau-framework.vercel.app</a> &middot;
+  <strong>Contact Email:</strong> <a href="mailto:admin@zetagoaurum.com">admin@zetagoaurum.com</a>
 </p>
 
 </div>
 
 ---
 
-## 📑 Daftar Isi / Table of Contents
+## Table of Contents
 
-- [1. Mengapa ZAU Framework? (Ringkasan Eksekutif)](#-mengapa-zau-framework-ringkasan-eksekutif)
-- [2. Arsitektur Utama (RFC-001 Specification)](#-arsitektur-utama-rfc-001-specification)
-  - [Topologi Dual-Tier ZAU](#topologi-dual-tier-zau)
-  - [Matriks Desain Arsitektur](#matriks-desain-arsitektur)
-- [3. Tutorial Pemasangan (Installation)](#-tutorial-pemasangan-installation)
-  - [Persyaratan Sistem (Prerequisites)](#persyaratan-sistem-prerequisites)
-  - [Metode 1: Menggunakan NPM / NPX (Rekomendasi Cepat)](#metode-1-menggunakan-npm--npx-rekomendasi-cepat)
-  - [Metode 2: Menggunakan Python Pip & CLI](#metode-2-menggunakan-python-pip--cli)
-  - [Verifikasi Instalasi](#verifikasi-instalasi)
-- [4. Tutorial Pembuatan Project (Project Creation)](#-tutorial-pembuatan-project-project-creation)
-  - [Langkah 1: Scaffolding Interaktif](#langkah-1-scaffolding-interaktif)
-  - [Langkah 2: Memilih Template Resmi](#langkah-2-memilih-template-resmi)
-  - [Langkah 3: Memahami Struktur Direktori Project](#langkah-3-memahami-struktur-direktori-project)
-  - [Langkah 4: Menulis Komponen Pertama `.zau`](#langkah-4-menulis-komponen-pertama-zau)
-  - [Langkah 5: Membuat Backend Server Action Python ASGI](#langkah-5-membuat-backend-server-action-python-asgi)
-  - [Langkah 6: Database Async ORM & ZAU DB Studio](#langkah-6-database-async-orm--zau-db-studio)
-  - [Langkah 7: Menjalankan Server Development](#langkah-7-menjalankan-server-development)
-- [5. Native 3D Spatial Canvas](#-native-3d-spatial-canvas)
-  - [Sintaks Primitif 3D](#sintaks-primitif-3d)
-  - [Pipeline Progressive Level of Detail (LOD)](#pipeline-progressive-level-of-detail-lod)
-  - [Kontrol Kamera & Orbit Clamping](#kontrol-kamera--orbit-clamping)
-- [6. Tutorial Deploy ke Production](#-tutorial-deploy-ke-production)
-  - [Deploy 1: Vercel (Production Edge + Serverless Python ASGI)](#deploy-1-vercel-production-edge--serverless-python-asgi)
-  - [Deploy 2: Docker & Docker Compose](#deploy-2-docker--docker-compose)
-  - [Deploy 3: Linux / Bare-Metal VPS (Ubuntu/Debian + Nginx + Systemd)](#deploy-3-linux--bare-metal-vps-ubuntudebian--nginx--systemd)
-  - [Deploy 4: Render Cloud (Infrastructure-as-Code)](#deploy-4-render-cloud-infrastructure-as-code)
-  - [Deploy 5: Fly.io](#deploy-5-flyio)
-- [7. CLI Command Reference](#-cli-command-reference)
-- [8. Dukungan Multi-Editor & LSP](#-dukungan-multi-editor--lsp)
-- [9. Tata Kelola, Lisensi & Hak Cipta](#-tata-kelola-lisensi--hak-cipta)
-
----
-
-## 🌟 Mengapa ZAU Framework? (Ringkasan Eksekutif)
-
-Pengembangan web modern mengalami fragmentasi ekstrem: bundler yang membengkak, orkestrasi state management yang rumit, dependensi antar-CSS yang saling konflik, serta jurang pemisah antara komputasi numerik Python dan interaktivitas frontend JavaScript/TypeScript.
-
-**ZAU (ZetaGo-Aurum Unified)** menyatukan seluruh spektrum tersebut ke dalam satu framework fullstack terpadu berstandar industri:
-
-1. **Python ASGI Core**: Menggunakan kernel asynchronous Starlette/uvloop berkemampuan jutaan request per detik, Pydantic v2 untuk validasi skema otomatis, dan Server Action RPC tanpa boilerplate REST manual.
-2. **Native 3D Spatial Canvas**: Menghadirkan WebGL/Three.js ke dalam siklus hidup komponen deklaratif (`<ZAU.Canvas3D>`), lengkap dengan Progressive LOD (Level of Detail), sistem material PBR, tata cahaya terintegrasi, dan proteksi memori GPU mobile.
-3. **Dual-Asset Engine Interoperable**: Menggabungkan kecepatan utilitas atomik **Tailwind CSS** dengan konsistensi token komponen **Bootstrap 5.3** tanpa tabrakan nama kelas.
-4. **Isomorphic Single-File Components (`.zau`)**: Format file tunggal revolusioner yang menyatukan template markup, skrip TypeScript berbasis Signals reactivity, dan gaya terisolasi.
-5. **Universal Tooling & LSP**: Didukung ekstensi VS Code resmi, server LSP berbasis standar Microsoft Language Server Protocol, konverter tata bahasa untuk Neovim, Zed, Sublime Text, dan IntelliJ.
+- [1. Executive Summary](#1-executive-summary)
+- [2. Architecture Specification (RFC-001)](#2-architecture-specification-rfc-001)
+  - [Dual-Tier Unified Topology](#dual-tier-unified-topology)
+  - [Architectural Decision Matrix](#architectural-decision-matrix)
+- [3. Installation Tutorial](#3-installation-tutorial)
+  - [System Prerequisites](#system-prerequisites)
+  - [Method 1: Using NPM / NPX (Recommended)](#method-1-using-npm--npx-recommended)
+  - [Method 2: Using Python Pip & CLI](#method-2-using-python-pip--cli)
+  - [Installation Verification](#installation-verification)
+- [4. Project Creation Tutorial](#4-project-creation-tutorial)
+  - [Step 1: Interactive Scaffolding](#step-1-interactive-scaffolding)
+  - [Step 2: Official Templates Comparison](#step-2-official-templates-comparison)
+  - [Step 3: Directory Structure Overview](#step-3-directory-structure-overview)
+  - [Step 4: Writing Your First `.zau` Component](#step-4-writing-your-first-zau-component)
+  - [Step 5: Authoring Python ASGI Server Actions](#step-5-authoring-python-asgi-server-actions)
+  - [Step 6: Async Database ORM & ZAU DB Studio](#step-6-async-database-orm--zau-db-studio)
+  - [Step 7: Starting the Development Server](#step-7-starting-the-development-server)
+- [5. Native 3D Spatial Canvas](#5-native-3d-spatial-canvas)
+  - [Declarative Spatial Syntax](#declarative-spatial-syntax)
+  - [Dual-Tier Progressive LOD Pipeline](#dual-tier-progressive-lod-pipeline)
+  - [Camera Controls, Orbit Clamping & Boundary Safety](#camera-controls-orbit-clamping--boundary-safety)
+- [6. Production Deployment Guide](#6-production-deployment-guide)
+  - [Target 1: Vercel (Production Edge + Serverless Python ASGI)](#target-1-vercel-production-edge--serverless-python-asgi)
+  - [Target 2: Docker & Docker Compose](#target-2-docker--docker-compose)
+  - [Target 3: Linux / Bare-Metal VPS (Ubuntu/Debian + Nginx + Systemd)](#target-3-linux--bare-metal-vps-ubuntudebian--nginx--systemd)
+  - [Target 4: Render Cloud (Infrastructure-as-Code)](#target-4-render-cloud-infrastructure-as-code)
+  - [Target 5: Fly.io](#target-5-flyio)
+- [7. CLI Command Reference](#7-cli-command-reference)
+- [8. Multi-Editor & LSP Support](#8-multi-editor--lsp-support)
+- [9. Governance, License & Acknowledgements](#9-governance-license--acknowledgements)
 
 ---
 
-## 🏛️ Arsitektur Utama (RFC-001 Specification)
+## 1. Executive Summary
 
-### Topologi Dual-Tier ZAU
+Modern web software engineering suffers from acute fragmentation: disconnected backend runtimes, bloated bundlers, complex client state synchronization layers, conflicting CSS abstractions, and deep runtime boundaries separating Python numerical computing from WebGL interactive client viewports.
+
+**ZAU (ZetaGo-Aurum Unified)** resolves this dichotomy through an industrial-grade fullstack architecture:
+
+1. **Python ASGI Core**: High-throughput asynchronous kernel powered by Starlette and uvloop, automated Pydantic v2 data validation, and declarative Server Action RPC procedures.
+2. **Native 3D Spatial Canvas**: First-class Three.js r160 WebGL integration embedded directly in component lifecycles (`<ZAU.Canvas3D>`), featuring Draco geometry decompression, PBR materials, and mobile GPU memory protection.
+3. **Interoperable Dual-Asset Styling**: Combines the precision micro-layout velocity of **Tailwind CSS** with the design system consistency of **Bootstrap 5.3** component tokens with zero class collisions.
+4. **Isomorphic Single-File Components (`.zau`)**: A single file format consolidating `<template>` markup, `<script lang="ts">` reactive logic driven by micro-signals, and isolated `<style>` rules.
+5. **Universal Tooling & LSP Ecosystem**: Backed by an official VS Code extension, an industry-standard Language Server Protocol (`zau-lsp`) daemon, and syntax grammar converters for Neovim, Zed, Sublime Text, and IntelliJ IDEA.
+
+---
+
+## 2. Architecture Specification (RFC-001)
+
+### Dual-Tier Unified Topology
 
 ```
 +-----------------------------------------------------------------------------------+
@@ -122,76 +128,76 @@ Pengembangan web modern mengalami fragmentasi ekstrem: bundler yang membengkak, 
 +-----------------------------------------------------------------------------------+
 ```
 
-### Matriks Desain Arsitektur
+### Architectural Decision Matrix
 
-| Dimensi | Mesin / Pustaka | Spesifikasi & Rationale Teknis |
+| Architectural Layer | Implementation Engine | Technical Rationale |
 | :--- | :--- | :--- |
-| **Server Engine** | **Python ASGI (Starlette + uvloop)** | Asynchronous non-blocking I/O kernel, Pydantic v2 deserialization, Server Actions RPC. |
-| **3D Spatial Canvas** | **Native `<ZAU.Canvas3D>`** | Three.js r160 WebGL engine, Draco GLTF compression, progressive LOD Frame 0 loading. |
-| **Database Subsystem** | **Async ORM + Migrations** | Zero-config embedded SQLite bawaan, koneksi 1 baris ke PostgreSQL / MySQL, ZAU DB Studio visual. |
-| **Styling Pipeline** | **Tailwind CSS + Bootstrap 5.3** | Atomic layout utilities berkecepatan JIT dipadukan dengan token komponen Bootstrap. |
-| **Format Komponen** | **`.zau` Single File Components** | Penyatuan `<template>`, `<script lang="ts">`, dan `<style>` dengan lexical analyzer & LSP. |
-| **Deployment Model** | **Serverless Edge / OCI Docker** | Vercel Edge Serverless Python, Docker multi-stage container, Nginx reverse proxy. |
+| **Server Engine** | **Python ASGI (Starlette + uvloop)** | Asynchronous event loop, sub-millisecond execution, automated Pydantic v2 validation. |
+| **3D Spatial Canvas** | **Native `<ZAU.Canvas3D>`** | Three.js r160 WebGL engine, Draco GLTF compression, progressive LOD Frame 0 rendering. |
+| **Database Subsystem** | **Async ORM + Migrations** | Embedded SQLite for zero-config local prototyping, one-line connection to PostgreSQL/MySQL. |
+| **Styling Pipeline** | **Tailwind CSS + Bootstrap 5.3** | JIT utility classes for micro-layout paired with Bootstrap component tokens. |
+| **Component Format** | **`.zau` Single File Components** | Unified `<template>`, `<script lang="ts">`, and `<style>` with native parser & LSP daemon. |
+| **Deployment Model** | **Serverless Edge / OCI Docker** | Vercel Serverless Python edge routing, multi-stage OCI containers, Nginx reverse proxy. |
 
 ---
 
-## 🚀 Tutorial Pemasangan (Installation)
+## 3. Installation Tutorial
 
-### Persyaratan Sistem (Prerequisites)
+### System Prerequisites
 
-Pastikan lingkungan komputer Anda telah terpasang perangkat lunak berikut:
-- **Node.js**: `v18.0.0` atau versi LTS yang lebih baru (`v20.x` / `v22.x` direkomendasikan).
-- **Python**: `3.11`, `3.12`, atau `3.13` (dengan modul `venv` dan `pip`).
-- **Git**: `2.30+` untuk clone dan integrasi CI/CD.
-- **Sistem Operasi**: Linux (Ubuntu, Debian, Fedora, Arch), macOS, atau Windows (dengan WSL2 atau PowerShell).
+Verify that your local development workstation satisfies the following requirements:
+- **Node.js**: `v18.0.0` or higher (`v20.x` / `v22.x` LTS recommended).
+- **Python**: `3.11`, `3.12`, or `3.13` (with standard `venv` and `pip` modules).
+- **Git**: `2.30+` for version control and CI/CD integration.
+- **Operating Systems**: Linux (Ubuntu, Debian, Fedora, Arch), macOS (Apple Silicon / Intel), or Windows (via WSL2 or native PowerShell).
 
-### Metode 1: Menggunakan NPM / NPX (Rekomendasi Cepat)
+### Method 1: Using NPM / NPX (Recommended)
 
-Scaffolding project ZAU baru dapat dilakukan langsung tanpa instalasi global:
+Initialize a new ZAU project directly without prior global installations:
 
 ```bash
-# Inisialisasi interaktif via npm
+# Interactive scaffolding via npm
 npm create zau@latest my-app
 
-# Atau menggunakan npx
+# Or using npx
 npx create-zau my-app
 
-# Pengguna pnpm
+# Using pnpm
 pnpm create zau my-app
 
-# Pengguna yarn
+# Using yarn
 yarn create zau my-app
 
-# Pengguna bun
+# Using bun
 bun create zau my-app
 ```
 
-Setelah scaffolding selesai, masuk ke direktori dan pasang dependensi backend & frontend:
+After scaffolding completes, enter the directory and install backend and frontend dependencies:
 
 ```bash
 cd my-app
 
-# 1. Siapkan Python virtual environment
+# 1. Initialize and activate Python virtual environment
 python3 -m venv .venv
-source .venv/bin/activate  # Untuk Linux/macOS
-# .venv\Scriptsctivate   # Untuk Windows PowerShell
+source .venv/bin/activate  # Linux / macOS
+# .venv\Scriptsctivate   # Windows PowerShell
 
-# 2. Pasang dependensi Python
+# 2. Install Python dependencies
 pip install -r requirements.txt
 
-# 3. Pasang dependensi Node.js
+# 3. Install Node.js runtime dependencies
 npm install
 ```
 
-### Metode 2: Menggunakan Python Pip & CLI
+### Method 2: Using Python Pip & CLI
 
-Anda juga dapat memasang core framework ZAU secara langsung melalui ekosistem Python:
+Install the core framework package from PyPI:
 
 ```bash
-# Pasang paket core ZAU dari PyPI / Wheel
+# Install ZAU framework core
 pip install zau-framework
 
-# Buat project baru melalui CLI zau
+# Scaffold a project using the zau CLI
 zau create my-app --template fullstack-3d
 
 cd my-app
@@ -199,36 +205,36 @@ pip install -r requirements.txt
 npm install
 ```
 
-### Verifikasi Instalasi
+### Installation Verification
 
-Jalankan perintah pengujian untuk memastikan seluruh runtime terpasang dengan sempurna:
+Run the verification commands to confirm environment integrity:
 
 ```bash
-# Cek versi runtime ZAU
+# Verify ZAU CLI
 python3 -m zau.cli --version
-# atau: zau --version
+# or: zau --version
 
-# Cek Node.js & NPM
+# Verify Node.js & NPM
 node -v
 npm -v
 
-# Cek Python interpreter
+# Verify Python runtime
 python3 -V
 ```
 
 ---
 
-## 🛠️ Tutorial Pembuatan Project (Project Creation)
+## 4. Project Creation Tutorial
 
-### Langkah 1: Scaffolding Interaktif
+### Step 1: Interactive Scaffolding
 
-Jalankan generator CLI:
+Run the scaffolding CLI:
 
 ```bash
 npm create zau@latest my-project
 ```
 
-Terminal akan menampilkan banner resmi dan mengajukan pertanyaan konfigurasi:
+The terminal displays the banner and prompts for project configuration:
 
 ```
   ███████╗ █████╗ ██╗   ██╗
@@ -249,65 +255,63 @@ Terminal akan menampilkan banner resmi dan mengajukan pertanyaan konfigurasi:
   4) portfolio     - Atelier showcase with interactive 3D viewer
 ```
 
-### Langkah 2: Memilih Template Resmi
+### Step 2: Official Templates Comparison
 
-Pilihlah salah satu dari 4 template produksi:
-
-| Template | Komponen Inti | Kasus Penggunaan Ideal |
+| Template | Architecture & Included Modules | Recommended Use Cases |
 | :--- | :--- | :--- |
-| **`fullstack-3d`** | Python ASGI + Three.js 3D Canvas + Async ORM + Tailwind + Bootstrap | Aplikasi 3D spasial komersial, game web, visualisasi arsitektur & produk. |
-| **`minimal`** | Python Starlette ringan + Single-File Components minimalis | Microservice, prototipe kilat, API endpoint dengan antarmuka sederhana. |
-| **`dashboard`** | Tabular Data Grid + Chart.js + ZAU DB Studio + Realtime Metrics | Panel kontrol enterprise, monitoring server, sistem manajemen analitik. |
-| **`portfolio`** | Spatial Room Model + Cinematic Camera + Seated POV + Atelier Showroom | Portofolio kreatif kelas atas, galeri seni virtual, presentasi profil 3D. |
+| **`fullstack-3d`** | Python ASGI + Three.js 3D Canvas + Async ORM + Tailwind & Bootstrap | Commercial 3D applications, WebGL games, interactive digital twins, spatial e-commerce. |
+| **`minimal`** | Python Starlette service + minimal Single-File Component frontend | Microservices, API gateways, rapid prototyping with lightweight UI. |
+| **`dashboard`** | Tabular Data Grid + Telemetry Charts + ZAU DB Studio + Metric Cards | Enterprise admin portals, infrastructure monitoring, data visualization. |
+| **`portfolio`** | Spatial Room Model + Cinematic Camera + Seated POV + Atelier Showroom | Creative portfolios, virtual exhibitions, 3D architectural showcases. |
 
-### Langkah 3: Memahami Struktur Direktori Project
+### Step 3: Directory Structure Overview
 
-Project ZAU terstruktur secara bersih dan modular:
+A scaffolded ZAU project follows a clean, modular hierarchy:
 
 ```
 my-project/
 ├── api/
-│   └── index.py             # Serverless ASGI bridge untuk Vercel / Cloud Functions
+│   └── index.py             # Serverless ASGI bridge (Vercel / Cloud Functions)
 ├── backend/
-│   ├── app.py               # Instansiasi ZAUApp, rute ASGI & Server Actions
+│   ├── app.py               # ZAUApp instantiation, ASGI routes & Server Actions
 │   └── database/
-│       ├── models/          # Model data deklaratif ZAU ORM
-│       └── migrations/      # Riwayat migrasi skema SQL
+│       ├── models/          # Declarative async ORM models
+│       └── migrations/      # SQL migration versions
 ├── frontend/
-│   ├── components/          # Komponen UI dan 3D (.zau / .tsx)
-│   ├── pages/               # Halaman aplikasi dan routing tampilan
-│   └── styles/              # Integrasi Tailwind CSS & Bootstrap
+│   ├── components/          # UI and 3D spatial components (.zau / .tsx)
+│   ├── pages/               # Application routes and views
+│   └── styles/              # Tailwind CSS and Bootstrap style configurations
 ├── model/
-│   └── 3d/                  # Aset 3D (GLTF/GLB Draco, tekstur, material)
+│   └── 3d/                  # 3D spatial models (GLTF/GLB Draco & textures)
 ├── public/
-│   └── favicon.ico          # Aset statis browser publik
-├── Dockerfile               # Multi-stage container siap produksi
-├── docker-compose.yml       # Orkestrasi container lokal (App + Postgres + Redis)
-├── package.json             # Manifest paket Node.js
-├── pyproject.toml           # Manifest paket Python
-├── render.yaml              # Konfigurasi deploy Render
-├── requirements.txt         # Daftar dependensi Python
-├── tsconfig.json            # Konfigurasi TypeScript
-├── vercel.json              # Konfigurasi routing serverless Vercel
-└── zau.config.py            # Konfigurasi master server ZAU (Port, CORS, DB)
+│   └── favicon.ico          # Browser static assets
+├── Dockerfile               # Production multi-stage OCI container
+├── docker-compose.yml       # Local development cluster (App + Postgres + Redis)
+├── package.json             # Node.js manifest and scripts
+├── pyproject.toml           # Python package configuration
+├── render.yaml              # Render Cloud deployment blueprint
+├── requirements.txt         # Python dependencies
+├── tsconfig.json            # TypeScript configuration
+├── vercel.json              # Vercel serverless edge rewrite configuration
+└── zau.config.py            # Master ZAU server configuration (Port, CORS, DB)
 ```
 
-### Langkah 4: Menulis Komponen Pertama `.zau`
+### Step 4: Writing Your First `.zau` Component
 
-File `.zau` menyatukan tiga blok fundamental: `<template>`, `<script lang="ts">`, dan `<style>`.
+The `.zau` format consolidates `<template>`, `<script lang="ts">`, and `<style>` in one file.
 
-Buat file `frontend/components/ProductCard.zau`:
+Create `frontend/components/ProductCard.zau`:
 
 ```html
 <template>
   <div class="card shadow-lg rounded-2xl border border-zinc-800 bg-zinc-900/90 p-5 backdrop-blur">
-    <!-- Header Produk -->
+    <!-- Header -->
     <div class="flex items-center justify-between mb-4">
       <span class="badge bg-warning text-dark font-mono font-bold">SPATIAL ASSET</span>
       <span class="text-xs text-zinc-400 font-mono">ID: #{{ productId }}</span>
     </div>
 
-    <!-- 3D Spatial Canvas Viewport -->
+    <!-- 3D Spatial Viewport -->
     <div class="w-full h-64 rounded-xl overflow-hidden bg-black/40 border border-zinc-800">
       <ZAU.Canvas3D camera={{ position: [0, 1.5, 3], fov: 50 }}>
         <ZAU.AmbientLight intensity={0.7} />
@@ -324,7 +328,7 @@ Buat file `frontend/components/ProductCard.zau`:
       </ZAU.Canvas3D>
     </div>
 
-    <!-- Informasi Produk & Aksi -->
+    <!-- Information & Actions -->
     <div class="mt-4 flex items-center justify-between">
       <div>
         <h4 class="text-lg font-bold text-white">{{ title }}</h4>
@@ -350,9 +354,9 @@ export default function ProductCard({ productId, title, price, assetUrl }) {
   const handleOrder = async () => {
     try {
       const response = await callAction('/api/orders/create', { productId });
-      alert(`Pesanan berhasil: ${response.order_id}`);
+      alert(`Order confirmed: ${response.order_id}`);
     } catch (err) {
-      alert(`Gagal membuat pesanan: ${err.message}`);
+      alert(`Order failed: ${err.message}`);
     }
   };
 
@@ -370,9 +374,9 @@ export default function ProductCard({ productId, title, price, assetUrl }) {
 </style>
 ```
 
-### Langkah 5: Membuat Backend Server Action Python ASGI
+### Step 5: Authoring Python ASGI Server Actions
 
-Buka `backend/app.py` dan buat endpoint aksi yang dapat dipanggil langsung oleh frontend:
+Open `backend/app.py` and register an RPC action endpoint:
 
 ```python
 from zau import ZAUApp, Depends
@@ -382,8 +386,8 @@ from pydantic import BaseModel
 from typing import Dict, Any
 
 app = ZAUApp(
-    title="ZAU Commercial Application",
-    version="1.0.4",
+    title="ZAU Production Suite",
+    version="1.0.5",
     client_dir="../frontend"
 )
 
@@ -396,7 +400,7 @@ async def create_order(
     req: OrderRequest, 
     session: AsyncSession = Depends(get_session)
 ) -> Dict[str, Any]:
-    new_order = Order(product_id=req.productId, status="PENDING")
+    new_order = Order(product_id=req.productId, status="CONFIRMED")
     session.add(new_order)
     await session.commit()
     await session.refresh(new_order)
@@ -413,13 +417,12 @@ async def telemetry_stream(ws):
     await ws.accept()
     while True:
         data = await ws.receive_json()
-        # Broadcast koordinat kamera atau status 3D ke seluruh klien yang terhubung
         await app.broadcast_json({"user": data["user"], "position": data["position"]})
 ```
 
-### Langkah 6: Database Async ORM & ZAU DB Studio
+### Step 6: Async Database ORM & ZAU DB Studio
 
-Definisikan model data di `backend/database/models/order.py`:
+Define a declarative database model in `backend/database/models/order.py`:
 
 ```python
 from zau.db import Model, Field
@@ -433,36 +436,36 @@ class Order(Model, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
 ```
 
-Jalankan perintah database CLI:
+Manage migrations and inspect data via CLI:
 
 ```bash
-# 1. Generate skema migrasi otomatis
+# 1. Generate schema migration
 zau db migrate -m "create_order_table"
 
-# 2. Terapkan migrasi ke database (SQLite/PostgreSQL)
+# 2. Apply migrations to database
 zau db upgrade
 
-# 3. Buka ZAU DB Studio visual di browser
+# 3. Launch visual ZAU DB Studio inspector
 zau db studio --port 8010
 ```
 
-### Langkah 7: Menjalankan Server Development
+### Step 7: Starting the Development Server
 
-Cukup jalankan satu perintah untuk memutar server Python ASGI dan live reload frontend:
+Execute the development command:
 
 ```bash
 zau dev --port 8000
 ```
 
-Buka `http://localhost:8000` di browser Anda. Seluruh perubahan pada file `.zau`, skrip TypeScript, dan modul Python akan terkompilasi secara instan (Hot Module Replacement).
+Open `http://localhost:8000` in your browser. Changes across `.zau` components, TypeScript logic, and Python backend handlers update with instant Hot Module Replacement.
 
 ---
 
-## 🌌 Native 3D Spatial Canvas
+## 5. Native 3D Spatial Canvas
 
-ZAU menyediakan dukungan kelas utama (first-class support) untuk komputasi spasial 3D WebGL tanpa konfigurasi bundler manual.
+ZAU provides declarative WebGL 3D computing without custom bundler configuration.
 
-### Sintaks Primitif 3D
+### Declarative Spatial Syntax
 
 ```html
 <ZAU.Canvas3D
@@ -470,11 +473,11 @@ ZAU menyediakan dukungan kelas utama (first-class support) untuk komputasi spasi
   camera={{ position: [-0.885, 1.15, 2.25], fov: 55 }}
   className="w-full h-[600px] rounded-3xl"
 >
-  <!-- Pencahayaan Realistik -->
+  <!-- Lighting -->
   <ZAU.AmbientLight intensity={0.5} />
   <ZAU.DirectionalLight position={[10, 15, 10]} intensity={1.8} castShadow />
   
-  <!-- Kontrol Orbit & Batasan Rotasi -->
+  <!-- Orbit Controls with Boundary Clamping -->
   <ZAU.OrbitControls 
     enableDamping={true}
     minDistance={0.5}
@@ -482,40 +485,40 @@ ZAU menyediakan dukungan kelas utama (first-class support) untuk komputasi spasi
     maxPolarAngle={Math.PI / 2 + 0.1}
   />
   
-  <!-- Aset 3D dengan Fallback Spinner -->
+  <!-- 3D Spatial Model -->
   <ZAU.Model
     src="/model/3d/salt_tower_lower_room.glb"
     position={[-0.885, 0.70, 1.08]}
-    fallback={<ZAU.Spinner3D label="Memuat Aula Spasial..." />}
+    fallback={<ZAU.Spinner3D label="Loading Spatial Chamber..." />}
   />
 </ZAU.Canvas3D>
 ```
 
-### Pipeline Progressive Level of Detail (LOD)
+### Dual-Tier Progressive LOD Pipeline
 
-Untuk mengatasi waktu muat awal pada aset 3D beresolusi tinggi, ZAU mengimplementasikan **Dual-Tier Progressive LOD**:
-1. **Tier 1 (Instant Frame 0)**: Geometri mesh Draco terkompresi super-ringan (~664 KB) dimuat dan dirender dalam waktu <100ms.
-2. **Tier 2 (High-Poly Background Stream)**: Tekstur resolusi penuh 4K/8K dan buffer material PBR dialirkan di latar belakang (background worker) lalu ditukar secara mulus tanpa frame drop.
+High-resolution 3D interior scans often introduce high initial payload latencies. ZAU implements a **Dual-Tier Progressive LOD** engine:
+1. **Tier 1 (Instant Frame 0)**: Lightweight compressed Draco mesh (~664 KB) loads and renders in sub-100ms.
+2. **Tier 2 (High-Poly Background Stream)**: Full-resolution 4K/8K PBR textures and geometry buffers stream in a background worker and swap smoothly without dropping animation frames.
 
-### Kontrol Kamera & Orbit Clamping
+### Camera Controls, Orbit Clamping & Boundary Safety
 
-ZAU menyediakan konfigurasi kamera deklaratif lengkap dengan pembatasan jarak orbit (*OrbitControls Clamping* `minDistance` dan `maxDistance`) untuk menjaga kamera tetap berada di dalam viewport ruangan (*anti-wall clipping*), serta klem sudut elevasi vertikal (*polar angle damping*) agar kamera tidak jatuh ke bawah lantai virtual.
-
----
-
-## 🌐 Tutorial Deploy ke Production
-
-ZAU dirancang dengan prinsip deploy anywhere: dari serverless edge hingga bare-metal dedicated server. Berikut panduan langkah demi langkah yang lengkap.
+ZAU includes declarative camera configuration with `minDistance` and `maxDistance` clamping to prevent the camera from clipping outside room walls (*anti-wall clipping*), as well as vertical polar angle damping to keep the viewport above virtual floor planes.
 
 ---
 
-### Deploy 1: Vercel (Production Edge + Serverless Python ASGI)
+## 6. Production Deployment Guide
 
-Vercel adalah platform hosting yang ideal untuk ZAU berkat kombinasi *static edge caching* untuk aset 3D dan *serverless Python functions* untuk backend ASGI.
+ZAU is engineered for zero-friction deployment across modern cloud platforms.
 
-#### Langkah 1: Pastikan Konfigurasi `vercel.json` Tersedia
+---
 
-Di root project ZAU Anda, buat atau periksa file `vercel.json`:
+### Target 1: Vercel (Production Edge + Serverless Python ASGI)
+
+Vercel provides a zero-cold-start frontend edge coupled with serverless Python execution.
+
+#### Step 1: `vercel.json` Configuration
+
+Ensure `vercel.json` is configured at the project root:
 
 ```json
 {
@@ -528,17 +531,16 @@ Di root project ZAU Anda, buat atau periksa file `vercel.json`:
 }
 ```
 
-*Penjelasan*: Setiap request yang diawali `/api/` atau `/__zau/` akan diarahkan secara otomatis ke serverless function Python `api/index.py`, sementara seluruh halaman statis dan aset 3D dilayani langsung dari Vercel Global Edge Network.
+*Mechanism*: Requests targeting `/api/*` or `/__zau/*` route to the Python ASGI serverless function (`api/index.py`), while static frontend assets and 3D models serve from Vercel's Global CDN.
 
-#### Langkah 2: Buat Entrypoint Serverless Python (`api/index.py`)
+#### Step 2: Python Serverless Entrypoint (`api/index.py`)
 
-Pastikan file `api/index.py` mengimpor instance `ZAUApp` dan mengekspor objek ASGI:
+Verify that `api/index.py` exports standard ASGI application instance:
 
 ```python
 import os
 import sys
 
-# Tambahkan root direktori ke PYTHONPATH agar modul internal dapat diimpor
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if root_dir not in sys.path:
@@ -546,67 +548,37 @@ if root_dir not in sys.path:
 
 from backend.app import app
 
-# Ekspor objek ASGI application standar yang didukung runtime Vercel Python
+# Export standard ASGI application object
 app = app.get_asgi_app()
 ```
 
-#### Langkah 3: Siapkan `.vercelignore`
-
-Pastikan file virtual environment lokal dan cache tidak ikut terunggah:
-
-```
-.venv/
-__pycache__/
-*.pyc
-.git/
-.next/
-dist/
-node_modules/
-```
-
-#### Langkah 4: Jalankan Deploy melalui Vercel CLI
-
-Buka terminal di root project dan jalankan:
+#### Step 3: Deploy via Vercel CLI
 
 ```bash
-# 1. Login ke akun Vercel (jika belum)
+# 1. Authenticate with Vercel
 npx vercel login
 
-# 2. Deploy preview untuk verifikasi
-npx vercel
-
-# 3. Deploy langsung ke Production
+# 2. Deploy directly to production
 npx vercel --prod --yes
 ```
 
-#### Langkah 5: Hubungkan ke GitHub untuk Otomasi CI/CD
+#### Step 4: Environment Variables
 
-1. Push repositori project Anda ke GitHub:
-   ```bash
-   git add .
-   git commit -m "feat: release production v1.0.4"
-   git push origin main
-   ```
-2. Buka dashboard [Vercel](https://vercel.com/dashboard).
-3. Klik **Add New...** -> **Project**, lalu pilih repositori GitHub Anda.
-4. Masukkan variabel lingkungan produksi di bagian **Environment Variables**:
-   - `DATABASE_URL`: URL PostgreSQL produksi (contoh: Neon, Supabase, atau Vercel Postgres).
-   - `ZAU_ENV`: `production`
-   - `ZAU_SECRET_KEY`: Kunci enkripsi token sesi.
-5. Klik **Deploy**. Setiap kali Anda melakukan `git push origin main`, Vercel akan mem-build dan men-deploy pembaruan secara otomatis.
+Configure the following in the Vercel Project Dashboard:
+- `DATABASE_URL`: Production PostgreSQL URI (`postgresql+asyncpg://...`)
+- `ZAU_ENV`: `production`
+- `ZAU_SECRET_KEY`: Cryptographic session key
 
 ---
 
-### Deploy 2: Docker & Docker Compose
+### Target 2: Docker & Docker Compose
 
-Untuk deployment berbasis container mandiri atau Kubernetes:
+For containerized cloud environments or Kubernetes clusters:
 
-#### File `Dockerfile` (Multi-Stage Production Build)
+#### `Dockerfile` (Multi-Stage Production Build)
 
 ```dockerfile
-# -------------------------------------------------------------------
-# STAGE 1: Build Frontend Assets
-# -------------------------------------------------------------------
+# STAGE 1: Frontend Build
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 COPY package*.json ./
@@ -614,41 +586,32 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# -------------------------------------------------------------------
 # STAGE 2: Python ASGI Production Runner
-# -------------------------------------------------------------------
 FROM python:3.12-slim AS runner
 WORKDIR /app
 
-# Install dependensi sistem dasar
 RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
 
-# Copy dan install dependensi Python
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt     && pip install --no-cache-dir uvicorn[standard] gunicorn
 
-# Copy artefak dari stage 1 dan kode sumber
 COPY --from=frontend-builder /app /app
 
-# Variabel Lingkungan Produksi
 ENV PYTHONUNBUFFERED=1     PYTHONDONTWRITEBYTECODE=1     ZAU_ENV=production     PORT=8000
 
 EXPOSE 8000
 
-# Jalankan Uvicorn multi-worker di belakang Gunicorn
 CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "backend.app:app", "--bind", "0.0.0.0:8000"]
 ```
 
-#### File `docker-compose.yml` (App + PostgreSQL + Redis)
+#### `docker-compose.yml` (App + PostgreSQL 16 + Redis)
 
 ```yaml
 version: '3.8'
 
 services:
   zau-app:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     container_name: zau_production_app
     restart: always
     ports:
@@ -660,10 +623,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_started
-    volumes:
-      - ./model/3d:/app/model/3d:ro
 
   postgres:
     image: postgres:16-alpine
@@ -674,76 +633,54 @@ services:
       POSTGRES_PASSWORD: zau_password
       POSTGRES_DB: zau_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U zau_user -d zau_db"]
       interval: 5s
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:7-alpine
-    container_name: zau_redis
-    restart: always
-    volumes:
-      - redis_data:/data
-
 volumes:
-  postgres_data:
-  redis_data:
+  pgdata:
 ```
 
-#### Menjalankan Container:
+#### Run Container Cluster:
 
 ```bash
-# Build dan jalankan cluster di background
 docker compose up -d --build
-
-# Periksa status container
 docker compose ps
-
-# Periksa logs aplikasi
 docker compose logs -f zau-app
 ```
 
 ---
 
-### Deploy 3: Linux / Bare-Metal VPS (Ubuntu/Debian + Nginx + Systemd)
+### Target 3: Linux / Bare-Metal VPS (Ubuntu/Debian + Nginx + Systemd)
 
-Untuk performa puncak tanpa overhead container pada server VPS (DigitalOcean, AWS EC2, Hetzner, Linode):
+For raw hardware throughput on dedicated virtual private servers:
 
-#### Langkah 1: Persiapan Server VPS
+#### Step 1: System Provisioning
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y python3-pip python3-venv nodejs npm nginx certbot python3-certbot-nginx git
 
-# Clone project Anda
 cd /var/www
 sudo git clone https://github.com/username/my-project.git zau-app
 cd zau-app
 sudo chown -R $USER:$USER /var/www/zau-app
-```
 
-#### Langkah 2: Setup Python Virtual Environment & Build Frontend
-
-```bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 pip install uvicorn[standard] gunicorn
-
-npm ci
-npm run build
+npm ci && npm run build
 ```
 
-#### Langkah 3: Konfigurasi Systemd Service Unit
-
-Buat file `/etc/systemd/system/zau.service`:
+#### Step 2: Systemd Service Unit (`/etc/systemd/system/zau.service`)
 
 ```ini
 [Unit]
-Description=ZAU Framework High-Performance ASGI Service
+Description=ZAU Framework ASGI Production Cluster
 After=network.target
 
 [Service]
@@ -752,7 +689,7 @@ Group=www-data
 WorkingDirectory=/var/www/zau-app
 Environment="PATH=/var/www/zau-app/.venv/bin"
 Environment="ZAU_ENV=production"
-ExecStart=/var/www/zau-app/.venv/bin/gunicorn     -w 4     -k uvicorn.workers.UvicornWorker     backend.app:app     --bind 127.0.0.1:8000     --access-logfile /var/log/zau_access.log     --error-logfile /var/log/zau_error.log
+ExecStart=/var/www/zau-app/.venv/bin/gunicorn     -w 4     -k uvicorn.workers.UvicornWorker     backend.app:app     --bind 127.0.0.1:8000
 
 Restart=always
 RestartSec=3
@@ -761,33 +698,29 @@ RestartSec=3
 WantedBy=multi-user.target
 ```
 
-Aktifkan dan jalankan service:
+Enable and start the service:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable zau
-sudo systemctl start zau
+sudo systemctl enable --now zau
 sudo systemctl status zau
 ```
 
-#### Langkah 4: Konfigurasi Nginx Reverse Proxy dengan Dukungan WebSocket & 3D Caching
-
-Buat file `/etc/nginx/sites-available/zau`:
+#### Step 3: Nginx Reverse Proxy (`/etc/nginx/sites-available/zau`)
 
 ```nginx
 server {
     listen 80;
     server_name example.com www.example.com;
 
-    # Caching agresif untuk Aset 3D (.glb, .gltf, .bin)
+    # Aggressive 3D asset caching (30 days)
     location ~* \.(glb|gltf|bin|draco)$ {
         root /var/www/zau-app/model/3d;
         expires 30d;
         add_header Cache-Control "public, no-transform";
-        access_log off;
     }
 
-    # Proxy ke ASGI Application Core
+    # Proxy to ASGI Server with WebSocket support
     location / {
         proxy_pass http://127.0.0.1:8000;
         proxy_http_version 1.1;
@@ -797,30 +730,25 @@ server {
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
-        # Buffer streaming untuk real-time data
         proxy_buffering off;
         proxy_read_timeout 86400;
     }
 }
 ```
 
-Aktifkan konfigurasi Nginx dan pasang SSL gratis Let's Encrypt:
+Enable site and acquire SSL certificate:
 
 ```bash
 sudo ln -s /etc/nginx/sites-available/zau /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl restart nginx
-
-# Pasang sertifikat HTTPS otomatis
+sudo nginx -t && sudo systemctl restart nginx
 sudo certbot --nginx -d example.com -d www.example.com
 ```
 
 ---
 
-### Deploy 4: Render Cloud (Infrastructure-as-Code)
+### Target 4: Render Cloud (Infrastructure-as-Code)
 
-ZAU menyediakan file `render.yaml` siap pakai:
+Deploy seamlessly using `render.yaml`:
 
 ```yaml
 services:
@@ -848,64 +776,47 @@ databases:
 
 ---
 
-### Deploy 5: Fly.io
+### Target 5: Fly.io
 
-Jalankan deploy kilat ke 30+ region dengan Fly.io:
+Global edge deployment with persistent volumes:
 
 ```bash
-# 1. Inisialisasi konfigurasi Fly
 fly launch --no-deploy
-
-# 2. Pasang volume persisten untuk SQLite atau file 3D (opsional)
-fly volumes create zau_data --size 10
-
-# 3. Deploy
+fly volumes create zau_data --size 10 --region sin
 fly deploy
 ```
 
 ---
 
-## ⚡ CLI Command Reference
-
-Framework ZAU dilengkapi antarmuka CLI yang tangguh:
+## 7. CLI Command Reference
 
 ```bash
-# ===================================================================
-# 1. MANAJEMEN PROJECT
-# ===================================================================
-zau create <app-name> --template <template>   # Scaffold project baru
-zau dev --port 8000                         # Jalankan development server dengan HMR
-zau build                                   # Kompilasi bundel produksi
-zau start --workers 4 --port 8000           # Jalankan cluster Uvicorn multi-worker
+# Project Management
+zau create <app-name> --template <template>   # Scaffold new project
+zau dev --port 8000                         # Start dev server with HMR
+zau build                                   # Compile production bundle
+zau start --workers 4 --port 8000           # Launch multi-worker cluster
 
-# ===================================================================
-# 2. DATABASE ORM & STUDIO
-# ===================================================================
-zau db init                                 # Inisialisasi direktori migrasi
-zau db migrate -m "nama_migrasi"            # Deteksi model & buat file migrasi
-zau db upgrade                              # Terapkan migrasi tertunda
-zau db downgrade                            # Rollback 1 langkah migrasi
-zau db studio --port 8010                   # Buka antarmuka ZAU DB Studio
+# Database ORM & Migrations
+zau db init                                 # Initialize migration repository
+zau db migrate -m "migration_name"          # Detect models & generate migration
+zau db upgrade                              # Apply pending migrations
+zau db downgrade                            # Roll back single migration step
+zau db studio --port 8010                   # Launch ZAU DB Studio inspector
 
-# ===================================================================
-# 3. PIPELINE ASET 3D SPASIAL
-# ===================================================================
-zau 3d list                                 # Tampilkan daftar model & metadata ukuran
-zau 3d optimize path/to/model.glb           # Kompresi mesh menggunakan Draco
-zau 3d inspect path/to/model.glb            # Cek node hierarchy, vertex & material
+# 3D Spatial Asset Pipeline
+zau 3d list                                 # List 3D models and vertex metrics
+zau 3d optimize path/to/model.glb           # Compress geometry using Draco
+zau 3d inspect path/to/model.glb            # Inspect node graph & materials
 
-# ===================================================================
-# 4. SINTAKS & INTERPRETER .ZAU
-# ===================================================================
-zau highlight path/to/component.zau --ansi   # Cetak kode berwarna di terminal
-zau highlight path/to/component.zau --html   # Generate token HTML ber-CSS
+# Syntax & Highlighting
+zau highlight path/to/file.zau --ansi       # Colorized terminal output
+zau highlight path/to/file.zau --html       # Generate semantic HTML tokens
 ```
 
 ---
 
-## 🎨 Dukungan Multi-Editor & LSP
-
-Ekosistem bahasa `.zau` didesain untuk berjalan di semua code editor modern melalui standar industri Language Server Protocol (LSP) dan TextMate grammar:
+## 8. Multi-Editor & LSP Support
 
 ```
                   +--------------------------+
@@ -934,14 +845,13 @@ Ekosistem bahasa `.zau` didesain untuk berjalan di semua code editor modern mela
 ```
 
 ### 1. Visual Studio Code & Open-VSX
-Pasang paket ekstensi `.vsix` resmi:
+Install the `.vsix` package:
 ```bash
-code --install-extension dist/extensions/zau-1.0.4.vsix
+code --install-extension dist/extensions/zau-1.0.5.vsix
 ```
-*Fitur*: Penyorotan sintaks komprehensif, autokompresi tag `<ZAU.*>`, autocomplete atribut 3D, hover docs, dan validasi skema.
 
 ### 2. Neovim
-Tambahkan konfigurasi ke `init.lua`:
+Add to `init.lua`:
 ```lua
 vim.filetype.add({ extension = { zau = 'zau' } })
 
@@ -955,25 +865,22 @@ require('lspconfig.configs').zau = {
 require('lspconfig').zau.setup({})
 ```
 
-### 3. Zed Editor
-Cukup daftarkan ekstensi yang telah digenerate pada direktori `packages/vscode-zau/syntaxes/zed`.
-
-### 4. Sublime Text & IntelliJ
-Gunakan grammar `.sublime-syntax` di `packages/vscode-zau/syntaxes/zau.sublime-syntax` dan konfigurasi XML IntelliJ di `packages/vscode-zau/syntaxes/intellij/zau.xml`.
+### 3. Zed Editor, Sublime Text, & IntelliJ
+Grammar bundles are automatically compiled in `packages/vscode-zau/syntaxes/`.
 
 ---
 
-## ⚖️ Tata Kelola, Lisensi & Hak Cipta
+## 9. Governance, License & Acknowledgements
 
 - **Chief Architect & Project Lead**: **ZetaGo-Aurum**
-- **Situs Web Resmi**: [zetagoaurum.com](https://zetagoaurum.com)
-- **Email Dukungan Komersial**: `admin@zetagoaurum.com`
-- **Lisensi Perangkat Lunak**: [MIT License](LICENSE)
-- **Model 3D Spatial Showcase**: *The Great Drawing Room* dibuat oleh **The Hallwyl Museum** ([Sketchfab](https://sketchfab.com/TheHallwylMuseum)), dilisensikan di bawah [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+- **Official Atelier**: [zetagoaurum.com](https://zetagoaurum.com)
+- **Contact**: `admin@zetagoaurum.com`
+- **License**: [MIT License](LICENSE)
+- **3D Spatial Showcase Model**: *The Great Drawing Room* by **The Hallwyl Museum** ([Sketchfab](https://sketchfab.com/TheHallwylMuseum)), licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
 
 ---
 
 <div align="center">
-  <p><strong>ZAU Framework</strong> &mdash; Built with pride by ZetaGo-Aurum.</p>
+  <p><strong>ZAU Framework</strong> &mdash; Built by ZetaGo-Aurum.</p>
   <p><small>&copy; 2026 ZetaGo-Aurum. All rights reserved.</small></p>
 </div>

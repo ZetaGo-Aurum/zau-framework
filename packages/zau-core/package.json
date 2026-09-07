@@ -1,6 +1,6 @@
 {
   "name": "zau-framework",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Client runtime, Signals reactivity, and Native 3D Spatial Canvas for ZAU Framework",
   "type": "module",
   "main": "dist/index.js",

@@ -17,120 +17,155 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/create-zau"><img src="https://img.shields.io/npm/v/create-zau.svg?color=38bdf8&label=create-zau&logo=npm" alt="NPM Version" /></a>
   <a href="https://github.com/ZetaGo-Aurum/zau-framework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-emerald.svg" alt="License" /></a>
+  <a href="https://zau-framework.vercel.app"><img src="https://img.shields.io/badge/live-docs-black.svg?logo=vercel" alt="Live Documentation" /></a>
   <a href="https://zetagoaurum.com"><img src="https://img.shields.io/badge/architect-ZetaGo--Aurum-black.svg" alt="Architect" /></a>
 </p>
 
 <p align="center">
-  <a href="https://zetagoaurum.com">Web Atelier: zetagoaurum.com</a> &middot;
-  <a href="https://zau-framework.vercel.app">Dokumentasi Live: zau-framework.vercel.app</a> &middot;
-  <a href="mailto:admin@zetagoaurum.com">Kontak: admin@zetagoaurum.com</a>
+  <a href="#quickstart">Quickstart</a> &bull;
+  <a href="#templates">Templates</a> &bull;
+  <a href="#project-structure">Structure</a> &bull;
+  <a href="#workflow">Workflow</a> &bull;
+  <a href="#deployment">Deployment</a> &bull;
+  <a href="#-bahasa-indonesia">Bahasa Indonesia</a>
+</p>
+
+<p align="center">
+  <strong>Official Atelier:</strong> <a href="https://zetagoaurum.com">zetagoaurum.com</a> &middot;
+  <strong>Documentation:</strong> <a href="https://zau-framework.vercel.app">zau-framework.vercel.app</a> &middot;
+  <strong>Contact:</strong> <a href="mailto:admin@zetagoaurum.com">admin@zetagoaurum.com</a>
 </p>
 
 </div>
 
 ---
 
-## ⚡ Mulai Kilat (Quickstart)
+## Quickstart
 
-Inisialisasi project ZAU baru langsung dari terminal menggunakan package manager favorit Anda:
+Bootstrap a new fullstack ZAU application in seconds:
 
 ```bash
-# Menggunakan npm
+# Using npm
 npm create zau@latest my-app
 
-# Menggunakan npx
+# Using npx
 npx create-zau my-app
 
-# Menggunakan pnpm
+# Using pnpm
 pnpm create zau my-app
 
-# Menggunakan yarn
+# Using yarn
 yarn create zau my-app
 
-# Menggunakan bun
+# Using bun
 bun create zau my-app
 ```
 
 ---
 
-## 📋 Pilihan Template Resmi
+## Templates
 
-CLI `create-zau` menyediakan 4 arsitektur template produksi:
+`create-zau` includes 4 production-grade templates tailored for diverse engineering workloads:
 
-| Template | Deskripsi & Komponen |
-| :--- | :--- |
-| **`fullstack-3d`** *(Default)* | Python ASGI Core (Starlette/uvloop) + Three.js 3D Spatial Canvas + Async Database ORM + Dual Engine (Tailwind CSS + Bootstrap 5.3). |
-| **`minimal`** | Setup ultra-ringan untuk API mikro, prototipe kilat, atau antarmuka tunggal tanpa dependensi 3D. |
-| **`dashboard`** | Panel administrasi enterprise dengan tabel data grid, grafik metrik analitik, dan integrasi ZAU DB Studio. |
-| **`portfolio`** | Showcase atelier mewah dengan model 3D ruangan interaktif, kontrol kamera sinematik, dan seated POV mode. |
+| Template | Architecture & Included Stack | Recommended Use Cases |
+| :--- | :--- | :--- |
+| **`fullstack-3d`** *(Default)* | Python ASGI (Starlette/uvloop) + Native Three.js r160 3D Canvas + Async ORM + Tailwind CSS & Bootstrap tokens. | 3D e-commerce, digital twins, spatial showrooms, WebGL games, interactive product viewers. |
+| **`minimal`** | Lightweight Python ASGI service with minimal Single-File Component frontend and zero 3D dependencies. | Microservices, rapid proof-of-concepts, REST/RPC endpoints with lightweight UI. |
+| **`dashboard`** | Tabular data grids, real-time metrics telemetry, charting integration, and built-in ZAU DB Studio. | Enterprise administrative portals, observability hubs, telemetry dashboards. |
+| **`portfolio`** | Spatial showroom with cinematic orbital controls, PBR illumination, and Seated POV camera presets. | Architecture atelier, virtual gallery, personal engineering showcase. |
 
 ---
 
-## 📂 Struktur Hasil Scaffolding
+## Project Structure
 
-Setelah scaffolding selesai, project Anda akan memiliki struktur lengkap berikut:
+A scaffolded ZAU project follows an organized, modular topology:
 
 ```
 my-app/
 ├── api/
 │   └── index.py             # Serverless ASGI bridge (Vercel / Cloud Functions)
 ├── backend/
-│   ├── app.py               # Rute aplikasi & Server Actions Python
-│   └── database/            # Model data & riwayat migrasi SQL
+│   ├── app.py               # ZAUApp instantiation, ASGI routes & Server Actions
+│   └── database/            # Declarative ORM models & database migrations
 ├── frontend/
-│   ├── components/          # Komponen UI dan 3D (.zau / .tsx)
-│   ├── pages/               # Halaman web dan navigasi
-│   └── styles/              # Integrasi Tailwind CSS & Bootstrap
+│   ├── components/          # UI and 3D spatial components (.zau / .tsx)
+│   ├── pages/               # Application routes and views
+│   └── styles/              # Tailwind CSS and Bootstrap style configurations
 ├── model/
-│   └── 3d/                  # File 3D (GLTF/GLB Draco & textures)
-├── public/                  # Aset statis publik
-├── Dockerfile               # Multi-stage production container
-├── docker-compose.yml       # Orkestrasi container lokal
-├── package.json             # Dependensi Node.js
-├── pyproject.toml           # Dependensi Python & konfigurasi package
-├── render.yaml              # Cetak biru deploy Render
-├── requirements.txt         # Pustaka Python (Starlette, uvicorn, pydantic, sqlalchemy)
-├── tsconfig.json            # Konfigurasi TypeScript
-├── vercel.json              # Konfigurasi routing serverless Vercel
-└── zau.config.py            # Konfigurasi master ZAU
+│   └── 3d/                  # 3D spatial assets (GLTF/GLB Draco & textures)
+├── public/                  # Public static browser assets
+├── Dockerfile               # Production multi-stage OCI container
+├── docker-compose.yml       # Local development cluster (App + Postgres + Redis)
+├── package.json             # Node.js dependencies and workspace scripts
+├── pyproject.toml           # Python package configuration
+├── render.yaml              # Render Cloud deployment blueprint
+├── requirements.txt         # Python dependencies (Starlette, uvicorn, pydantic)
+├── tsconfig.json            # TypeScript configuration
+├── vercel.json              # Vercel serverless edge rewrite rules
+└── zau.config.py            # Master ZAU server configuration (Port, CORS, DB)
 ```
 
 ---
 
-## 🚀 Langkah Berikutnya Setelah Scaffolding
+## Workflow
+
+After project creation:
 
 ```bash
-# 1. Masuk ke direktori project
+# 1. Navigate into project
 cd my-app
 
-# 2. Buat virtual environment Python & aktifkan
+# 2. Setup Python virtual environment
 python3 -m venv .venv
-source .venv/bin/activate   # Linux/macOS
-# .venv\Scriptsctivate    # Windows
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
 
-# 3. Pasang dependensi
+# 3. Install dependencies
 pip install -r requirements.txt
 npm install
 
-# 4. Jalankan server development
+# 4. Start local development server (ASGI + HMR)
 zau dev --port 8000
 ```
 
-Buka `http://localhost:8000` di browser Anda.
+Access the application at `http://localhost:8000`.
 
 ---
 
-## 🌐 Panduan Deploy Cepat
+## Deployment
 
-- **Deploy ke Vercel**: `npx vercel --prod --yes`
-- **Deploy dengan Docker**: `docker compose up -d --build`
-- **Deploy ke Render**: Hubungkan repositori GitHub Anda (otomatis mendeteksi `render.yaml`).
+- **Vercel (Serverless Edge + ASGI)**: `npx vercel --prod --yes`
+- **Docker Production Container**: `docker compose up -d --build`
+- **Render Cloud**: Connect GitHub repository (automatically detected via `render.yaml`).
 
 ---
 
-## ⚖️ Lisensi & Arsitek
+## 🇮🇩 Bahasa Indonesia
 
-- **Arsitek Utama**: **ZetaGo-Aurum**
+### Panduan Singkat Scaffolding
+`create-zau` adalah alat baris perintah (CLI) resmi untuk menginisialisasi project baru berbasis **ZAU Framework**.
+
+### Menjalankan Scaffolding
+```bash
+npm create zau@latest my-app
+cd my-app
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+npm install
+zau dev --port 8000
+```
+
+### 4 Template Resmi
+1. **`fullstack-3d`**: Python ASGI + Three.js 3D Spatial Canvas + Async ORM + Tailwind & Bootstrap.
+2. **`minimal`**: Backend ASGI ringan + komponen UI minimal tanpa dependensi 3D.
+3. **`dashboard`**: Panel admin enterprise dengan data grid dan integrasi ZAU DB Studio.
+4. **`portfolio`**: Showcase atelier mewah dengan kamera 3D interaktif.
+
+---
+
+## License & Governance
+
+- **Chief Architect**: **ZetaGo-Aurum**
 - **Atelier**: [zetagoaurum.com](https://zetagoaurum.com)
-- **Kontak**: `admin@zetagoaurum.com`
-- **Lisensi**: MIT License
+- **Contact**: `admin@zetagoaurum.com`
+- **License**: MIT License

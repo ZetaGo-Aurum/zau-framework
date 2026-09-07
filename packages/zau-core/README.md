@@ -2,100 +2,129 @@
 
 <div align="center">
 
+```
+  ███████╗ █████╗ ██╗   ██╗
+  ╚══███╔╝██╔══██╗██║   ██║
+    ███╔╝ ███████║██║   ██║
+   ███╔╝  ██╔══██║██║   ██║
+  ███████╗██║  ██║╚██████╔╝
+  ╚══════╝╚═╝  ╚═╝ ╚═════╝ 
+```
+
 ### Core Client Runtime & Native 3D Spatial Canvas for ZAU Framework
-**Signals Reactivity &middot; Three.js r160 Spatial Canvas &middot; Server Actions RPC &middot; Draco Mesh Pipeline**
+**Signals Reactivity &middot; Three.js r160 Spatial Canvas &middot; Server Actions RPC &middot; Progressive Draco LOD**
 
 <p align="center">
   <a href="https://www.npmjs.com/package/zau-framework"><img src="https://img.shields.io/npm/v/zau-framework.svg?color=f59e0b&label=zau-framework&logo=npm" alt="NPM Version" /></a>
   <a href="https://github.com/ZetaGo-Aurum/zau-framework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-emerald.svg" alt="License" /></a>
+  <a href="https://zau-framework.vercel.app"><img src="https://img.shields.io/badge/live-docs-black.svg?logo=vercel" alt="Live Documentation" /></a>
   <a href="https://zetagoaurum.com"><img src="https://img.shields.io/badge/architect-ZetaGo--Aurum-black.svg" alt="Architect" /></a>
 </p>
 
 <p align="center">
-  <a href="https://zetagoaurum.com">Web Atelier: zetagoaurum.com</a> &middot;
-  <a href="https://zau-framework.vercel.app">Dokumentasi Live: zau-framework.vercel.app</a> &middot;
-  <a href="mailto:admin@zetagoaurum.com">Kontak: admin@zetagoaurum.com</a>
+  <a href="#installation">Installation</a> &bull;
+  <a href="#core-features">Features</a> &bull;
+  <a href="#quickstart">Quickstart</a> &bull;
+  <a href="#api-reference">API Reference</a> &bull;
+  <a href="#deployment">Deployment</a> &bull;
+  <a href="#-bahasa-indonesia">Bahasa Indonesia</a>
+</p>
+
+<p align="center">
+  <strong>Official Atelier:</strong> <a href="https://zetagoaurum.com">zetagoaurum.com</a> &middot;
+  <strong>Documentation:</strong> <a href="https://zau-framework.vercel.app">zau-framework.vercel.app</a> &middot;
+  <strong>Contact:</strong> <a href="mailto:admin@zetagoaurum.com">admin@zetagoaurum.com</a>
 </p>
 
 </div>
 
 ---
 
-## 📦 Pemasangan / Installation
+## Installation
 
-Pasang paket runtime inti ke dalam project Anda:
+Install the core client runtime and peer dependencies:
 
 ```bash
-# Menggunakan npm
+# Using npm
 npm install zau-framework three
 
-# Menggunakan pnpm
+# Using pnpm
 pnpm add zau-framework three
 
-# Menggunakan yarn
+# Using yarn
 yarn add zau-framework three
 
-# Menggunakan bun
+# Using bun
 bun add zau-framework three
 ```
 
 ---
 
-## ⚡ Fitur Utama
+## Core Features
 
-- **Signals-based Micro-Reactivity**: Sistem state reaktif `useState` dan `useEffect` ultra-ringan dengan nol dependensi eksternal.
-- **Native 3D Spatial Canvas**: Integrasi Three.js r160 WebGL dengan pipeline kompresi Draco, bayangan realistik, dan kontrol orbit interaktif.
-- **Dual-Tier Progressive LOD**: Rendering kilat Frame 0 menggunakan mesh terkompresi (~664 KB) yang bertransisi mulus ke tekstur 4K/8K resolusi tinggi di background.
-- **Server Actions RPC Client**: Pemanggilan fungsi serverless backend Python ASGI secara langsung melalui fungsi `callAction()`.
-- **High-FPS Animation Loop**: Hook `useFrame()` native 60fps/120fps dengan kalkulasi delta-time presisi tinggi untuk animasi objek 3D.
+- **Fine-Grained Signals Reactivity**: Ultra-lightweight reactive primitives (`useState`, `useEffect`) with zero external runtime overhead.
+- **Native 3D Spatial Canvas**: Direct Three.js r160 integration featuring Draco mesh decompression, realistic PBR shading, and interactive orbital controls.
+- **Dual-Tier Progressive LOD**: Fast initial render (Frame 0 Draco mesh <700 KB) followed by seamless background texture and buffer hydration without frame drops.
+- **Python ASGI Server Actions**: Type-safe client-to-server RPC execution through `callAction()` targeting backend Python handlers.
+- **Synchronized Animation Loop**: Native 60fps/120fps `useFrame()` hook with microsecond delta-time precision for spatial and physics simulations.
 
 ---
 
-## 🚀 Panduan Penggunaan / Quickstart
+## Quickstart
 
-### 1. Memanggil Server Action Python Backend
+### 1. Invoking Python ASGI Server Actions
 
 ```typescript
 import { callAction } from 'zau-framework';
 
-// Panggil RPC endpoint pada Python ASGI Core
-async function createProject() {
+interface CreateProjectPayload {
+  title: string;
+  category: string;
+}
+
+interface ProjectResponse {
+  id: number;
+  status: string;
+}
+
+// Executes an RPC endpoint directly against the Python ASGI kernel
+async function submitProject() {
   try {
-    const result = await callAction('/api/projects/create', {
-      title: 'Monolith 3D Gallery',
-      category: 'Architecture'
+    const data = await callAction<ProjectResponse>('/api/projects/create', {
+      title: 'Spatial Architecture Laboratory',
+      category: 'Visualization'
     });
-    console.log('Project created successfully:', result);
+    console.log('Project created:', data.id);
   } catch (error) {
-    console.error('Server Action failed:', error);
+    console.error('Server action failed:', error);
   }
 }
 ```
 
-### 2. State Reaktif & Hook Animasi 3D
+### 2. Reactive State & Spatial Animation Loop
 
 ```typescript
 import { useState, useFrame, useEffect } from 'zau-framework';
 
-export function useModelRotation(initialSpeed = 1.0) {
+export function useSpatialRotation(speed = 1.0) {
   const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
-  const [isHovered, setIsHovered] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Hook siklus frame 60FPS / 120FPS
+  // Synchronized render loop hook
   useFrame((state, delta) => {
-    if (!isHovered()) {
+    if (!isPaused()) {
       setRotation(prev => ({
         ...prev,
-        y: prev.y + delta * initialSpeed
+        y: prev.y + delta * speed
       }));
     }
   });
 
-  return { rotation, setRotation, isHovered, setIsHovered };
+  return { rotation, setRotation, isPaused, setIsPaused };
 }
 ```
 
-### 3. Progressive 3D HighPoly Mesh Pipeline
+### 3. High-Poly Progressive LOD Pipeline
 
 ```typescript
 import { HighPolyMeshPipeline } from 'zau-framework';
@@ -103,60 +132,94 @@ import { HighPolyMeshPipeline } from 'zau-framework';
 const pipeline = new HighPolyMeshPipeline({
   streamTextures: true,
   smoothNormals: true,
-  onProgress: (ratio) => console.log(`Progress muat model: ${Math.round(ratio * 100)}%`)
+  onProgress: (ratio) => {
+    console.log(`Loading 3D asset: ${Math.round(ratio * 100)}%`);
+  }
 });
 
-// Stream dan load model 3D
+// Stream and hydrate GLTF/GLB model
 pipeline.load('/model/3d/salt_tower_lower_room.glb').then(scene => {
-  console.log('3D Scene siap ditampilkan:', scene);
+  console.log('3D Scene ready for display:', scene);
 });
 ```
 
 ---
 
-## 🛠️ API Reference
+## API Reference
 
-### Signals & Lifecycle
-- `useState<T>(initialValue: T): [() => T, (newValue: T | ((prev: T) => T)) => void]`  
-  Membuat reaktif getter dan setter.
+### Signals & Component Hooks
+- `useState<T>(initialValue: T): [() => T, (val: T | ((prev: T) => T)) => void]`  
+  Creates a reactive getter and setter pair.
 - `useEffect(callback: () => void | (() => void), deps?: any[]): void`  
-  Mengeksekusi efek samping dan mendaftarkan fungsi pembersih (*cleanup*).
+  Registers a side effect with optional cleanup callback.
 - `useFrame(callback: (state: any, delta: number) => void): void`  
-  Mendaftarkan callback render loop `requestAnimationFrame` dengan delta waktu dalam detik.
+  Binds a function to the browser's `requestAnimationFrame` loop with elapsed delta time in seconds.
 
-### Server Actions
+### Server Actions Client
 - `callAction<T = any>(endpoint: string, payload?: Record<string, any>): Promise<T>`  
-  Mengirim request HTTP POST JSON berkecepatan tinggi ke backend ASGI ZAU.
+  Dispatches an asynchronous POST RPC request to the Python ASGI backend.
 
 ### Spatial Engine
-- `ZAUSpatialEngine`: Driver inti WebGL, kamera, rendering, dan scene graph.
-- `HighPolyMeshPipeline`: Pipeline pemroses aset 3D resolusi tinggi dengan streaming PBR textures dan smoothing normal.
-- `DEFAULT_SHADING_CONFIG`: Konfigurasi bayangan dan pencahayaan studio bawaan.
+- `ZAUSpatialEngine`: Primary controller for WebGL context, camera frustum, shadow maps, and scene rendering.
+- `HighPolyMeshPipeline`: Loader pipeline supporting progressive texture streaming, Draco geometry, and normal recomputation.
+- `DEFAULT_SHADING_CONFIG`: Default studio lighting and shadow configuration presets.
 
 ---
 
-## 🌐 Tutorial Deploy Cepat (Vercel)
+## Deployment
 
-1. Buat file `vercel.json`:
+Deploying a ZAU fullstack project is zero-configuration:
+
+### Vercel (Edge Frontend + Serverless Python ASGI)
+Create `vercel.json` at your project root:
 ```json
 {
   "framework": "nextjs",
+  "cleanUrls": true,
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/index.py" },
     { "source": "/__zau/(.*)", "destination": "/api/index.py" }
   ]
 }
 ```
-2. Jalankan:
+Deploy via terminal:
 ```bash
 npx vercel --prod --yes
 ```
 
 ---
 
-## ⚖️ Lisensi & Arsitek
+## 🇮🇩 Bahasa Indonesia
 
-- **Arsitek Utama**: **ZetaGo-Aurum**
+### Ringkasan Pustaka
+`zau-framework` adalah runtime klien resmi untuk **ZAU Framework (ZetaGo-Aurum Unified)**. Paket ini menyediakan reaktivitas Signals ultra-ringan, integrasi Three.js r160 WebGL 3D Spatial Canvas, klien Server Actions RPC untuk backend Python ASGI, serta pipeline kompresi Draco Progressive LOD.
+
+### Pemasangan
+```bash
+npm install zau-framework three
+```
+
+### Penggunaan Dasar
+```typescript
+import { ZAU, useState, useFrame, callAction } from 'zau-framework';
+
+// 1. Pemanggilan RPC ke Python ASGI backend
+const response = await callAction('/api/orders/create', { productId: 101 });
+
+// 2. State reaktif
+const [count, setCount] = useState(0);
+
+// 3. Render loop 60fps/120fps
+useFrame((state, delta) => {
+  // Update rotasi atau koordinat 3D
+});
+```
+
+---
+
+## License & Governance
+
+- **Chief Architect**: **ZetaGo-Aurum**
 - **Atelier**: [zetagoaurum.com](https://zetagoaurum.com)
-- **Kontak**: `admin@zetagoaurum.com`
-- **Lisensi**: MIT License
+- **Contact**: `admin@zetagoaurum.com`
+- **License**: MIT License

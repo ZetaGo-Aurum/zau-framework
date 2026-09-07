@@ -2,11 +2,16 @@
 
 import React, { useState } from 'react';
 
+interface CodeViewerProps {
+  lang?: 'en' | 'id';
+}
+
 const CODE_EXAMPLES = {
   sfc: {
     filename: 'RoomViewer.zau',
     lang: 'ZAU SFC',
-    description: 'Single-File Component fusing TypeScript, 3D Canvas, and Reactive Signals',
+    description_en: 'Single-File Component fusing TypeScript, 3D Canvas, and Reactive Signals',
+    description_id: 'Single-File Component yang memadukan TypeScript, Canvas 3D, dan Sinyal Reaktif',
     code: `<template>
   <div class="relative w-full h-[650px] rounded-3xl overflow-hidden glass-panel border border-amber-500/20">
     <!-- Native 3D Spatial Canvas with Hallwyl Museum 360 Room -->
@@ -67,7 +72,8 @@ export default defineComponent({
   action: {
     filename: 'backend/actions.py',
     lang: 'Python ASGI',
-    description: 'Type-Safe Server Action RPC with Dependency Injection & Async Execution',
+    description_en: 'Type-Safe Server Action RPC with Dependency Injection & Async Execution',
+    description_id: 'Server Action RPC dengan Dependency Injection & Eksekusi Asinkron Berorientasi Tipe',
     code: `from zau import ZAUApp, Depends
 from zau.db import get_async_session, AsyncSession
 from models import SpatialAnchor, TelemetryEvent
@@ -108,7 +114,8 @@ async def create_spatial_anchor(
   orm: {
     filename: 'backend/models.py',
     lang: 'Native ORM',
-    description: 'Declarative Asynchronous ORM with Automated Schema Migrations',
+    description_en: 'Declarative Asynchronous ORM with Automated Schema Migrations',
+    description_id: 'ORM Asinkron Deklaratif dengan Migrasi Skema Otomatis',
     code: `from zau.db import Model, Field, Relationship
 from datetime import datetime
 from typing import Optional, List
@@ -147,7 +154,8 @@ class TelemetryEvent(Model):
   config: {
     filename: 'zau.config.py',
     lang: 'Config Engine',
-    description: 'Framework Configuration for 3D Asset Pipeline & Dual Styling',
+    description_en: 'Framework Configuration for 3D Asset Pipeline & Dual Styling',
+    description_id: 'Konfigurasi Framework untuk Pipeline Aset 3D & Dual Styling',
     code: `import os
 
 config = {
@@ -183,11 +191,12 @@ config = {
 
 type TabKey = keyof typeof CODE_EXAMPLES;
 
-export default function CodeViewer() {
+export default function CodeViewer({ lang = 'en' }: CodeViewerProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('sfc');
   const [copied, setCopied] = useState(false);
 
   const current = CODE_EXAMPLES[activeTab];
+  const description = lang === 'en' ? current.description_en : current.description_id;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(current.code);
@@ -215,7 +224,7 @@ export default function CodeViewer() {
             className="sm:hidden flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-300 hover:text-white bg-zinc-800/80 border border-zinc-700 transition"
           >
             <i className={`bi ${copied ? 'bi-check2 text-emerald-400' : 'bi-clipboard text-amber-400'}`} />
-            <span>{copied ? 'Copied' : 'Copy'}</span>
+            <span>{copied ? (lang === 'en' ? 'Copied' : 'Tersalin') : (lang === 'en' ? 'Copy' : 'Salin')}</span>
           </button>
         </div>
 
@@ -242,14 +251,16 @@ export default function CodeViewer() {
           className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300 hover:text-white bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700 transition"
         >
           <i className={`bi ${copied ? 'bi-check2 text-emerald-400' : 'bi-clipboard text-amber-400'}`} />
-          <span>{copied ? 'Copied' : 'Copy'}</span>
+          <span>{copied ? (lang === 'en' ? 'Copied' : 'Tersalin') : (lang === 'en' ? 'Copy' : 'Salin')}</span>
         </button>
       </div>
 
       {/* Description Strip */}
       <div className="px-4 sm:px-6 py-2 bg-amber-500/5 border-b border-amber-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-xs font-mono text-zinc-400">
-        <span className="truncate max-w-full">{current.description}</span>
-        <span className="text-amber-400/90 font-semibold whitespace-nowrap hidden sm:inline">Real-Time Syntax Coloring</span>
+        <span className="truncate max-w-full">{description}</span>
+        <span className="text-amber-400/90 font-semibold whitespace-nowrap hidden sm:inline">
+          {lang === 'en' ? 'Real-Time Syntax Coloring' : 'Pewarnaan Sintaks Real-Time'}
+        </span>
       </div>
 
       {/* Code Content */}

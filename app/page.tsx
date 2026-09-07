@@ -16,6 +16,28 @@ const TheGreatDrawingRoom = dynamic(
 
 export default function Home() {
   const [isZenMode, setIsZenMode] = useState(false);
+  const [lang, setLang] = useState<'en' | 'id'>('en');
+
+  // Load language preference if available, default to English
+  React.useEffect(() => {
+    try {
+      const savedLang = localStorage.getItem('zau_lang') as 'en' | 'id' | null;
+      if (savedLang === 'en' || savedLang === 'id') {
+        setLang(savedLang);
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const handleSetLang = (newLang: 'en' | 'id') => {
+    setLang(newLang);
+    try {
+      localStorage.setItem('zau_lang', newLang);
+    } catch {
+      // ignore
+    }
+  };
 
   const toggleZenMode = () => {
     setIsZenMode((prev) => !prev);
@@ -33,6 +55,7 @@ export default function Home() {
       <ZenControls
         isZenMode={isZenMode}
         onToggleZen={toggleZenMode}
+        lang={lang}
       />
 
       {/* Main Documentation UI Overlaid on 3D Background */}
@@ -43,16 +66,21 @@ export default function Home() {
             : 'opacity-100 pointer-events-auto scale-100 translate-y-0'
         }`}
       >
-        <Navbar isZenMode={isZenMode} onToggleZen={toggleZenMode} />
+        <Navbar
+          isZenMode={isZenMode}
+          onToggleZen={toggleZenMode}
+          lang={lang}
+          onToggleLang={handleSetLang}
+        />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-          <Hero onToggleZen={toggleZenMode} />
+          <Hero onToggleZen={toggleZenMode} lang={lang} />
           
           <div className="pt-2">
-            <CodeViewer />
+            <CodeViewer lang={lang} />
           </div>
 
-          <Documentation />
+          <Documentation lang={lang} onToggleLang={handleSetLang} />
         </div>
       </div>
     </main>

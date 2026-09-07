@@ -5,9 +5,11 @@ import React, { useState, useEffect } from 'react';
 interface NavbarProps {
   isZenMode: boolean;
   onToggleZen: () => void;
+  lang: 'en' | 'id';
+  onToggleLang: (newLang: 'en' | 'id') => void;
 }
 
-export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
+export default function Navbar({ isZenMode, onToggleZen, lang, onToggleLang }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
                   ZAU
                 </span>
                 <span className="text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold leading-none">
-                  v1.0.5
+                  v1.0.6
                 </span>
               </div>
               <p className="text-[10px] text-zinc-400 font-mono hidden 2xl:block truncate max-w-[200px] mt-0.5 leading-none">
@@ -66,7 +68,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
             className="px-2.5 py-1.5 rounded-xl hover:bg-zinc-800/60 hover:text-amber-300 text-zinc-300 transition-all flex items-center space-x-1.5 whitespace-nowrap"
           >
             <i className="bi bi-diagram-3 text-amber-400 text-xs xl:text-sm" />
-            <span>Architecture</span>
+            <span>{lang === 'en' ? 'Architecture' : 'Arsitektur'}</span>
           </a>
           <a
             href="#asgi-core"
@@ -87,7 +89,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
             className="px-2.5 py-1.5 rounded-xl hover:bg-zinc-800/60 hover:text-amber-300 text-zinc-300 transition-all flex items-center space-x-1.5 whitespace-nowrap"
           >
             <i className="bi bi-box text-amber-400 text-xs xl:text-sm" />
-            <span>3D Spatial</span>
+            <span>{lang === 'en' ? '3D Spatial' : '3D Spasial'}</span>
           </a>
           <a
             href="#zau-ecosystem"
@@ -114,14 +116,26 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
 
         {/* Action Controls */}
         <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
-          {/* Mode Bersih Button */}
+          {/* Language Toggle Button */}
+          <button
+            onClick={() => onToggleLang(lang === 'en' ? 'id' : 'en')}
+            title={lang === 'en' ? 'Switch to Bahasa Indonesia' : 'Switch to English'}
+            className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl text-xs font-mono font-semibold glass-panel-subtle hover:bg-zinc-800/90 text-amber-300 border border-amber-500/30 transition active:scale-95 flex-shrink-0 cursor-pointer"
+          >
+            <i className="bi bi-translate text-amber-400 text-xs sm:text-sm" />
+            <span className={lang === 'en' ? 'font-bold text-amber-400' : 'text-zinc-500'}>EN</span>
+            <span className="text-zinc-600 text-[10px]">|</span>
+            <span className={lang === 'id' ? 'font-bold text-amber-400' : 'text-zinc-500'}>ID</span>
+          </button>
+
+          {/* Mode Bersih / Zen Mode Button */}
           <button
             onClick={onToggleZen}
-            title="Mode Bersih 360° Spatial Canvas (ESC)"
+            title={lang === 'en' ? 'Zen 360° Spatial Canvas Mode (ESC)' : 'Mode Bersih 360° Spatial Canvas (ESC)'}
             className="flex items-center space-x-1 sm:space-x-1.5 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/35 transition active:scale-95 shadow-sm flex-shrink-0 whitespace-nowrap"
           >
             <i className="bi bi-eye-slash-fill text-xs sm:text-sm text-amber-400" />
-            <span className="hidden sm:inline">Mode Bersih</span>
+            <span className="hidden sm:inline">{lang === 'en' ? 'Zen Mode' : 'Mode Bersih'}</span>
             <span className="sm:hidden text-[11px] font-mono">Zen</span>
             <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden 2xl:inline">
               ESC
@@ -142,7 +156,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Buka Menu Navigasi"
+            aria-label={lang === 'en' ? 'Toggle Navigation Menu' : 'Buka Menu Navigasi'}
             className={`p-1.5 sm:p-2 rounded-xl glass-panel-subtle lg:hidden transition flex-shrink-0 flex items-center justify-center ${
               mobileMenuOpen
                 ? 'text-amber-400 border border-amber-500/40 bg-amber-500/10'
@@ -158,18 +172,61 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
       {mobileMenuOpen && (
         <div className="lg:hidden mt-2 max-w-7xl mx-auto rounded-2xl glass-panel-glow bg-zinc-950/95 backdrop-blur-2xl p-3.5 sm:p-4 border border-amber-500/30 shadow-2xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain">
           <div className="text-[11px] font-mono uppercase tracking-wider text-amber-400 font-bold px-2 py-1 border-b border-zinc-800/80 flex items-center justify-between">
-            <span>Daftar Navigasi Dokumentasi</span>
-            <span className="text-[10px] text-zinc-500">v1.0.5</span>
+            <span>{lang === 'en' ? 'Documentation Navigation' : 'Daftar Navigasi Dokumentasi'}</span>
+            <div className="flex items-center space-x-2">
+              <button
+                onClick={() => onToggleLang(lang === 'en' ? 'id' : 'en')}
+                className="px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[10px] font-mono font-semibold"
+              >
+                {lang === 'en' ? 'Switch to ID' : 'Ganti ke EN'}
+              </button>
+              <span className="text-[10px] text-zinc-500">v1.0.6</span>
+            </div>
           </div>
           <nav className="flex flex-col space-y-1 text-xs sm:text-sm font-medium text-zinc-200">
             {[
-              { href: '#architecture', icon: 'bi-diagram-3', title: 'Architecture RFC-001', desc: 'Hybrid Python-JS Unified Spec' },
-              { href: '#asgi-core', icon: 'bi-cpu', title: 'Python ASGI Engine', desc: 'Zero-overhead async core' },
-              { href: '#async-orm', icon: 'bi-database', title: 'Async Database ORM', desc: 'Declarative async schemas' },
-              { href: '#spatial-3d', icon: 'bi-box', title: '3D Spatial Canvas', desc: 'Salt Tower Photogrammetry' },
-              { href: '#zau-ecosystem', icon: 'bi-code-slash', title: 'Ekosistem .zau & LSP', desc: 'VS Code, Neovim, Zed, Helix' },
-              { href: '#dual-styling', icon: 'bi-palette', title: 'Dual Styling Engine', desc: 'Tailwind + Bootstrap CSS' },
-              { href: '#deployment', icon: 'bi-cloud-arrow-up', title: 'Deployment Matrix', desc: 'Vercel, Docker, Bare Metal' },
+              {
+                href: '#architecture',
+                icon: 'bi-diagram-3',
+                title: lang === 'en' ? 'Architecture RFC-001' : 'Arsitektur RFC-001',
+                desc: lang === 'en' ? 'Hybrid Python-JS Unified Spec' : 'Spesifikasi Hibrida Terpadu Python-JS'
+              },
+              {
+                href: '#asgi-core',
+                icon: 'bi-cpu',
+                title: lang === 'en' ? 'Python ASGI Engine' : 'Engine ASGI Python',
+                desc: lang === 'en' ? 'Zero-overhead async RPC kernel' : 'Kernel RPC asinkron nir-overhead'
+              },
+              {
+                href: '#async-orm',
+                icon: 'bi-database',
+                title: lang === 'en' ? 'Async Database ORM' : 'ORM Database Asinkron',
+                desc: lang === 'en' ? 'Declarative async schemas' : 'Skema deklaratif asinkron'
+              },
+              {
+                href: '#spatial-3d',
+                icon: 'bi-box',
+                title: lang === 'en' ? '3D Spatial Canvas' : '3D Spatial Canvas',
+                desc: lang === 'en' ? 'Dual-Tier Progressive LOD' : 'Dual-Tier Progressive LOD'
+              },
+              {
+                href: '#zau-ecosystem',
+                icon: 'bi-code-slash',
+                title: lang === 'en' ? '.zau Ecosystem & LSP' : 'Ekosistem .zau & LSP',
+                desc: lang === 'en' ? 'VS Code, Neovim, Zed, Sublime' : 'VS Code, Neovim, Zed, Sublime'
+              },
+              {
+                href: '#dual-styling',
+                icon: 'bi-palette',
+                title: lang === 'en' ? 'Dual Styling Engine' : 'Dual Styling Engine',
+                desc: lang === 'en' ? 'Tailwind + Bootstrap Icons' : 'Tailwind + Bootstrap Icons'
+              },
+              {
+                href: '#deployment',
+                icon: 'bi-cloud-arrow-up',
+                title: lang === 'en' ? 'Deployment Matrix' : 'Matriks Deployment',
+                desc: lang === 'en' ? 'Vercel, Docker, VPS, Render' : 'Vercel, Docker, VPS, Render'
+              },
             ].map((item) => (
               <a
                 key={item.href}
