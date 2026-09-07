@@ -3,7 +3,9 @@
 import React, { useState } from 'react';
 
 export default function Documentation() {
-  const [activeDeployTab, setActiveDeployTab] = useState<'vercel' | 'render' | 'replit' | 'docker'>('vercel');
+  const [activeInstallTab, setActiveInstallTab] = useState<'npm' | 'pip' | 'cli'>('npm');
+  const [activeTemplateTab, setActiveTemplateTab] = useState<'fullstack-3d' | 'minimal' | 'dashboard' | 'portfolio'>('fullstack-3d');
+  const [activeDeployTab, setActiveDeployTab] = useState<'vercel' | 'docker' | 'vps' | 'render' | 'flyio'>('vercel');
   const [activeEditorTab, setActiveEditorTab] = useState<'vscode' | 'neovim' | 'zed' | 'sublime' | 'intellij'>('vscode');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
@@ -80,6 +82,171 @@ export default function Documentation() {
             </ul>
           </div>
         </div>
+
+        {/* TUTORIAL PEMASANGAN & PEMBUATAN PROJECT */}
+        <div className="mt-8 p-6 rounded-3xl glass-panel border border-amber-500/20 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+            <div>
+              <div className="flex items-center space-x-2 text-amber-400 font-mono text-xs font-bold uppercase tracking-wider mb-1">
+                <i className="bi bi-play-circle-fill" />
+                <span>Quickstart &amp; Tutorial Pemasangan</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-extrabold text-white">
+                Panduan Instalasi &amp; Pembuatan Project Baru
+              </h3>
+            </div>
+            <div className="flex items-center space-x-2">
+              {[
+                { id: 'npm', label: 'NPM / NPX (CLI)', icon: 'bi-box-seam' },
+                { id: 'pip', label: 'Python Pip', icon: 'bi-filetype-py' },
+                { id: 'cli', label: 'Manual Clone', icon: 'bi-git' }
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveInstallTab(tab.id as any)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono transition flex items-center space-x-1.5 ${
+                    activeInstallTab === tab.id
+                      ? 'bg-amber-500 text-zinc-950 font-bold shadow-gold-glow'
+                      : 'bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800'
+                  }`}
+                >
+                  <i className={`bi ${tab.icon}`} />
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Terminal Command Box */}
+          <div className="relative">
+            <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 font-mono text-xs text-amber-300 overflow-x-auto">
+              {activeInstallTab === 'npm' && (
+                <pre>{`# 1. Scaffolding project interaktif via npm
+npm create zau@latest my-app
+
+# 2. Masuk ke direktori project & aktifkan Python venv
+cd my-app
+python3 -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+# 3. Pasang dependensi & jalankan development server
+pip install -r requirements.txt
+npm install
+zau dev --port 8000`}</pre>
+              )}
+              {activeInstallTab === 'pip' && (
+                <pre>{`# 1. Pasang paket core ZAU via pip
+pip install zau-framework
+
+# 2. Buat project baru melalui zau CLI
+zau create my-app --template fullstack-3d
+
+# 3. Masuk & pasang dependensi frontend
+cd my-app
+npm install
+zau dev --port 8000`}</pre>
+              )}
+              {activeInstallTab === 'cli' && (
+                <pre>{`# 1. Clone repositori resmi ZAU Monorepo
+git clone https://github.com/ZetaGo-Aurum/zau-framework.git
+cd zau-framework
+
+# 2. Pasang dependensi monorepo
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+npm install
+npm run dev`}</pre>
+              )}
+            </div>
+            <button
+              onClick={() => copyToClipboard(
+                activeInstallTab === 'npm'
+                  ? 'npm create zau@latest my-app && cd my-app && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && npm install && zau dev'
+                  : activeInstallTab === 'pip'
+                  ? 'pip install zau-framework && zau create my-app --template fullstack-3d && cd my-app && npm install && zau dev'
+                  : 'git clone https://github.com/ZetaGo-Aurum/zau-framework.git && cd zau-framework && npm install && npm run dev',
+                'install-cmd'
+              )}
+              className="absolute top-3 right-3 p-1.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 text-xs flex items-center space-x-1 font-mono transition"
+            >
+              <i className={`bi ${copiedCode === 'install-cmd' ? 'bi-check-lg text-emerald-400' : 'bi-clipboard'}`} />
+              <span>{copiedCode === 'install-cmd' ? 'Tersalin' : 'Salin'}</span>
+            </button>
+          </div>
+
+          {/* Template Matrix Selector */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-mono text-zinc-400 uppercase tracking-wider font-semibold">
+                Pilihan Arsitektur Template Bawaan (4 Pilihan Resmi):
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+              {[
+                {
+                  id: 'fullstack-3d',
+                  title: 'fullstack-3d',
+                  badge: 'Flagship',
+                  badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+                  desc: 'Python ASGI + 3D Spatial Three.js + Async ORM + Tailwind/Bootstrap.',
+                  specs: ['WebGL Three.js r160', 'Draco Mesh LOD', 'Starlette/uvloop', 'ZAU DB Studio']
+                },
+                {
+                  id: 'minimal',
+                  title: 'minimal',
+                  badge: 'Ultra-Lean',
+                  badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+                  desc: 'Python Starlette ringan + Single-File Component tanpa dependensi 3D.',
+                  specs: ['Zero overhead', 'Fast cold start', 'REST/RPC Ready', 'Tailwind Atomic']
+                },
+                {
+                  id: 'dashboard',
+                  title: 'dashboard',
+                  badge: 'Enterprise',
+                  badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+                  desc: 'Panel kontrol analitik, real-time metrics cards, dan integrasi database.',
+                  specs: ['Chart telemetry', 'Data table grid', 'Session security', 'Auto migrations']
+                },
+                {
+                  id: 'portfolio',
+                  title: 'portfolio',
+                  badge: 'Luxury Atelier',
+                  badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+                  desc: 'Showcase 3D spasial kelas atas dengan kamera sinematik & Seated POV.',
+                  specs: ['3D Room Showcase', 'Seated POV Mode', 'PBR Lighting', 'Audio Ambience']
+                }
+              ].map((tmpl) => (
+                <div
+                  key={tmpl.id}
+                  onClick={() => setActiveTemplateTab(tmpl.id as any)}
+                  className={`p-4 rounded-2xl border cursor-pointer transition flex flex-col justify-between space-y-3 ${
+                    activeTemplateTab === tmpl.id
+                      ? 'bg-amber-500/10 border-amber-500/50 shadow-gold-glow'
+                      : 'bg-zinc-900/50 border-zinc-800/80 hover:border-zinc-700'
+                  }`}
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-xs font-mono font-bold text-white">{tmpl.title}</span>
+                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${tmpl.badgeColor}`}>
+                        {tmpl.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-400 leading-relaxed">{tmpl.desc}</p>
+                  </div>
+                  <ul className="text-[10px] font-mono text-zinc-500 space-y-1 pt-2 border-t border-zinc-800/60">
+                    {tmpl.specs.map((s, idx) => (
+                      <li key={idx} className="flex items-center space-x-1.5">
+                        <i className="bi bi-check2 text-amber-400" />
+                        <span>{s}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* SECTION 2: PYTHON ASGI ENGINE */}
@@ -118,7 +285,7 @@ async def track_viewpoint(coords: list[float]):
         "INSERT INTO telemetry (camera_x, camera_y, camera_z) VALUES (?, ?, ?)",
         coords
     )
-    return {"status": "recorded", "origin": "black_stool"}`}
+    return {"status": "recorded", "origin": "web_client"}`}
               </pre>
             </div>
 
@@ -273,7 +440,7 @@ class SpatialHotspot(Model):
 `<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <!-- Kamera dengan titik tumpu terkunci tepat di sumbu pusat kursi bundar hitam -->
+      <!-- Konfigurasi Kamera 3D Deklaratif dengan Orbit Controls -->
       <zau-camera
         :position="[-0.885, 1.15, 2.25]"
         :target="[-0.885, 0.70, 1.08]"
@@ -354,7 +521,7 @@ export default {
 {`<template>
   <div class="viewport-wrapper">
     <zau-canvas id="salt-tower-viewport" shadows>
-      <!-- Kamera dengan titik tumpu terkunci tepat di sumbu pusat kursi bundar hitam -->
+      <!-- Konfigurasi Kamera 3D Deklaratif dengan Orbit Controls -->
       <zau-camera
         :position="[-0.885, 1.15, 2.25]"
         :target="[-0.885, 0.70, 1.08]"
@@ -414,81 +581,6 @@ export default {
             </pre>
           </div>
 
-          {/* Sub-Section: Spatial Camera Pivot & Anti-Wall Clipping */}
-          <div className="p-5 rounded-2xl bg-zinc-900/80 border border-amber-500/20 shadow-xl space-y-4">
-            <div className="flex items-center space-x-2.5 text-amber-400">
-              <i className="bi bi-camera-reels-fill text-lg" />
-              <h3 className="text-base sm:text-lg font-bold text-white">
-                Fisika Kamera 3D: Titik Tumpu Kursi Bundar &amp; Anti-Wall Clipping
-              </h3>
-            </div>
-
-            <p className="text-xs text-zinc-300 leading-relaxed">
-              Pada lingkungan 3D interior (seperti <em>Salt Tower Lower Room</em> dengan diameter chamber ~9 meter), penentuan <strong>titik tumpu rotasi (Orbit Target / Pivot Point)</strong> adalah faktor penentu apakah perputaran kamera terasa natural atau justru menembus dinding keluar ruangan.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-              <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/30 space-y-2">
-                <span className="text-red-400 font-bold flex items-center space-x-1.5">
-                  <i className="bi bi-x-octagon-fill" />
-                  <span>Masalah: Titik Tumpu di Pinggir Tembok</span>
-                </span>
-                <p className="text-zinc-400 text-[11px] leading-normal font-sans">
-                  Jika target rotasi diletakkan di pinggir dinding (misal <code className="text-red-300">Z = 3.5</code>), maka saat kamera mengitari target dengan radius 2 meter, separuh lintasan bola kamera akan mengayun ke <code className="text-red-300">Z = 5.5</code> yang berada di luar dinding batu (tembus keluar ruangan / void hitam).
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-500/30 space-y-2">
-                <span className="text-emerald-400 font-bold flex items-center space-x-1.5">
-                  <i className="bi bi-check-circle-fill" />
-                  <span>Solusi ZAU: Titik Tumpu di Kursi Bundar</span>
-                </span>
-                <p className="text-zinc-400 text-[11px] leading-normal font-sans">
-                  Mengunci target rotasi tepat pada sumbu pusat bangku hitam <code className="text-emerald-300">[-0.885, 0.70, 1.08]</code> di tengah ruangan. Dikombinasikan dengan <code className="text-emerald-300">maxDistance = 2.2m</code>, kamera memiliki margin aman 2.2m - 5.6m dari dinding terdekat, sehingga <strong>secara fisik mustahil menembus tembok</strong>.
-                </p>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs font-mono border-collapse border border-zinc-800 rounded-xl overflow-hidden">
-                <thead>
-                  <tr className="bg-zinc-950 text-amber-400">
-                    <th className="p-2.5 border-b border-zinc-800">Parameter</th>
-                    <th className="p-2.5 border-b border-zinc-800">Nilai Optimal</th>
-                    <th className="p-2.5 border-b border-zinc-800">Fungsi &amp; Penjelasan Fisika</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-800/60 text-zinc-300 text-[11px]">
-                  <tr>
-                    <td className="p-2.5 font-bold text-amber-300">controls.target</td>
-                    <td className="p-2.5 text-zinc-200">[-0.885, 0.70, 1.08]</td>
-                    <td className="p-2.5 font-sans">Titik tumpu rotasi utama tepat di permukaan bangku duduk kayu hitam.</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold text-amber-300">camera.position</td>
-                    <td className="p-2.5 text-zinc-200">[-0.885, 1.15, 2.25]</td>
-                    <td className="p-2.5 font-sans">Posisi awal sejajar pandangan mata (height 1.15m) menghadap bangku dan pintu lengkung Norman.</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold text-amber-300">controls.maxDistance</td>
-                    <td className="p-2.5 text-zinc-200">2.2 meter</td>
-                    <td className="p-2.5 font-sans">Batas jarak zoom keluar terjauh. Mencegah kamera terseret melewati radius dinding terdekat (2.82m).</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold text-amber-300">controls.minDistance</td>
-                    <td className="p-2.5 text-zinc-200">0.05 - 0.15 meter</td>
-                    <td className="p-2.5 font-sans">Batas zoom terdekat untuk beralih ke mode pengamatan duduk di kursi (Seated POV).</td>
-                  </tr>
-                  <tr>
-                    <td className="p-2.5 font-bold text-amber-300">controls.maxPolarAngle</td>
-                    <td className="p-2.5 text-zinc-200">Math.PI / 2 + 0.12 (~97°)</td>
-                    <td className="p-2.5 font-sans">Klem sudut elevasi vertikal untuk mencegah kamera tenggelam ke bawah ubin lantai batu.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
           {/* Sub-Section: Multi-Editor Setup Tabs */}
           <div>
             <h3 className="text-lg font-bold text-white mb-2">
@@ -531,10 +623,10 @@ export default {
                   </p>
                   <pre className="p-3 rounded-lg bg-zinc-950 text-amber-300 overflow-x-auto">
 {`# 1. Install ekstensi dari binary paket VSIX
-code --install-extension dist/extensions/zau-1.0.3.vsix
+code --install-extension dist/extensions/zau-1.0.5.vsix
 
 # 2. Atau install via Open-VSX (VSCodium)
-codium --install-extension dist/extensions/zau-1.0.3.vsix`}
+codium --install-extension dist/extensions/zau-1.0.5.vsix`}
                   </pre>
                   <ul className="text-[11px] text-zinc-400 space-y-1">
                     <li>• Fitur: Semantic Tokens, Tag Autocomplete, Diagnostics, Formatter, Hover Cards</li>
@@ -792,9 +884,10 @@ register(monaco);`}
           <div className="flex flex-wrap gap-2 border-b border-zinc-800 pb-3">
             {[
               { id: 'vercel', label: 'Vercel (Live Edge)', icon: 'bi-triangle-fill' },
-              { id: 'render', label: 'Render (ASGI Container)', icon: 'bi-hdd-network' },
-              { id: 'replit', label: 'Replit Cloud', icon: 'bi-terminal-split' },
-              { id: 'docker', label: 'Docker (OCI Image)', icon: 'bi-box' },
+              { id: 'docker', label: 'Docker & Compose', icon: 'bi-box' },
+              { id: 'vps', label: 'Linux VPS (Nginx + SSL)', icon: 'bi-hdd-rack' },
+              { id: 'render', label: 'Render Cloud (IaC)', icon: 'bi-hdd-network' },
+              { id: 'flyio', label: 'Fly.io (Global Edge)', icon: 'bi-clouds' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -811,45 +904,307 @@ register(monaco);`}
             ))}
           </div>
 
-          <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800 font-mono text-xs text-zinc-300 overflow-x-auto">
-            {activeDeployTab === 'vercel' && (
-              <pre>
-{`# Deploying to Vercel Production
+          {/* VERCEL PRODUCTION TAB */}
+          {activeDeployTab === 'vercel' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-4 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                <div>
+                  <h4 className="text-sm font-bold text-white flex items-center space-x-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Vercel Edge + Serverless Python ASGI Architecture</span>
+                  </h4>
+                  <p className="text-xs text-zinc-300 mt-1">
+                    Frontend statis &amp; aset 3D dilayani langsung dari Vercel CDN Global. Endpoint <code>/api/*</code> dieksekusi oleh Python ASGI Serverless Function (<code>api/index.py</code>) dengan zero cold-start.
+                  </p>
+                </div>
+                <a
+                  href="https://zau-framework.vercel.app"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-zinc-950 font-mono text-xs font-bold whitespace-nowrap hover:bg-amber-400 transition"
+                >
+                  <i className="bi bi-box-arrow-up-right" />
+                  <span>Lihat Live Production</span>
+                </a>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-mono text-amber-400 font-bold">1. vercel.json (Edge Rewrites)</span>
+                    <button
+                      onClick={() => copyToClipboard('{\n  "framework": "nextjs",\n  "cleanUrls": true,\n  "rewrites": [\n    { "source": "/api/(.*)", "destination": "/api/index.py" },\n    { "source": "/__zau/(.*)", "destination": "/api/index.py" }\n  ]\n}', 'v-json')}
+                      className="text-[11px] font-mono text-zinc-400 hover:text-white"
+                    >
+                      {copiedCode === 'v-json' ? '✓ Tersalin' : 'Salin'}
+                    </button>
+                  </div>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`{
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index.py" },
+    { "source": "/__zau/(.*)", "destination": "/api/index.py" }
+  ]
+}`}
+                  </pre>
+                </div>
+
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-mono text-sky-400 font-bold">2. api/index.py (ASGI Serverless Bridge)</span>
+                    <button
+                      onClick={() => copyToClipboard('import os\nimport sys\n\ncurrent_dir = os.path.dirname(os.path.abspath(__file__))\nroot_dir = os.path.abspath(os.path.join(current_dir, ".."))\nif root_dir not in sys.path:\n    sys.path.insert(0, root_dir)\n\nfrom backend.app import app\napp = app.get_asgi_app()', 'v-py')}
+                      className="text-[11px] font-mono text-zinc-400 hover:text-white"
+                    >
+                      {copiedCode === 'v-py' ? '✓ Tersalin' : 'Salin'}
+                    </button>
+                  </div>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`import os
+import sys
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+root_dir = os.path.abspath(os.path.join(current_dir, ".."))
+if root_dir not in sys.path:
+    sys.path.insert(0, root_dir)
+
+from backend.app import app
+
+# Ekspor objek ASGI application standar
+app = app.get_asgi_app()`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                <span className="text-xs font-mono text-emerald-400 font-bold block mb-2">
+                  3. Perintah Deploy Production Terminal:
+                </span>
+                <pre className="text-xs font-mono text-zinc-300 overflow-x-auto leading-relaxed">
+{`# 1. Login ke akun Vercel
+npx vercel login
+
+# 2. Deploy langsung ke Production Domain
 npx vercel --prod --yes
 
-# Live URL: https://zau-framework.vercel.app
-# Zero cold start: Chunked static HTML + Serverless edge routing`}
-              </pre>
-            )}
-            {activeDeployTab === 'render' && (
-              <pre>
-{`# Deploying on Render via render.yaml
+# 3. Environment Variables (di Dashboard Vercel):
+#    DATABASE_URL=postgresql+asyncpg://user:pass@host:5432/dbname
+#    ZAU_ENV=production`}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* DOCKER & COMPOSE TAB */}
+          {activeDeployTab === 'docker' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <span className="text-xs font-mono text-amber-400 font-bold block mb-2">
+                    Dockerfile (Multi-Stage Production Build)
+                  </span>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto max-h-72">
+{`FROM node:20-alpine AS frontend-builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npm run build
+
+FROM python:3.12-slim AS runner
+WORKDIR /app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir uvicorn[standard] gunicorn
+COPY --from=frontend-builder /app /app
+ENV ZAU_ENV=production PORT=8000
+EXPOSE 8000
+CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "backend.app:app", "--bind", "0.0.0.0:8000"]`}
+                  </pre>
+                </div>
+
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <span className="text-xs font-mono text-sky-400 font-bold block mb-2">
+                    docker-compose.yml (App + PostgreSQL 16)
+                  </span>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto max-h-72">
+{`version: '3.8'
 services:
+  zau-app:
+    build: .
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://zau:pass@postgres:5432/zau_db
+      - ZAU_ENV=production
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: zau
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: zau_db
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U zau -d zau_db"]
+      interval: 5s
+
+volumes:
+  pgdata:`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                <span className="text-xs font-mono text-emerald-400 font-bold block mb-2">
+                  Jalankan Container Cluster:
+                </span>
+                <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`docker compose up -d --build
+docker compose ps
+docker compose logs -f zau-app`}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* LINUX VPS (NGINX + SYSTEMD) TAB */}
+          {activeDeployTab === 'vps' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <span className="text-xs font-mono text-amber-400 font-bold block mb-2">
+                    1. /etc/systemd/system/zau.service
+                  </span>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`[Unit]
+Description=ZAU Framework High-Performance ASGI Service
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/zau-app
+Environment="PATH=/var/www/zau-app/.venv/bin"
+Environment="ZAU_ENV=production"
+ExecStart=/var/www/zau-app/.venv/bin/gunicorn \
+    -w 4 \
+    -k uvicorn.workers.UvicornWorker \
+    backend.app:app \
+    --bind 127.0.0.1:8000
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target`}
+                  </pre>
+                </div>
+
+                <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                  <span className="text-xs font-mono text-sky-400 font-bold block mb-2">
+                    2. /etc/nginx/sites-available/zau
+                  </span>
+                  <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`server {
+    listen 80;
+    server_name example.com www.example.com;
+
+    # Caching 3D models agresif (30 hari)
+    location ~* \.(glb|gltf|bin|draco)$ {
+        root /var/www/zau-app/model/3d;
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Proxy ke ASGI Server
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_read_timeout 86400;
+    }
+}`}
+                  </pre>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                <span className="text-xs font-mono text-emerald-400 font-bold block mb-2">
+                  3. Aktifkan Service &amp; Pasang SSL Gratis Certbot:
+                </span>
+                <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`sudo systemctl daemon-reload && sudo systemctl enable --now zau
+sudo ln -s /etc/nginx/sites-available/zau /etc/nginx/sites-enabled/ && sudo nginx -t && sudo systemctl restart nginx
+sudo certbot --nginx -d example.com -d www.example.com`}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* RENDER CLOUD TAB */}
+          {activeDeployTab === 'render' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                <span className="text-xs font-mono text-amber-400 font-bold block mb-2">
+                  render.yaml (Infrastructure-as-Code Blueprint)
+                </span>
+                <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`services:
   - type: web
     name: zau-app
     env: python
-    buildCommand: pip install -r requirements.txt && npm run build
-    startCommand: python3 -m zau.cli run --host 0.0.0.0 --port 10000`}
-              </pre>
-            )}
-            {activeDeployTab === 'replit' && (
-              <pre>
-{`# Replit .replit config
-run = "python3 -m zau.cli dev"
-entrypoint = "main.py"
+    region: singapore
+    plan: standard
+    buildCommand: pip install -r requirements.txt && npm install && npm run build
+    startCommand: gunicorn -w 4 -k uvicorn.workers.UvicornWorker backend.app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: ZAU_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: zau-postgres
+          property: connectionString
 
-[nix]
-channel = "stable-23_11"`}
-              </pre>
-            )}
-            {activeDeployTab === 'docker' && (
-              <pre>
-{`# Build & Run OCI Container
-docker build -t zau-app .
-docker run -d -p 8000:8000 --name zau-live zau-app`}
-              </pre>
-            )}
-          </div>
+databases:
+  - name: zau-postgres
+    databaseName: zau_db
+    user: zau_user
+    plan: standard`}
+                </pre>
+              </div>
+            </div>
+          )}
+
+          {/* FLY.IO TAB */}
+          {activeDeployTab === 'flyio' && (
+            <div className="space-y-4 animate-in fade-in duration-200">
+              <div className="p-4 rounded-xl bg-zinc-950 border border-zinc-800">
+                <span className="text-xs font-mono text-sky-400 font-bold block mb-2">
+                  fly.toml &amp; Perintah Deploy Global Edge
+                </span>
+                <pre className="text-xs font-mono text-zinc-300 overflow-x-auto">
+{`# 1. Inisialisasi konfigurasi Fly di direktori project
+fly launch --no-deploy
+
+# 2. Pasang volume persisten untuk file database / 3D
+fly volumes create zau_data --size 10 --region sin
+
+# 3. Deploy ke jaringan edge global Fly.io
+fly deploy`}
+                </pre>
+              </div>
+            </div>
+          )}
         </div>
       </section>
     </div>

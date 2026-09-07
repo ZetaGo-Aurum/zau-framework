@@ -49,7 +49,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
                   ZAU
                 </span>
                 <span className="text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/25 font-semibold leading-none">
-                  v1.0.3
+                  v1.0.5
                 </span>
               </div>
               <p className="text-[10px] text-zinc-400 font-mono hidden 2xl:block truncate max-w-[200px] mt-0.5 leading-none">
@@ -159,7 +159,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
         <div className="lg:hidden mt-2 max-w-7xl mx-auto rounded-2xl glass-panel-glow bg-zinc-950/95 backdrop-blur-2xl p-3.5 sm:p-4 border border-amber-500/30 shadow-2xl space-y-3 animate-in fade-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-5.5rem)] overflow-y-auto overscroll-contain">
           <div className="text-[11px] font-mono uppercase tracking-wider text-amber-400 font-bold px-2 py-1 border-b border-zinc-800/80 flex items-center justify-between">
             <span>Daftar Navigasi Dokumentasi</span>
-            <span className="text-[10px] text-zinc-500">v1.0.3</span>
+            <span className="text-[10px] text-zinc-500">v1.0.5</span>
           </div>
           <nav className="flex flex-col space-y-1 text-xs sm:text-sm font-medium text-zinc-200">
             {[

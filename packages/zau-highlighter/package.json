@@ -1,11 +1,13 @@
 {
   "name": "zau-highlighter",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Prism.js and Monaco Editor syntax highlighters for .zau components in the browser",
   "main": "dist/index.js",
-  "scripts": {
-    "test": "node test.js"
-  },
+  "files": [
+    "monaco-zau.js",
+    "prism-zau.js",
+    "README.md"
+  ],
   "keywords": [
     "zau",
     "syntax-highlighting",

@@ -2,7 +2,7 @@
   "name": "zau",
   "displayName": "Zau Language",
   "description": "Universal language support, spatial 3D tags IntelliSense, syntax highlighting, and LSP for .zau components",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "publisher": "zetago-aurum",
   "icon": "images/icon.png",
   "galleryBanner": {

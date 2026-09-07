@@ -31,15 +31,17 @@ echo "2. Compiling Language Server & VS Code Extension..."
 (cd "$ROOT_DIR/packages/zau-language-server" && npm run build)
 (cd "$EXT_DIR" && npm run build)
 
-echo "3. Packaging VS Code & Open-VSX Extension (.vsix)..."
+VERSION=$(node -p "require('$EXT_DIR/package.json').version")
+
+echo "3. Packaging VS Code & Open-VSX Extension (.vsix) v$VERSION..."
 cd "$EXT_DIR"
-vsce package --no-dependencies --allow-star-activation --out "$DIST_DIR/zau-1.0.3.vsix"
+vsce package --no-dependencies --allow-star-activation --out "$DIST_DIR/zau-$VERSION.vsix"
 
 echo "4. Package Verification:"
-ls -lh "$DIST_DIR/zau-1.0.3.vsix"
+ls -lh "$DIST_DIR/zau-$VERSION.vsix"
 
 echo "================================================="
 echo "✓ Package successfully generated at:"
-echo "  $DIST_DIR/zau-1.0.3.vsix"
+echo "  $DIST_DIR/zau-$VERSION.vsix"
 echo "  Ready for VS Code Marketplace & Open VSX deploy."
 echo "================================================="

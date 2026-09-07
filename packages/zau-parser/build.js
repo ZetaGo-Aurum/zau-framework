@@ -40,7 +40,7 @@ const browserScript = `(function (root, factory) {
 
   return {
     parseZau: parseZau,
-    version: '1.0.3'
+    version: '1.0.5'
   };
 }));
 `;

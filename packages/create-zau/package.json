@@ -1,6 +1,6 @@
 {
   "name": "create-zau",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Scaffold modern Python-first fullstack web applications with Native 3D Spatial Canvas using ZAU Framework",
   "type": "module",
   "main": "bin/create-zau.js",

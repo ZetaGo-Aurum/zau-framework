@@ -1,13 +1,19 @@
 {
   "name": "zau-language-server",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Universal Language Server Protocol (LSP) for .zau Single File Components with 3D Spatial Intelligence",
   "main": "out/server.js",
   "types": "out/server.d.ts",
   "bin": {
-    "zau-lsp": "./bin/zau-lsp.js",
-    "zau-language-server": "./bin/zau-lsp.js"
+    "zau-lsp": "bin/zau-lsp.js",
+    "zau-language-server": "bin/zau-lsp.js"
   },
+  "files": [
+    "out",
+    "bin",
+    "editors",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
@@ -28,7 +34,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ZetaGo-Aurum/zau-framework.git"
+    "url": "git+https://github.com/ZetaGo-Aurum/zau-framework.git"
   },
   "dependencies": {
     "vscode-languageserver": "^9.0.1",

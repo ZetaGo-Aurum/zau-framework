@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VSIX_PATH="$ROOT_DIR/dist/extensions/zau-1.0.3.vsix"
+VERSION=$(node -p "require('$ROOT_DIR/packages/vscode-zau/package.json').version")
+VSIX_PATH="$ROOT_DIR/dist/extensions/zau-$VERSION.vsix"
 export PATH="/home/zetagoaurum/.npm-global/bin:$PATH"
 
 if [ ! -f "$VSIX_PATH" ]; then
