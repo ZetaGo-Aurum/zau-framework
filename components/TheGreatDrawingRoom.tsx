@@ -25,10 +25,18 @@ export default function TheGreatDrawingRoom({
   const [loadProgress, setLoadProgress] = useState<number>(0);
   const [downloadStats, setDownloadStats] = useState<string>('Initializing 3D buffer...');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [showRefinedBadge, setShowRefinedBadge] = useState<boolean>(true);
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const [isAutoRotating, setIsAutoRotating] = useState<boolean>(true);
   const controlsRef = useRef<OrbitControls | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const beaconGroupRef = useRef<THREE.Group | null>(null);
+
+  useEffect(() => {
+    if (beaconGroupRef.current) {
+      beaconGroupRef.current.visible = !isZenMode;
+    }
+  }, [isZenMode]);
 
   useEffect(() => {
     const container = mountRef.current;
@@ -41,12 +49,12 @@ export default function TheGreatDrawingRoom({
     const scene = new THREE.Scene();
     scene.background = new THREE.Color(0x090a0f);
 
-    // Camera at eye level
-    const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
+    // Camera at eye level with 52 fov for crisp perspective
+    const camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 1000);
     camera.position.set(0, 0, 0.4);
     cameraRef.current = camera;
 
-    // WebGL Renderer
+    // WebGL Renderer calibrated for HD photogrammetry
     let renderer: THREE.WebGLRenderer;
     try {
       renderer = new THREE.WebGLRenderer({
@@ -55,9 +63,9 @@ export default function TheGreatDrawingRoom({
         alpha: false,
       });
       renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.5));
       renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.35;
+      renderer.toneMappingExposure = 1.15;
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       container.appendChild(renderer.domElement);
     } catch (err) {
@@ -131,19 +139,19 @@ export default function TheGreatDrawingRoom({
 
     scene.add(proxyGroup);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xfff3e5, 2.2);
+    // Balanced studio lighting tailored for photogrammetry baked textures
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
     scene.add(ambientLight);
 
-    const chandelierLight = new THREE.PointLight(0xffb74d, 3.8, 30);
+    const chandelierLight = new THREE.PointLight(0xffb347, 1.8, 25);
     chandelierLight.position.set(0, 2.8, 0);
     scene.add(chandelierLight);
 
-    const windowLight = new THREE.DirectionalLight(0xfff9e6, 2.5);
+    const windowLight = new THREE.DirectionalLight(0xfffaed, 1.2);
     windowLight.position.set(8, 6, 4);
     scene.add(windowLight);
 
-    const fillLight = new THREE.PointLight(0x7dd3fc, 1.6, 20);
+    const fillLight = new THREE.PointLight(0x90cdf4, 0.6, 20);
     fillLight.position.set(-6, 2, -5);
     scene.add(fillLight);
 
@@ -184,6 +192,8 @@ export default function TheGreatDrawingRoom({
     ];
 
     const beaconGroup = new THREE.Group();
+    beaconGroup.visible = !isZenMode;
+    beaconGroupRef.current = beaconGroup;
     scene.add(beaconGroup);
 
     const beaconMeshes: THREE.Mesh[] = [];
@@ -254,6 +264,8 @@ export default function TheGreatDrawingRoom({
       model.position.y = -center.y;
       model.position.z = -center.z;
 
+      const maxAnisotropy = renderer.capabilities.getMaxAnisotropy();
+
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
@@ -271,6 +283,8 @@ export default function TheGreatDrawingRoom({
             tex.colorSpace = THREE.SRGBColorSpace;
             tex.minFilter = THREE.LinearMipmapLinearFilter;
             tex.magFilter = THREE.LinearFilter;
+            tex.generateMipmaps = true;
+            tex.anisotropy = maxAnisotropy; // High-Definition 16x Anisotropic filtering (Sketchfab Grade)
             tex.flipY = false;
             tex.needsUpdate = true;
           }
@@ -278,13 +292,13 @@ export default function TheGreatDrawingRoom({
           mesh.material = new THREE.MeshStandardMaterial({
             map: tex,
             side: THREE.DoubleSide,
-            roughness: 0.45,
-            metalness: 0.12,
+            roughness: 0.6,
+            metalness: 0.05,
             color: 0xffffff,
           });
           mesh.material.needsUpdate = true;
-          mesh.castShadow = true;
-          mesh.receiveShadow = true;
+          mesh.castShadow = false;
+          mesh.receiveShadow = false;
         }
       });
 
@@ -292,6 +306,7 @@ export default function TheGreatDrawingRoom({
       setLoadProgress(100);
       setDownloadStats('10.7 MB • 1,000,000 Triangles Refined');
       setIsLoaded(true);
+      setTimeout(() => setShowRefinedBadge(false), 4500);
     };
 
     // Primary: Load optimized web binary GLB (11MB Lossless Draco GLB, fast streaming)
@@ -430,8 +445,8 @@ export default function TheGreatDrawingRoom({
       />
 
       {/* Floating Progressive Stream Telemetry Widget (Non-blocking: Canvas is 100% interactive from Frame 0) */}
-      {!isLoaded ? (
-        <div className="fixed bottom-6 right-6 z-40 max-w-sm w-80 p-4 rounded-2xl glass-panel-glow border border-amber-500/30 text-xs font-mono backdrop-blur-md shadow-2xl animate-in fade-in slide-in-from-bottom-3 duration-300">
+      {!isZenMode && !isLoaded && (
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 hidden sm:block max-w-[calc(100vw-2rem)] w-72 sm:w-80 p-3.5 sm:p-4 rounded-2xl glass-panel-glow border border-amber-500/30 text-xs font-mono backdrop-blur-md shadow-2xl animate-in fade-in slide-in-from-bottom-3 duration-300">
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2">
               <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
@@ -452,22 +467,25 @@ export default function TheGreatDrawingRoom({
             <span className="text-amber-400/90 font-medium ml-2">Instant Proxy Active</span>
           </div>
         </div>
-      ) : (
-        <div className="fixed bottom-6 right-6 z-40 px-3.5 py-2 rounded-xl bg-zinc-950/85 backdrop-blur-md border border-emerald-500/30 text-[11px] font-mono text-emerald-300 flex items-center space-x-2 shadow-lg animate-in fade-in duration-300">
+      )}
+
+      {/* Refinement Confirmation Badge (Auto-dismisses in 4.5s, avoids permanent screen clutter) */}
+      {!isZenMode && isLoaded && showRefinedBadge && (
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-xl bg-zinc-950/85 backdrop-blur-md border border-emerald-500/30 text-[10px] sm:text-[11px] font-mono text-emerald-300 hidden sm:flex items-center space-x-2 shadow-lg animate-in fade-in duration-300">
           <i className="bi bi-patch-check-fill text-emerald-400 text-sm" />
-          <span>1,000,000 Triangles Refined • Smooth Normals Active</span>
+          <span>1M Poly Refined • 4K HD Active</span>
         </div>
       )}
 
       {/* Hotspot Floating Modal */}
-      {activeHotspot && (
-        <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-md p-5 rounded-2xl glass-panel-glow text-zinc-100 animate-in fade-in slide-in-from-bottom-6 duration-300">
+      {!isZenMode && activeHotspot && (
+        <div className="fixed bottom-20 sm:bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-md p-4 sm:p-5 rounded-2xl glass-panel-glow text-zinc-100 animate-in fade-in slide-in-from-bottom-6 duration-300">
           <div className="flex items-start justify-between">
             <div>
               <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">
                 {activeHotspot.category}
               </span>
-              <h4 className="text-lg font-bold mt-1 text-zinc-100">
+              <h4 className="text-base sm:text-lg font-bold mt-1 text-zinc-100">
                 {activeHotspot.title}
               </h4>
             </div>
@@ -475,13 +493,13 @@ export default function TheGreatDrawingRoom({
               onClick={() => setActiveHotspot(null)}
               className="text-zinc-400 hover:text-zinc-100 p-1 transition"
             >
-              <i className="bi bi-x-lg text-lg" />
+              <i className="bi bi-x-lg text-base" />
             </button>
           </div>
           <p className="text-xs text-zinc-300 mt-2 leading-relaxed">
             {activeHotspot.description}
           </p>
-          <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[11px] text-zinc-400 font-mono">
+          <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-[10px] sm:text-[11px] text-zinc-400 font-mono">
             <span>
               <i className="bi bi-geo-alt-fill text-amber-400 mr-1.5" />
               Interactive 3D Anchor
@@ -491,53 +509,58 @@ export default function TheGreatDrawingRoom({
         </div>
       )}
 
-      {/* Persistent 3D HUD Indicator (Bottom Left) */}
-      <div className="fixed bottom-6 left-6 z-30 flex items-center space-x-2">
-        <div className="px-3 py-1.5 rounded-lg glass-panel text-xs text-zinc-300 font-mono flex items-center space-x-2 shadow-lg border border-zinc-800">
-          <i className="bi bi-camera-video text-amber-400 text-xs" />
-          <span className="font-medium text-zinc-200">The Great Drawing Room</span>
-          <span className="text-zinc-600">/</span>
-          <span className="text-zinc-400 text-[11px]">360° WebGL</span>
-        </div>
+      {/* Persistent 3D HUD Indicator (Bottom Left) - Hidden in Clean Mode and Mobile */}
+      {!isZenMode && (
+        <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-30 hidden sm:flex items-center space-x-2">
+          <div className="px-2.5 sm:px-3 py-1.5 rounded-lg glass-panel text-[11px] sm:text-xs text-zinc-300 font-mono flex items-center space-x-2 shadow-lg border border-zinc-800">
+            <i className="bi bi-camera-video text-amber-400 text-xs" />
+            <span className="font-medium text-zinc-200 hidden sm:inline">The Great Drawing Room</span>
+            <span className="font-medium text-zinc-200 sm:hidden">360° Room</span>
+            <span className="text-zinc-600 hidden sm:inline">/</span>
+            <span className="text-zinc-400 text-[11px] hidden sm:inline">360° WebGL</span>
+          </div>
 
-        {/* Camera Quick Action Controls */}
-        <div className="flex items-center space-x-1 p-1 rounded-xl glass-panel border border-zinc-800">
-          <button
-            onClick={handleToggleAutoRotate}
-            title={isAutoRotating ? 'Pause 360 Rotation' : 'Resume 360 Rotation'}
-            className={`p-2 rounded-lg text-xs transition ${
-              isAutoRotating
-                ? 'text-amber-400 bg-amber-500/10'
-                : 'text-zinc-400 hover:text-zinc-200'
-            }`}
-          >
-            <i className={`bi ${isAutoRotating ? 'bi-pause-fill' : 'bi-play-fill'} text-sm`} />
-          </button>
-          <button
-            onClick={handleResetCamera}
-            title="Reset 360 Camera View"
-            className="p-2 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 transition"
-          >
-            <i className="bi bi-arrow-counterclockwise text-sm" />
-          </button>
+          {/* Camera Quick Action Controls */}
+          <div className="flex items-center space-x-1 p-1 rounded-xl glass-panel border border-zinc-800">
+            <button
+              onClick={handleToggleAutoRotate}
+              title={isAutoRotating ? 'Pause 360 Rotation' : 'Resume 360 Rotation'}
+              className={`p-1.5 sm:p-2 rounded-lg text-xs transition ${
+                isAutoRotating
+                  ? 'text-amber-400 bg-amber-500/10'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <i className={`bi ${isAutoRotating ? 'bi-pause-fill' : 'bi-play-fill'} text-sm`} />
+            </button>
+            <button
+              onClick={handleResetCamera}
+              title="Reset 360 Camera View"
+              className="p-1.5 sm:p-2 rounded-lg text-xs text-zinc-400 hover:text-zinc-200 transition"
+            >
+              <i className="bi bi-arrow-counterclockwise text-sm" />
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Attribution Badge (Bottom Right) */}
-      <div className="fixed bottom-6 right-6 z-30 hidden sm:block">
-        <div className="px-3 py-1.5 rounded-lg glass-panel-subtle text-[11px] text-zinc-400 font-mono border border-zinc-800/80">
-          <span>3D Room by </span>
-          <a
-            href="https://sketchfab.com/TheHallwylMuseum"
-            target="_blank"
-            rel="noreferrer"
-            className="text-amber-400 hover:underline font-medium"
-          >
-            The Hallwyl Museum
-          </a>
-          <span className="text-zinc-500"> (CC BY 4.0)</span>
+      {/* Attribution Badge (Bottom Right) - Desktop Only, Hidden in Clean Mode */}
+      {!isZenMode && (
+        <div className="fixed bottom-6 right-6 z-30 hidden lg:block">
+          <div className="px-3 py-1.5 rounded-lg glass-panel-subtle text-[11px] text-zinc-400 font-mono border border-zinc-800/80">
+            <span>3D Room by </span>
+            <a
+              href="https://sketchfab.com/TheHallwylMuseum"
+              target="_blank"
+              rel="noreferrer"
+              className="text-amber-400 hover:underline font-medium"
+            >
+              The Hallwyl Museum
+            </a>
+            <span className="text-zinc-500"> (CC BY 4.0)</span>
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }

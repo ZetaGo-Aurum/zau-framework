@@ -141,6 +141,9 @@ def get_spatial_engine_code() -> str:
             currentMap.minFilter = global.THREE.LinearMipmapLinearFilter;
             currentMap.magFilter = global.THREE.LinearFilter;
             currentMap.generateMipmaps = true;
+            if (options.maxAnisotropy) {
+              currentMap.anisotropy = options.maxAnisotropy;
+            }
             currentMap.needsUpdate = true;
           }
 
@@ -226,9 +229,11 @@ def get_spatial_engine_code() -> str:
       try {
         this.renderer = new global.THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
         this.renderer.setSize(width, height);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.5));
         this.renderer.toneMapping = global.THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.30;
+        this.renderer.toneMappingExposure = 1.15;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = global.THREE.PCFSoftShadowMap;
         this.container.appendChild(this.renderer.domElement);
       } catch (err) {
         console.warn('[ZAU SpatialEngine] WebGL context unaccelerated:', err);
@@ -256,20 +261,33 @@ def get_spatial_engine_code() -> str:
     }
 
     buildLighting() {
-      const ambient = new global.THREE.AmbientLight(0xffffff, 0.75);
+      const ambient = new global.THREE.AmbientLight(0xffffff, 0.85);
       this.scene.add(ambient);
 
-      this.keyLight = new global.THREE.DirectionalLight(0xf59e0b, 2.8);
-      this.keyLight.position.set(6, 12, 8);
+      this.keyLight = new global.THREE.DirectionalLight(0xfffaed, 2.2);
+      this.keyLight.position.set(5, 8, 5);
+      this.keyLight.castShadow = true;
+      this.keyLight.shadow.mapSize.width = 2048;
+      this.keyLight.shadow.mapSize.height = 2048;
+      this.keyLight.shadow.bias = -0.0001;
       this.scene.add(this.keyLight);
 
-      this.fillLight = new global.THREE.PointLight(0x38bdf8, 3.2, 20);
-      this.fillLight.position.set(-6, 4, -4);
+      this.fillLight = new global.THREE.PointLight(0x90cdf4, 1.2, 25);
+      this.fillLight.position.set(-5, 4, -3);
       this.scene.add(this.fillLight);
 
-      this.backLight = new global.THREE.PointLight(0xa855f7, 2.0, 15);
-      this.backLight.position.set(0, -6, -4);
+      this.backLight = new global.THREE.PointLight(0xfbbf24, 1.5, 25);
+      this.backLight.position.set(0, 5, -6);
       this.scene.add(this.backLight);
+
+      // Studio Ground Contact Shadow Catcher Plane
+      const groundGeo = new global.THREE.PlaneGeometry(30, 30);
+      this.groundMaterial = new global.THREE.ShadowMaterial({ opacity: 0.45 });
+      this.groundPlane = new global.THREE.Mesh(groundGeo, this.groundMaterial);
+      this.groundPlane.rotation.x = -Math.PI / 2;
+      this.groundPlane.position.y = 0;
+      this.groundPlane.receiveShadow = true;
+      this.scene.add(this.groundPlane);
     }
 
     buildHighPolyArtifact() {
@@ -388,19 +406,25 @@ def get_spatial_engine_code() -> str:
         loader.load(
           url,
           (gltf) => {
-            const model = gltf.scene;
-            if (opts.smoothNormals) {
-              HighPolyMeshPipeline.upgradeModelToHighPoly(model, {
-                computeVertexNormals: true,
-                doubleSided: true
-              });
-            }
+            const maxAnisotropy = this.renderer ? this.renderer.capabilities.getMaxAnisotropy() : 16;
+            HighPolyMeshPipeline.upgradeModelToHighPoly(model, {
+              computeVertexNormals: !!opts.smoothNormals,
+              doubleSided: false,
+              maxAnisotropy: maxAnisotropy,
+              preserveMaterials: true
+            });
 
             const bbox = new global.THREE.Box3().setFromObject(model);
             const center = bbox.getCenter(new global.THREE.Vector3());
             model.position.x = -center.x;
-            model.position.y = -center.y;
+            model.position.y = -bbox.min.y;
             model.position.z = -center.z;
+
+            if (this.controls) {
+              const h = bbox.max.y - bbox.min.y;
+              this.controls.target.set(0, h * 0.45, 0);
+              this.controls.update();
+            }
 
             if (this._proxyObject) {
               this.scene.remove(this._proxyObject);

@@ -87,15 +87,15 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
         </nav>
 
         {/* Action Controls */}
-        <div className="flex items-center space-x-3">
-          {/* Zen Mode / Hide UI Button */}
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          {/* Mode Bersih Button */}
           <button
             onClick={onToggleZen}
-            title="Hide UI to inspect full 360° The Great Drawing Room"
-            className="flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/40 transition active:scale-95 shadow-sm"
+            title="Mode Bersih 360° Spatial Canvas (ESC)"
+            className="flex items-center space-x-1.5 px-2.5 sm:px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/40 transition active:scale-95 shadow-sm"
           >
             <i className="bi bi-eye-slash-fill text-sm text-amber-400" />
-            <span className="hidden md:inline">360° Immersion</span>
+            <span className="hidden sm:inline">Mode Bersih</span>
             <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden lg:inline">
               ESC
             </kbd>

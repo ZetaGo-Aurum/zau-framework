@@ -302,7 +302,7 @@ export default function Documentation() {
 
         <div className="rounded-3xl glass-panel-glow border border-amber-500/30 overflow-hidden shadow-2xl">
           {/* Tabs */}
-          <div className="flex border-b border-zinc-800 bg-zinc-950/60 px-4 pt-3 space-x-2">
+          <div className="flex border-b border-zinc-800 bg-zinc-950/70 px-4 pt-3 space-x-2 overflow-x-auto">
             {[
               { id: 'vercel', label: 'Vercel', icon: 'bi-triangle-fill' },
               { id: 'render', label: 'Render', icon: 'bi-cloud-fill' },
@@ -312,7 +312,7 @@ export default function Documentation() {
               <button
                 key={tab.id}
                 onClick={() => setActiveDeployTab(tab.id as any)}
-                className={`px-4 py-2 rounded-t-xl text-xs font-mono font-bold flex items-center space-x-2 transition ${
+                className={`px-4 py-2 rounded-t-xl text-xs font-mono font-bold flex items-center space-x-2 whitespace-nowrap transition ${
                   activeDeployTab === tab.id
                     ? 'bg-amber-500/10 text-amber-400 border-t-2 border-amber-500'
                     : 'text-zinc-400 hover:text-zinc-200'

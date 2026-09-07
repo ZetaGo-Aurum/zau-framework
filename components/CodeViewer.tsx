@@ -198,23 +198,34 @@ export default function CodeViewer() {
   return (
     <div className="rounded-3xl glass-panel-glow border border-amber-500/30 overflow-hidden shadow-2xl">
       {/* Code Header Bar */}
-      <div className="flex flex-wrap items-center justify-between border-b border-zinc-800/80 px-4 py-3 bg-zinc-950/60 backdrop-blur-md">
-        <div className="flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500/80" />
-          <div className="w-3 h-3 rounded-full bg-amber-500/80" />
-          <div className="w-3 h-3 rounded-full bg-emerald-500/80" />
-          <span className="text-xs font-mono font-bold text-zinc-400 ml-2">
-            {current.filename}
-          </span>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-zinc-800/80 px-4 py-3 bg-zinc-950/70 backdrop-blur-md gap-3">
+        <div className="flex items-center justify-between w-full sm:w-auto">
+          <div className="flex items-center space-x-2">
+            <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-500/80" />
+            <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
+            <span className="text-xs font-mono font-bold text-zinc-300 ml-2 truncate">
+              {current.filename}
+            </span>
+          </div>
+
+          {/* Copy Button (Mobile Only) */}
+          <button
+            onClick={handleCopy}
+            className="sm:hidden flex items-center space-x-1.5 px-2.5 py-1 rounded-lg text-xs font-mono text-zinc-300 hover:text-white bg-zinc-800/80 border border-zinc-700 transition"
+          >
+            <i className={`bi ${copied ? 'bi-check2 text-emerald-400' : 'bi-clipboard text-amber-400'}`} />
+            <span>{copied ? 'Copied' : 'Copy'}</span>
+          </button>
         </div>
 
-        {/* Tab Buttons */}
-        <div className="flex items-center space-x-1 p-1 rounded-xl bg-zinc-900/80 border border-zinc-800">
+        {/* Tab Buttons (Horizontally scrollable on mobile) */}
+        <div className="flex items-center space-x-1 p-1 rounded-xl bg-zinc-900/90 border border-zinc-800 overflow-x-auto w-full sm:w-auto">
           {(Object.keys(CODE_EXAMPLES) as TabKey[]).map((key) => (
             <button
               key={key}
               onClick={() => setActiveTab(key)}
-              className={`px-3 py-1 rounded-lg text-xs font-mono font-medium transition ${
+              className={`px-3 py-1 rounded-lg text-xs font-mono font-medium whitespace-nowrap transition ${
                 activeTab === key
                   ? 'bg-amber-500 text-zinc-950 font-bold shadow-sm'
                   : 'text-zinc-400 hover:text-zinc-200'
@@ -225,10 +236,10 @@ export default function CodeViewer() {
           ))}
         </div>
 
-        {/* Copy Button */}
+        {/* Copy Button (Desktop Only) */}
         <button
           onClick={handleCopy}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300 hover:text-white bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700 transition"
+          className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-zinc-300 hover:text-white bg-zinc-800/60 hover:bg-zinc-800 border border-zinc-700 transition"
         >
           <i className={`bi ${copied ? 'bi-check2 text-emerald-400' : 'bi-clipboard text-amber-400'}`} />
           <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -236,9 +247,9 @@ export default function CodeViewer() {
       </div>
 
       {/* Description Strip */}
-      <div className="px-6 py-2 bg-amber-500/5 border-b border-amber-500/10 flex items-center justify-between text-xs font-mono text-zinc-400">
-        <span>{current.description}</span>
-        <span className="text-amber-400/90 font-semibold">Real-Time Syntax Coloring</span>
+      <div className="px-4 sm:px-6 py-2 bg-amber-500/5 border-b border-amber-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1 text-xs font-mono text-zinc-400">
+        <span className="truncate max-w-full">{current.description}</span>
+        <span className="text-amber-400/90 font-semibold whitespace-nowrap hidden sm:inline">Real-Time Syntax Coloring</span>
       </div>
 
       {/* Code Content */}

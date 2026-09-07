@@ -71,8 +71,20 @@ export function useFrame(callback: (state: any, delta: number) => void): void {
   requestAnimationFrame(loop);
 }
 
-export * from './spatial/index.js';
-import { ZAUSpatialEngine, HighPolyMeshPipeline } from './spatial/index.js';
+export {
+  ZAUSpatialEngine,
+  HighPolyMeshPipeline,
+  DEFAULT_SHADING_CONFIG
+} from './spatial/index.js';
+export type {
+  ZAUShadingConfig,
+  ZAUShadowConfig,
+  ZAULightSource,
+  SmoothOptions,
+  StreamOptions
+} from './spatial/index.js';
+
+import { ZAUSpatialEngine, HighPolyMeshPipeline, DEFAULT_SHADING_CONFIG } from './spatial/index.js';
 
 /**
  * ZAU Global Runtime Namespace
@@ -84,6 +96,7 @@ export const ZAU = {
   useFrame,
   SpatialEngine: ZAUSpatialEngine,
   HighPolyPipeline: HighPolyMeshPipeline,
+  defaultShading: DEFAULT_SHADING_CONFIG,
   version: '1.0.2'
 };
 

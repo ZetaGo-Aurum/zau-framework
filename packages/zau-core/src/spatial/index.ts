@@ -1,6 +1,7 @@
 /**
  * @zau/core - Spatial Engine & High-Poly Progressive 3D Pipeline
  * Native 3D Spatial Canvas, Progressive Range Streaming & Smooth High-Poly Refining
+ * Complete Shading & Dynamic PCF Soft Shadow Subsystem
  * (c) 2026 ZetaGo-Aurum <admin@zetagoaurum.com> | zetagoaurum.com
  */
 
@@ -16,6 +17,8 @@ export interface SmoothOptions {
   metalness?: number;
   subdivisionLevel?: number;
   envMapIntensity?: number;
+  maxAnisotropy?: number;
+  preserveMaterials?: boolean;
 }
 
 export interface StreamOptions {
@@ -28,10 +31,73 @@ export interface StreamOptions {
   onError?: (err: Error) => void;
 }
 
+export interface ZAULightSource {
+  color?: string | number;
+  intensity?: number;
+  position?: [number, number, number];
+  castShadow?: boolean;
+}
+
+export interface ZAUShadowConfig {
+  enabled?: boolean;
+  type?: 'basic' | 'pcf' | 'pcfsoft' | 'vsm';
+  resolution?: number;
+  bias?: number;
+  groundContact?: boolean;
+  groundOpacity?: number;
+}
+
+export interface ZAUShadingConfig {
+  shadows?: ZAUShadowConfig;
+  lighting?: {
+    ambient?: { color?: string | number; intensity?: number };
+    keyLight?: ZAULightSource;
+    fillLight?: ZAULightSource;
+    rimLight?: ZAULightSource;
+    groundBounce?: ZAULightSource;
+  };
+  environment?: {
+    toneMapping?: 'ACESFilmic' | 'Reinhard' | 'Cineon' | 'Linear';
+    exposure?: number;
+    background?: string | number;
+  };
+  materials?: {
+    anisotropy?: number;
+    roughness?: number;
+    metalness?: number;
+  };
+}
+
+export const DEFAULT_SHADING_CONFIG: ZAUShadingConfig = {
+  shadows: {
+    enabled: true,
+    type: 'pcfsoft',
+    resolution: 2048,
+    bias: -0.0001,
+    groundContact: true,
+    groundOpacity: 0.45
+  },
+  lighting: {
+    ambient: { color: 0xffffff, intensity: 0.85 },
+    keyLight: { color: 0xfffaed, intensity: 2.2, position: [5, 8, 5], castShadow: true },
+    fillLight: { color: 0x90cdf4, intensity: 1.1, position: [-5, 4, -3] },
+    rimLight: { color: 0xfbbf24, intensity: 1.5, position: [0, 5, -6] },
+    groundBounce: { color: 0x38bdf8, intensity: 0.4, position: [0, -2, 0] }
+  },
+  environment: {
+    toneMapping: 'ACESFilmic',
+    exposure: 1.15,
+    background: 0x090a0f
+  },
+  materials: {
+    anisotropy: 16
+  }
+};
+
 /**
  * HighPolyMeshPipeline
  * Solves low-poly and facetted shading by calculating seamless vertex normal gradients,
- * high-order normal smoothing, and physically accurate PBR surface properties.
+ * high-order normal smoothing, preserving multi-material PBR, and 16x anisotropic filtering.
  */
 export class HighPolyMeshPipeline {
   /**
@@ -45,7 +111,6 @@ export class HighPolyMeshPipeline {
       geometry.computeVertexNormals();
     }
 
-    // Compute bounding box and sphere for fast culling and shadow stability
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
 
@@ -54,84 +119,124 @@ export class HighPolyMeshPipeline {
 
   /**
    * Upgrade an entire Three.js Object3D / Group hierarchy to high-poly PBR standard.
+   * Preserves complex automotive/photogrammetry materials (glass, clearcoat, carbon fiber)
+   * while upgrading anisotropic filtering to 16x and enabling shadow casting/receiving.
    */
   static upgradeModelToHighPoly(
     root: THREE.Object3D,
     options: SmoothOptions = {}
   ): void {
     const {
-      doubleSided = true,
-      roughness = 0.55,
-      metalness = 0.15,
-      computeVertexNormals = true
+      doubleSided = false,
+      computeVertexNormals = false,
+      maxAnisotropy = 16,
+      preserveMaterials = true
     } = options;
 
     root.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
-        if (mesh.geometry) {
-          this.smoothGeometry(mesh.geometry, { computeVertexNormals });
+        if (mesh.geometry && computeVertexNormals) {
+          this.smoothGeometry(mesh.geometry, { computeVertexNormals: true });
         }
 
-        const existingMat = mesh.material as any;
-        const currentMap = existingMat?.map || null;
-
-        if (currentMap) {
-          currentMap.colorSpace = THREE.SRGBColorSpace;
-          currentMap.minFilter = THREE.LinearMipmapLinearFilter;
-          currentMap.magFilter = THREE.LinearFilter;
-          currentMap.generateMipmaps = true;
-          currentMap.needsUpdate = true;
-        }
-
-        mesh.material = new THREE.MeshStandardMaterial({
-          map: currentMap,
-          side: doubleSided ? THREE.DoubleSide : THREE.FrontSide,
-          roughness: existingMat?.roughness !== undefined ? existingMat.roughness : roughness,
-          metalness: existingMat?.metalness !== undefined ? existingMat.metalness : metalness,
-          color: existingMat?.color ? existingMat.color : 0xffffff,
-          shadowSide: THREE.DoubleSide
-        });
-
-        mesh.material.needsUpdate = true;
         mesh.castShadow = true;
         mesh.receiveShadow = true;
+
+        const updateTexture = (tex: THREE.Texture | null) => {
+          if (!tex) return;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          tex.minFilter = THREE.LinearMipmapLinearFilter;
+          tex.magFilter = THREE.LinearFilter;
+          tex.generateMipmaps = true;
+          if (maxAnisotropy) {
+            tex.anisotropy = maxAnisotropy;
+          }
+          tex.needsUpdate = true;
+        };
+
+        const mats = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
+        mats.forEach((mat: any) => {
+          if (!mat) return;
+
+          // Apply 16x anisotropic filtering to all material textures
+          updateTexture(mat.map);
+          updateTexture(mat.normalMap);
+          updateTexture(mat.roughnessMap);
+          updateTexture(mat.metalnessMap);
+          updateTexture(mat.aoMap);
+          updateTexture(mat.emissiveMap);
+
+          if (doubleSided) {
+            mat.side = THREE.DoubleSide;
+          }
+
+          if (!preserveMaterials && !(mat.transparent || mat.opacity < 0.9)) {
+            mat.roughness = options.roughness !== undefined ? options.roughness : 0.55;
+            mat.metalness = options.metalness !== undefined ? options.metalness : 0.15;
+          }
+
+          mat.needsUpdate = true;
+        });
       }
     });
+  }
+
+  /**
+   * Automatically normalizes model bounding box, scales to a target dimension (e.g., 4.2 units),
+   * centers horizontally (x=0, z=0), and grounds vertically onto the shadow catcher plane (y=0).
+   */
+  static fitAndGroundModel(
+    root: THREE.Object3D,
+    targetDimension: number = 4.2
+  ): THREE.Box3 {
+    // 1. Initial measurement
+    const initialBbox = new THREE.Box3().setFromObject(root);
+    const size = initialBbox.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+
+    // 2. Uniform scaling to target showroom dimension
+    if (maxDim > 0 && targetDimension > 0) {
+      const factor = targetDimension / maxDim;
+      root.scale.set(factor, factor, factor);
+      root.updateMatrixWorld(true);
+    }
+
+    // 3. Recompute bounding box after scale
+    const finalBbox = new THREE.Box3().setFromObject(root);
+    const center = finalBbox.getCenter(new THREE.Vector3());
+
+    // 4. Center horizontally and place bottom on ground plane (y = 0)
+    root.position.x = -center.x;
+    root.position.y = -finalBbox.min.y;
+    root.position.z = -center.z;
+    root.updateMatrixWorld(true);
+
+    return new THREE.Box3().setFromObject(root);
   }
 
   /**
    * Generates a high-precision procedural proxy volume (Micro-LOD Anchor)
    * that renders in < 5ms while heavy binary assets stream asynchronously.
    */
-  static createMicroLODProxy(dimensions: THREE.Vector3 = new THREE.Vector3(12, 6, 12)): THREE.Group {
+  static createMicroLODProxy(dimensions: THREE.Vector3 = new THREE.Vector3(5, 2, 2.5)): THREE.Group {
     const group = new THREE.Group();
     group.name = '__zau_microlod_proxy__';
 
-    // High-subdivision architectural shell (64x64 segments for smooth curvature)
-    const shellGeom = new THREE.SphereGeometry(dimensions.x * 1.2, 64, 64);
-    shellGeom.computeVertexNormals();
+    // Sleek aerodynamic proxy volume
+    const bodyGeom = new THREE.BoxGeometry(dimensions.x, dimensions.y * 0.7, dimensions.z, 8, 8, 8);
+    bodyGeom.computeVertexNormals();
 
-    const shellMat = new THREE.MeshStandardMaterial({
-      color: 0x14161f,
-      side: THREE.BackSide,
-      roughness: 0.85,
-      metalness: 0.1
+    const bodyMat = new THREE.MeshStandardMaterial({
+      color: 0x181a20,
+      roughness: 0.35,
+      metalness: 0.8
     });
-    const shell = new THREE.Mesh(shellGeom, shellMat);
-    group.add(shell);
-
-    // Architectural perimeter floor
-    const floorGeom = new THREE.CylinderGeometry(dimensions.x * 0.9, dimensions.x * 0.9, 0.2, 48);
-    floorGeom.computeVertexNormals();
-    const floorMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1815,
-      roughness: 0.4,
-      metalness: 0.3
-    });
-    const floor = new THREE.Mesh(floorGeom, floorMat);
-    floor.position.y = -dimensions.y * 0.5;
-    group.add(floor);
+    const body = new THREE.Mesh(bodyGeom, bodyMat);
+    body.position.y = dimensions.y * 0.35;
+    body.castShadow = true;
+    body.receiveShadow = true;
+    group.add(body);
 
     return group;
   }
@@ -140,7 +245,8 @@ export class HighPolyMeshPipeline {
 /**
  * ZAUSpatialEngine
  * Enterprise-grade 3D WebGL Canvas Engine featuring instant progressive streaming,
- * high-poly mesh smoothing, and resilient context fallbacks.
+ * complete shading (dynamic key/fill/rim/ambient lights, PCF soft shadows, ground contact shadows),
+ * and dynamic configuration.
  */
 export class ZAUSpatialEngine {
   public container: HTMLElement;
@@ -149,30 +255,57 @@ export class ZAUSpatialEngine {
   public renderer: THREE.WebGLRenderer | null = null;
   public controls: OrbitControls | null = null;
 
+  // Shading & Lighting nodes
+  private _ambientLight: THREE.AmbientLight | null = null;
+  private _keyLight: THREE.DirectionalLight | null = null;
+  private _fillLight: THREE.PointLight | null = null;
+  private _rimLight: THREE.PointLight | null = null;
+  private _groundBounce: THREE.PointLight | null = null;
+  private _groundPlane: THREE.Mesh | null = null;
+  private _groundMaterial: THREE.ShadowMaterial | null = null;
+
   private _proxyObject: THREE.Group | null = null;
   private _activeModel: THREE.Group | null = null;
   private _dracoLoader: DRACOLoader | null = null;
   private _animFrameId: number | null = null;
   private _isDestroyed = false;
+  private _shadingConfig: ZAUShadingConfig;
 
-  constructor(container: HTMLElement | string, options: { width?: number; height?: number } = {}) {
+  constructor(
+    container: HTMLElement | string,
+    options: {
+      width?: number;
+      height?: number;
+      shading?: ZAUShadingConfig;
+      fov?: number;
+      cameraPosition?: [number, number, number];
+    } = {}
+  ) {
     const elem = typeof container === 'string' ? document.getElementById(container) : container;
     if (!elem) {
       throw new Error(`[ZAU SpatialEngine] Container element not found: ${container}`);
     }
     this.container = elem;
 
+    this._shadingConfig = {
+      ...DEFAULT_SHADING_CONFIG,
+      ...(options.shading || {})
+    };
+
     const width = options.width || this.container.clientWidth || 800;
     const height = options.height || this.container.clientHeight || 600;
 
     // 1. Scene & Camera
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color(0x090a0f);
+    const bgCol = this._shadingConfig.environment?.background ?? 0x090a0f;
+    this.scene.background = new THREE.Color(bgCol);
 
-    this.camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 1000);
-    this.camera.position.set(0, 1.2, 4.5);
+    const fov = options.fov || 45;
+    this.camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 1000);
+    const camPos = options.cameraPosition || [3.5, 2.0, 5.0];
+    this.camera.position.set(camPos[0], camPos[1], camPos[2]);
 
-    // 2. WebGL Renderer with graceful fallback
+    // 2. WebGL Renderer with dynamic PCF Soft Shadows
     try {
       this.renderer = new THREE.WebGLRenderer({
         antialias: true,
@@ -180,10 +313,19 @@ export class ZAUSpatialEngine {
         alpha: true
       });
       this.renderer.setSize(width, height);
-      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.5));
+
+      // Tone Mapping calibration
       this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.35;
+      this.renderer.toneMappingExposure = this._shadingConfig.environment?.exposure ?? 1.15;
       this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+      // Enable Real-Time Dynamic Shadows
+      if (this._shadingConfig.shadows?.enabled !== false) {
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      }
+
       this.container.appendChild(this.renderer.domElement);
     } catch (err) {
       console.warn('[ZAU SpatialEngine] WebGL unaccelerated or unavailable:', err);
@@ -197,9 +339,11 @@ export class ZAUSpatialEngine {
     this.controls.dampingFactor = 0.05;
     this.controls.autoRotate = true;
     this.controls.autoRotateSpeed = 0.8;
+    this.controls.minDistance = 1.0;
+    this.controls.maxDistance = 25.0;
 
-    // 4. Default Studio Lighting Rig
-    this.initLighting();
+    // 4. Initialize Studio Shading & Lighting Rig
+    this.initShadingRig();
 
     // 5. Start Animation Loop
     this.startLoop();
@@ -208,21 +352,124 @@ export class ZAUSpatialEngine {
     window.addEventListener('resize', this.onResize);
   }
 
-  private initLighting(): void {
-    const ambient = new THREE.AmbientLight(0xfff5ea, 1.8);
-    this.scene.add(ambient);
+  /**
+   * Initializes or updates the complete studio lighting and shadow-catcher setup.
+   */
+  private initShadingRig(): void {
+    const cfg = this._shadingConfig;
 
-    const key = new THREE.DirectionalLight(0xfff0db, 2.6);
-    key.position.set(6, 10, 8);
-    this.scene.add(key);
+    // Ambient light
+    const ambCfg = cfg.lighting?.ambient;
+    this._ambientLight = new THREE.AmbientLight(
+      ambCfg?.color ?? 0xffffff,
+      ambCfg?.intensity ?? 0.85
+    );
+    this.scene.add(this._ambientLight);
 
-    const fill = new THREE.PointLight(0x7dd3fc, 2.0, 30);
-    fill.position.set(-6, 3, -4);
-    this.scene.add(fill);
+    // Directional Key Light with Dynamic Shadow Mapping
+    const keyCfg = cfg.lighting?.keyLight;
+    this._keyLight = new THREE.DirectionalLight(
+      keyCfg?.color ?? 0xfffaed,
+      keyCfg?.intensity ?? 2.2
+    );
+    const keyPos = keyCfg?.position ?? [5, 8, 5];
+    this._keyLight.position.set(keyPos[0], keyPos[1], keyPos[2]);
 
-    const goldAccent = new THREE.PointLight(0xf59e0b, 2.5, 20);
-    goldAccent.position.set(0, -3, 0);
-    this.scene.add(goldAccent);
+    if (cfg.shadows?.enabled !== false && keyCfg?.castShadow !== false) {
+      this._keyLight.castShadow = true;
+      const res = cfg.shadows?.resolution ?? 2048;
+      this._keyLight.shadow.mapSize.width = res;
+      this._keyLight.shadow.mapSize.height = res;
+      this._keyLight.shadow.camera.near = 0.5;
+      this._keyLight.shadow.camera.far = 30;
+      this._keyLight.shadow.camera.left = -6;
+      this._keyLight.shadow.camera.right = 6;
+      this._keyLight.shadow.camera.top = 6;
+      this._keyLight.shadow.camera.bottom = -6;
+      this._keyLight.shadow.bias = cfg.shadows?.bias ?? -0.0001;
+    }
+    this.scene.add(this._keyLight);
+
+    // Fill Light
+    const fillCfg = cfg.lighting?.fillLight;
+    this._fillLight = new THREE.PointLight(
+      fillCfg?.color ?? 0x90cdf4,
+      fillCfg?.intensity ?? 1.1,
+      25
+    );
+    const fillPos = fillCfg?.position ?? [-5, 4, -3];
+    this._fillLight.position.set(fillPos[0], fillPos[1], fillPos[2]);
+    this.scene.add(this._fillLight);
+
+    // Rim Light (Edge Highlights)
+    const rimCfg = cfg.lighting?.rimLight;
+    this._rimLight = new THREE.PointLight(
+      rimCfg?.color ?? 0xfbbf24,
+      rimCfg?.intensity ?? 1.5,
+      25
+    );
+    const rimPos = rimCfg?.position ?? [0, 5, -6];
+    this._rimLight.position.set(rimPos[0], rimPos[1], rimPos[2]);
+    this.scene.add(this._rimLight);
+
+    // Ground Bounce Light
+    const bounceCfg = cfg.lighting?.groundBounce;
+    this._groundBounce = new THREE.PointLight(
+      bounceCfg?.color ?? 0x38bdf8,
+      bounceCfg?.intensity ?? 0.4,
+      15
+    );
+    const bouncePos = bounceCfg?.position ?? [0, -2, 0];
+    this._groundBounce.position.set(bouncePos[0], bouncePos[1], bouncePos[2]);
+    this.scene.add(this._groundBounce);
+
+    // Ground Contact Shadow Catcher Plane
+    if (cfg.shadows?.groundContact !== false) {
+      const planeGeo = new THREE.PlaneGeometry(30, 30);
+      this._groundMaterial = new THREE.ShadowMaterial({
+        opacity: cfg.shadows?.groundOpacity ?? 0.45
+      });
+      this._groundPlane = new THREE.Mesh(planeGeo, this._groundMaterial);
+      this._groundPlane.rotation.x = -Math.PI / 2;
+      this._groundPlane.position.y = 0;
+      this._groundPlane.receiveShadow = true;
+      this.scene.add(this._groundPlane);
+    }
+  }
+
+  /**
+   * Dynamically adjust shading and lighting parameters at runtime.
+   */
+  public configureShading(newConfig: Partial<ZAUShadingConfig>): void {
+    this._shadingConfig = {
+      ...this._shadingConfig,
+      ...newConfig,
+      shadows: { ...this._shadingConfig.shadows, ...(newConfig.shadows || {}) },
+      lighting: { ...this._shadingConfig.lighting, ...(newConfig.lighting || {}) },
+      environment: { ...this._shadingConfig.environment, ...(newConfig.environment || {}) }
+    };
+
+    if (this.renderer && this._shadingConfig.environment?.exposure !== undefined) {
+      this.renderer.toneMappingExposure = this._shadingConfig.environment.exposure;
+    }
+
+    if (this._ambientLight && this._shadingConfig.lighting?.ambient?.intensity !== undefined) {
+      this._ambientLight.intensity = this._shadingConfig.lighting.ambient.intensity;
+    }
+
+    if (this._keyLight) {
+      if (this._shadingConfig.lighting?.keyLight?.intensity !== undefined) {
+        this._keyLight.intensity = this._shadingConfig.lighting.keyLight.intensity;
+      }
+      if (this._shadingConfig.lighting?.keyLight?.position) {
+        const [x, y, z] = this._shadingConfig.lighting.keyLight.position;
+        this._keyLight.position.set(x, y, z);
+      }
+    }
+
+    if (this._groundMaterial && this._shadingConfig.shadows?.groundOpacity !== undefined) {
+      this._groundMaterial.opacity = this._shadingConfig.shadows.groundOpacity;
+    }
   }
 
   private renderFallbackUI(): void {
@@ -238,7 +485,7 @@ export class ZAUSpatialEngine {
   /**
    * Progressive High-Poly Model Streamer
    * Renders Micro-LOD Proxy in frame 0, streams Draco GLB in background,
-   * refines geometry to high-poly smooth standard, and cross-dissolves seamlessly.
+   * aligns model onto ground contact shadow plane, and applies 16x anisotropic filtering.
    */
   public async loadModel(url: string, options: StreamOptions = {}): Promise<THREE.Group | null> {
     if (!this.renderer) return null;
@@ -246,7 +493,7 @@ export class ZAUSpatialEngine {
     const {
       instantProxy = true,
       dracoPath = '/draco/gltf/',
-      smoothNormals = true,
+      smoothNormals = false,
       onProgress,
       onReady,
       onError
@@ -276,20 +523,27 @@ export class ZAUSpatialEngine {
 
           const model = gltf.scene;
 
-          // 3. High-Poly Vertex Normal Smoothing & PBR Standard Refinement
-          if (smoothNormals) {
-            HighPolyMeshPipeline.upgradeModelToHighPoly(model, {
-              computeVertexNormals: true,
-              doubleSided: true
-            });
-          }
+          // 3. High-Poly PBR Material Upgrade with 16x Anisotropic Filtering
+          const maxAnisotropy = this.renderer ? this.renderer.capabilities.getMaxAnisotropy() : 16;
+          HighPolyMeshPipeline.upgradeModelToHighPoly(model, {
+            computeVertexNormals: smoothNormals,
+            maxAnisotropy,
+            preserveMaterials: true
+          });
 
-          // Center geometry in view space
+          // Compute exact bounding box and rest model precisely on ground plane (y = 0)
           const bbox = new THREE.Box3().setFromObject(model);
           const center = bbox.getCenter(new THREE.Vector3());
           model.position.x = -center.x;
-          model.position.y = -center.y;
+          model.position.y = -bbox.min.y; // Lowest vertex sits on ground shadow plane
           model.position.z = -center.z;
+
+          // Align controls target to model center of mass
+          if (this.controls) {
+            const height = bbox.max.y - bbox.min.y;
+            this.controls.target.set(0, height * 0.45, 0);
+            this.controls.update();
+          }
 
           // 4. Seamless Cross-Dissolve Swap: Fade in high-poly model, remove proxy
           if (this._proxyObject) {
