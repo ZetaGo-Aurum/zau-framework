@@ -160,6 +160,8 @@ def list_3d_models():
     """List all registered 3D models in model/3d/."""
     model_dir = os.path.join(os.getcwd(), "model", "3d")
     if not os.path.exists(model_dir):
+        model_dir = os.path.join(os.getcwd(), "public", "model", "3d")
+    if not os.path.exists(model_dir):
         click.echo(click.style("Notice: No model/3d/ directory found in project root.", fg="yellow"))
         return
 
@@ -171,6 +173,76 @@ def list_3d_models():
             gltf_files = [f for f in files if f.endswith(('.gltf', '.glb', '.obj'))]
             click.echo(f"  • {click.style(entry, fg='cyan', bold=True)}: {len(files)} files ({', '.join(gltf_files)})")
     click.echo()
+
+@main.command("view3d")
+@click.argument("model_path", required=False, default="public/model/3d/the_great_drawing_room/room_web.glb")
+@click.option("--port", "-p", default=8008, help="Port to serve interactive 3D view")
+def view_3d_model(model_path, port):
+    """Launch interactive open-source 3D Model Viewer engine in browser."""
+    import http.server
+    import socketserver
+    import webbrowser
+
+    if not os.path.exists(model_path):
+        click.echo(click.style(f"Error: 3D model file '{model_path}' not found.", fg="red"))
+        sys.exit(1)
+
+    click.echo(click.style(f"\n🚀 Launching ZAU Open-Source 3D Model Engine on port {port}...", fg="yellow", bold=True))
+    click.echo(f"   Model: {click.style(model_path, fg='cyan')}")
+    click.echo(f"   Engine: Google <model-viewer> & Three.js PBR Subsystem")
+    click.echo(f"   URL: {click.style(f'http://localhost:{port}', fg='green', bold=True)}\n")
+
+    # Generate standalone viewer HTML shell
+    html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ZAU 3D Model Viewer Engine | {os.path.basename(model_path)}</title>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    body {{ margin: 0; background: #090a0f; color: #fff; font-family: monospace; overflow: hidden; }}
+    model-viewer {{ width: 100vw; height: 100vh; }}
+    .hud {{ position: fixed; top: 16px; left: 16px; background: rgba(9,10,15,0.8); padding: 10px 16px; border: 1px solid #f59e0b; border-radius: 8px; z-index: 10; font-size: 12px; }}
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <b>ZAU 3D Model Engine</b> • {os.path.basename(model_path)}<br>
+    <span style="color: #94a3b8;">Controls: Click & Drag 360° | Scroll to Zoom</span>
+  </div>
+  <model-viewer
+    src="/{model_path}"
+    camera-controls
+    auto-rotate
+    rotation-per-second="20deg"
+    shadow-intensity="1"
+    exposure="1.2"
+    touch-action="pan-y">
+  </model-viewer>
+</body>
+</html>"""
+
+    viewer_html_path = os.path.join(os.getcwd(), ".zau_3d_viewer.html")
+    with open(viewer_html_path, "w") as f:
+        f.write(html_content)
+
+    class CustomHandler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            if self.path == "/" or self.path == "/index.html":
+                self.path = "/.zau_3d_viewer.html"
+            return super().do_GET()
+
+    try:
+        with socketserver.TCPServer(("", port), CustomHandler) as httpd:
+            webbrowser.open(f"http://localhost:{port}")
+            click.echo("Press Ctrl+C to terminate viewer.")
+            httpd.serve_forever()
+    except KeyboardInterrupt:
+        click.echo("\nViewer terminated.")
+    finally:
+        if os.path.exists(viewer_html_path):
+            os.remove(viewer_html_path)
+
 
 if __name__ == "__main__":
     main()

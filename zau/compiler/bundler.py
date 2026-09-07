@@ -298,7 +298,60 @@ def get_spatial_engine_code() -> str:
     }
   }
 
+  // Open-Source 3D Model Viewer Engine (Google model-viewer & Three.js bridge)
+  class ZAUModelViewerEngine {
+    constructor(elementOrId, modelUrl, options = {}) {
+      this.container = typeof elementOrId === 'string' ? document.getElementById(elementOrId) : elementOrId;
+      this.modelUrl = modelUrl;
+      this.options = Object.assign({
+        autoRotate: true,
+        cameraControls: true,
+        exposure: 1.2,
+        shadowIntensity: 1.0,
+        rotationSpeed: '20deg'
+      }, options);
+      if (this.container) this.init();
+    }
+
+    init() {
+      // Ensure Google model-viewer web component is registered
+      if (!customElements.get('model-viewer')) {
+        const script = document.createElement('script');
+        script.type = 'module';
+        script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
+        document.head.appendChild(script);
+      }
+
+      const viewer = document.createElement('model-viewer');
+      viewer.src = this.modelUrl;
+      if (this.options.cameraControls) viewer.setAttribute('camera-controls', '');
+      if (this.options.autoRotate) viewer.setAttribute('auto-rotate', '');
+      viewer.setAttribute('rotation-per-second', this.options.rotationSpeed);
+      viewer.setAttribute('shadow-intensity', this.options.shadowIntensity.toString());
+      viewer.setAttribute('exposure', this.options.exposure.toString());
+      viewer.setAttribute('touch-action', 'pan-y');
+      viewer.style.width = '100%';
+      viewer.style.height = '100%';
+      viewer.style.backgroundColor = '#090a0f';
+
+      this.container.appendChild(viewer);
+      this.viewer = viewer;
+    }
+  }
+
+  // Auto-boot model-viewer if <model-viewer> tags exist in DOM
+  if (typeof document !== 'undefined') {
+    if (document.querySelector('model-viewer') && !customElements.get('model-viewer')) {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = 'https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js';
+      document.head.appendChild(script);
+    }
+  }
+
   global.__ZAUSpatialRenderer__ = ZAUSpatialRenderer;
+  global.__ZAUModelViewerEngine__ = ZAUModelViewerEngine;
+  global.ZAUModelViewer = ZAUModelViewerEngine;
 })(typeof window !== 'undefined' ? window : globalThis);
 """
 

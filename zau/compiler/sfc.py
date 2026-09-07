@@ -25,6 +25,14 @@ class ZAUComponent:
             processed_tpl
         )
         
+        # Convert <ZAU.ModelViewer ...> to Google open-source model-viewer element
+        processed_tpl = re.sub(
+            r'<ZAU\.ModelViewer([^>]*)>',
+            r'<model-viewer camera-controls auto-rotate shadow-intensity="1" exposure="1.2" touch-action="pan-y" style="width:100%; height:100%;"\1></model-viewer>',
+            processed_tpl
+        )
+        processed_tpl = re.sub(r'</ZAU\.ModelViewer>', r'</model-viewer>', processed_tpl)
+
         # Convert <ZAU.Canvas3D ...> to <div data-zau-canvas3d ...>
         processed_tpl = re.sub(
             r'<ZAU\.Canvas3D([^>]*)>',
@@ -36,7 +44,7 @@ class ZAUComponent:
         # Detect spatial components like <ZAU.Model src="..." />
         processed_tpl = re.sub(
             r'<ZAU\.Model([^>]*)/?>',
-            r'<div data-zau-model="true"\1></div>',
+            r'<model-viewer camera-controls auto-rotate shadow-intensity="1" exposure="1.2" touch-action="pan-y" style="width:100%; height:100%;"\1></model-viewer>',
             processed_tpl
         )
 

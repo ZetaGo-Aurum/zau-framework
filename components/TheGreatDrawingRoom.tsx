@@ -42,7 +42,7 @@ export default function TheGreatDrawingRoom({
 
     // Camera at eye level
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
-    camera.position.set(0, 0.2, 0.1);
+    camera.position.set(0, 0, 0.4);
     cameraRef.current = camera;
 
     // WebGL Renderer
@@ -69,18 +69,27 @@ export default function TheGreatDrawingRoom({
     controls.maxDistance = 14;
     controls.rotateSpeed = 0.7;
     controls.zoomSpeed = 0.9;
-    controls.target.set(0, 0, -1.5);
+    controls.target.set(0, 0, -1.2);
     controlsRef.current = controls;
 
+    // Ambient architectural shell to prevent any blackscreen while assets stream
+    const ambientShellGeo = new THREE.SphereGeometry(18, 32, 32);
+    const ambientShellMat = new THREE.MeshBasicMaterial({
+      color: 0x1a1612,
+      side: THREE.BackSide,
+    });
+    const ambientShell = new THREE.Mesh(ambientShellGeo, ambientShellMat);
+    scene.add(ambientShell);
+
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xfff3e5, 1.9);
+    const ambientLight = new THREE.AmbientLight(0xfff3e5, 2.2);
     scene.add(ambientLight);
 
-    const chandelierLight = new THREE.PointLight(0xffb74d, 3.4, 25);
-    chandelierLight.position.set(0, 3.5, 0);
+    const chandelierLight = new THREE.PointLight(0xffb74d, 3.8, 30);
+    chandelierLight.position.set(0, 2.8, 0);
     scene.add(chandelierLight);
 
-    const windowLight = new THREE.DirectionalLight(0xfff9e6, 2.2);
+    const windowLight = new THREE.DirectionalLight(0xfff9e6, 2.5);
     windowLight.position.set(8, 6, 4);
     scene.add(windowLight);
 
@@ -161,38 +170,64 @@ export default function TheGreatDrawingRoom({
 
     loadingManager.onLoad = () => {
       setLoadProgress(100);
-      setTimeout(() => setIsLoaded(true), 350);
+      setTimeout(() => setIsLoaded(true), 300);
     };
 
     loadingManager.onError = (itemUrl) => {
       console.warn('Non-fatal asset notice:', itemUrl);
     };
 
+    // Explicitly load 4K HD texture for guaranteed binding
+    const textureLoader = new THREE.TextureLoader(loadingManager);
+    const hdTexture = textureLoader.load(
+      '/model/3d/the_great_drawing_room/textures/texture_4k.jpeg',
+      (tex) => {
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        tex.magFilter = THREE.LinearFilter;
+        tex.flipY = false;
+        tex.generateMipmaps = true;
+        tex.needsUpdate = true;
+      }
+    );
+
     const loader = new GLTFLoader(loadingManager);
     loader.setPath('/model/3d/the_great_drawing_room/');
     loader.setResourcePath('/model/3d/the_great_drawing_room/');
 
     const applyModelTransform = (model: THREE.Group) => {
+      // Remove temporary ambient shell
+      scene.remove(ambientShell);
+
       const box = new THREE.Box3().setFromObject(model);
       const center = box.getCenter(new THREE.Vector3());
 
       model.position.x = -center.x;
-      model.position.y = -center.y + 0.2;
+      model.position.y = -center.y;
       model.position.z = -center.z;
 
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
-          if (mesh.material) {
-            const mat = mesh.material as THREE.MeshStandardMaterial;
-            mat.side = THREE.DoubleSide;
-            mat.roughness = 0.65;
-            mat.metalness = 0.25;
-            if (mat.map) {
-              mat.map.colorSpace = THREE.SRGBColorSpace;
-              mat.map.minFilter = THREE.LinearMipmapLinearFilter;
-            }
+          const tex = (mesh.material as any)?.map || hdTexture;
+          if (tex) {
+            tex.colorSpace = THREE.SRGBColorSpace;
+            tex.minFilter = THREE.LinearMipmapLinearFilter;
+            tex.magFilter = THREE.LinearFilter;
+            tex.flipY = false;
+            tex.needsUpdate = true;
           }
+
+          mesh.material = new THREE.MeshStandardMaterial({
+            map: tex,
+            side: THREE.DoubleSide,
+            roughness: 0.55,
+            metalness: 0.15,
+            color: 0xffffff,
+          });
+          mesh.material.needsUpdate = true;
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
         }
       });
 
@@ -200,9 +235,9 @@ export default function TheGreatDrawingRoom({
       setIsLoaded(true);
     };
 
-    // Primary: Load standalone binary GLB (no external .bin or texture 404s possible)
+    // Primary: Load optimized web binary GLB (13MB, fast streaming)
     loader.load(
-      'scene.glb',
+      'room_web.glb',
       (gltf) => {
         applyModelTransform(gltf.scene);
       },
@@ -216,46 +251,35 @@ export default function TheGreatDrawingRoom({
         } else if (xhr.loaded > 0) {
           const loadedMB = (xhr.loaded / (1024 * 1024)).toFixed(1);
           setDownloadStats(`${loadedMB} MB streamed...`);
-          setLoadProgress((prev) => Math.min(prev + 5, 92));
+          setLoadProgress((prev) => Math.min(prev + 10, 96));
         }
       },
       (err) => {
-        console.warn('GLB load notice, switching to secondary glTF pipeline:', err);
-        // Secondary fallback: scene_web.gltf with explicit path
+        console.warn('room_web.glb notice, trying scene.glb:', err);
         loader.load(
-          'scene_web.gltf',
+          'scene.glb',
           (gltf) => {
             applyModelTransform(gltf.scene);
           },
           undefined,
           (err2) => {
-            console.warn('Rendering procedural ambient sanctuary:', err2);
-            // Architectural ambient sanctuary
-            const roomBox = new THREE.Mesh(
-              new THREE.BoxGeometry(24, 14, 24),
-              new THREE.MeshStandardMaterial({
-                color: 0x14151a,
-                roughness: 0.8,
-                side: THREE.BackSide,
-              })
-            );
+            console.error('Model fallback error, applying HD texture to architectural shell:', err2);
+            scene.remove(ambientShell);
+            const roomBoxGeo = new THREE.BoxGeometry(20, 10, 20);
+            const roomBoxMat = new THREE.MeshStandardMaterial({
+              map: hdTexture,
+              side: THREE.BackSide,
+              roughness: 0.5,
+              metalness: 0.1,
+              color: 0xffffff,
+            });
+            const roomBox = new THREE.Mesh(roomBoxGeo, roomBoxMat);
             scene.add(roomBox);
             setIsLoaded(true);
           }
         );
       }
     );
-
-    // Timeout safety net: never let user be stuck indefinitely
-    const safetyTimer = setTimeout(() => {
-      setIsLoaded((loaded) => {
-        if (!loaded) {
-          console.log('[ZAU Spatial] Auto-activating viewport display.');
-          return true;
-        }
-        return true;
-      });
-    }, 15000);
 
     // Raycaster for Hotspot clicks
     const raycaster = new THREE.Raycaster();
@@ -312,7 +336,6 @@ export default function TheGreatDrawingRoom({
     animate();
 
     return () => {
-      clearTimeout(safetyTimer);
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('pointerdown', onPointerDown);

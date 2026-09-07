@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import ModelViewerPlayground from './ModelViewerPlayground';
 
 export default function Documentation() {
   const [activeDeployTab, setActiveDeployTab] = useState<'vercel' | 'render' | 'replit' | 'docker'>('vercel');
@@ -213,6 +214,11 @@ export default function Documentation() {
                 Interactive spatial beacons mapped to acoustic and architectural nodes.
               </p>
             </div>
+          </div>
+
+          {/* Interactive Open-Source 3D Engine Playground */}
+          <div className="pt-2">
+            <ModelViewerPlayground />
           </div>
         </div>
       </section>
