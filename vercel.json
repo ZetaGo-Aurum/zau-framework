@@ -2,8 +2,6 @@
   "framework": "nextjs",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/scene.bin", "destination": "/model/3d/the_great_drawing_room/scene.bin" },
-    { "source": "/textures/(.*)", "destination": "/model/3d/the_great_drawing_room/textures/$1" },
     { "source": "/api/(.*)", "destination": "/api/index.py" },
     { "source": "/__zau/(.*)", "destination": "/api/index.py" }
   ]

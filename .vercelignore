@@ -1,0 +1,32 @@
+# Version control & internal
+.git
+.github
+.tokens
+
+# Python environments & build cache
+.venv
+.vercel_python_packages
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+*.egg-info
+
+# Distribution & binary packages
+dist
+build
+*.whl
+*.tar.gz
+*.vsix
+
+# Extension & language server source packages (already published / compiled to public/js)
+packages/vscode-zau
+packages/zau-language-server
+
+# Standards documentation & raw spec files
+tests
+iana
+mime
+linguist
+extracted_spec.txt
