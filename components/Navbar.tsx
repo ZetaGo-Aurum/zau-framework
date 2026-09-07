@@ -29,7 +29,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
                 <span className="font-extrabold text-base tracking-tight text-white group-hover:text-amber-400 transition">
                   ZAU
                 </span>
-                <span className="text-[10px] uppercase font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                <span className="text-xs font-mono text-zinc-400 font-medium">
                   v1.0.2
                 </span>
               </div>
@@ -96,9 +96,9 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
           >
             <i className="bi bi-eye-slash-fill text-sm text-amber-400" />
             <span className="hidden md:inline">360° Immersion</span>
-            <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden lg:inline">
+            <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30 hidden lg:inline">
               ESC
-            </span>
+            </kbd>
           </button>
 
           {/* GitHub Repo */}

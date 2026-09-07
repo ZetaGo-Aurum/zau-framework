@@ -369,9 +369,9 @@ export default function TheGreatDrawingRoom({
               <span className="text-amber-400 font-bold ml-auto">{loadProgress}%</span>
             </div>
 
-            <div className="w-full h-2 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800 shadow-inner">
+            <div className="w-full h-2 bg-zinc-900 rounded-md overflow-hidden border border-zinc-800 shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 transition-all duration-300 rounded-full"
+                className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 transition-all duration-300 rounded-md"
                 style={{ width: `${Math.max(loadProgress, 6)}%` }}
               />
             </div>
@@ -397,10 +397,10 @@ export default function TheGreatDrawingRoom({
         <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-md p-5 rounded-2xl glass-panel-glow text-zinc-100 animate-in fade-in slide-in-from-bottom-6 duration-300">
           <div className="flex items-start justify-between">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-amber-400 font-semibold">
                 {activeHotspot.category}
               </span>
-              <h4 className="text-lg font-bold mt-2 text-zinc-100">
+              <h4 className="text-lg font-bold mt-1 text-zinc-100">
                 {activeHotspot.title}
               </h4>
             </div>
@@ -424,16 +424,13 @@ export default function TheGreatDrawingRoom({
         </div>
       )}
 
-      {/* Persistent 3D Overlay Pill (Bottom Left) */}
+      {/* Persistent 3D HUD Indicator (Bottom Left) */}
       <div className="fixed bottom-6 left-6 z-30 flex items-center space-x-2">
-        <div className="px-3.5 py-2 rounded-xl glass-panel text-xs text-zinc-300 font-mono flex items-center space-x-2.5 shadow-lg border border-amber-500/20">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
-          </span>
-          <span className="font-semibold text-zinc-200">The Great Drawing Room</span>
-          <span className="text-zinc-500">|</span>
-          <span className="text-zinc-400 text-[11px]">360° HD Room</span>
+        <div className="px-3 py-1.5 rounded-lg glass-panel text-xs text-zinc-300 font-mono flex items-center space-x-2 shadow-lg border border-zinc-800">
+          <i className="bi bi-camera-video text-amber-400 text-xs" />
+          <span className="font-medium text-zinc-200">The Great Drawing Room</span>
+          <span className="text-zinc-600">/</span>
+          <span className="text-zinc-400 text-[11px]">360° WebGL</span>
         </div>
 
         {/* Camera Quick Action Controls */}

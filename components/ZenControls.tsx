@@ -24,30 +24,30 @@ export default function ZenControls({ isZenMode, onToggleZen }: ZenControlsProps
     <div className="fixed inset-0 pointer-events-none z-50 flex flex-col justify-between p-6">
       {/* Top Banner with Restore Button */}
       <div className="flex justify-between items-center pointer-events-auto">
-        <div className="px-4 py-2 rounded-2xl glass-panel-glow border border-amber-500/40 text-xs font-mono text-zinc-200 flex items-center space-x-3 shadow-2xl">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="font-bold text-amber-400">360° IMMERSION ACTIVE</span>
-          <span className="text-zinc-500">|</span>
-          <span className="text-zinc-400">Full Scene Unobstructed</span>
+        <div className="px-4 py-2 rounded-xl glass-panel text-xs font-mono text-zinc-200 flex items-center space-x-3 shadow-2xl border border-zinc-800">
+          <i className="bi bi-compass text-amber-400 text-sm" />
+          <span className="font-semibold text-amber-400">360° Spatial Immersion</span>
+          <span className="text-zinc-600">/</span>
+          <span className="text-zinc-400">Scene Unobstructed</span>
         </div>
 
         <button
           onClick={onToggleZen}
-          className="flex items-center space-x-2 px-5 py-2.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs tracking-wide shadow-gold-glow transition active:scale-95 cursor-pointer"
+          className="flex items-center space-x-2 px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-xs tracking-wide shadow-gold-glow transition active:scale-95 cursor-pointer"
         >
           <i className="bi bi-eye-fill text-base" />
           <span>RESTORE UI</span>
-          <span className="px-1.5 py-0.5 rounded bg-zinc-950/20 text-[10px] font-mono border border-zinc-950/30">
+          <kbd className="px-1.5 py-0.5 rounded bg-zinc-950/20 text-[10px] font-mono border border-zinc-950/30">
             ESC
-          </span>
+          </kbd>
         </button>
       </div>
 
       {/* Center Guidance Hint */}
-      <div className="self-center text-center opacity-75 animate-bounce">
-        <div className="px-4 py-2 rounded-xl glass-panel-subtle text-xs text-zinc-300 font-mono flex items-center space-x-2">
+      <div className="self-center text-center opacity-80">
+        <div className="px-4 py-2 rounded-xl glass-panel-subtle border border-zinc-800 text-xs text-zinc-300 font-mono flex items-center space-x-2">
           <i className="bi bi-arrows-move text-amber-400" />
-          <span>Click &amp; Drag in any direction to explore 360°</span>
+          <span>Click and drag to rotate 360° canvas</span>
         </div>
       </div>
 

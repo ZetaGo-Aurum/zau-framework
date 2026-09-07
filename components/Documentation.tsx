@@ -361,9 +361,8 @@ export default function Documentation() {
       {/* FOOTER */}
       <footer className="pt-12 border-t border-zinc-800 text-xs text-zinc-400 font-mono flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center space-x-2">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
           <span className="font-bold text-zinc-200">ZAU Framework v1.0.2</span>
-          <span>•</span>
+          <span className="text-zinc-600">•</span>
           <span>© 2026 ZetaGo-Aurum</span>
         </div>
         <div className="flex items-center space-x-4">

@@ -18,12 +18,9 @@ export default function Hero({ onToggleZen }: HeroProps) {
   return (
     <div className="relative pt-12 pb-16 lg:pt-20 lg:pb-24">
       <div className="max-w-4xl mx-auto text-center space-y-6">
-        {/* Release Tag */}
-        <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full glass-panel-glow text-xs font-mono text-amber-300 border border-amber-500/30 shadow-gold-glow">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-          <span className="font-semibold">ZAU 1.0.2 Released</span>
-          <span className="text-zinc-600">|</span>
-          <span className="text-zinc-300">Next.js Chunks + 360° Spatial Room</span>
+        {/* Header Tag */}
+        <div className="text-xs font-mono font-bold tracking-widest text-amber-400 uppercase">
+          Architecture RFC-001 • Python-First Fullstack
         </div>
 
         {/* Main Title */}
@@ -36,7 +33,7 @@ export default function Hero({ onToggleZen }: HeroProps) {
 
         {/* Subtitle */}
         <p className="text-base sm:text-lg text-zinc-300 max-w-2xl mx-auto leading-relaxed">
-          ZetaGo-Aurum Unified Web Framework. Industrial ASGI speed, declarative async ORM, and Three.js 360° photogrammetry background—compiled with genuine Next.js script chunks.
+          ZetaGo-Aurum Unified Web Framework. Industrial ASGI speed, declarative async ORM, and Three.js 360° photogrammetry background, compiled with genuine Next.js script chunks.
         </p>
 
         {/* Install Commands */}
@@ -90,9 +87,9 @@ export default function Hero({ onToggleZen }: HeroProps) {
           >
             <i className="bi bi-eye-slash-fill text-base" />
             <span>360° Immersion Mode</span>
-            <span className="text-[11px] font-mono px-1.5 py-0.5 rounded bg-zinc-950/20 text-zinc-900 border border-zinc-950/30">
+            <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-zinc-950/20 text-zinc-900 border border-zinc-950/30">
               ESC
-            </span>
+            </kbd>
           </button>
 
           <a
@@ -110,35 +107,47 @@ export default function Hero({ onToggleZen }: HeroProps) {
             className="px-5 py-3.5 rounded-2xl glass-panel-subtle text-zinc-300 hover:text-white font-semibold text-sm flex items-center space-x-2 transition active:scale-95"
           >
             <i className="bi bi-github" />
-            <span>GitHub Stars</span>
+            <span>GitHub Repository</span>
           </a>
         </div>
 
-        {/* Live Metrics Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8">
-          <div className="p-4 rounded-2xl glass-panel-subtle border border-zinc-800 text-center">
-            <div className="text-2xl font-black text-amber-400 font-mono">0.8ms</div>
-            <div className="text-[11px] text-zinc-400 uppercase tracking-wider font-mono mt-1">
-              ASGI RPC Latency
+        {/* Technical Architecture Overview */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-8 text-left">
+          <div className="p-4 rounded-xl glass-panel-subtle border border-zinc-800/80">
+            <div className="text-xs font-mono font-semibold text-amber-400 flex items-center space-x-2">
+              <i className="bi bi-cpu" />
+              <span>Python ASGI Core</span>
             </div>
+            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+              Starlette-backed event loop with type-safe async RPC procedures.
+            </p>
           </div>
-          <div className="p-4 rounded-2xl glass-panel-subtle border border-zinc-800 text-center">
-            <div className="text-2xl font-black text-sky-400 font-mono">360° HD</div>
-            <div className="text-[11px] text-zinc-400 uppercase tracking-wider font-mono mt-1">
-              Photogrammetry Room
+          <div className="p-4 rounded-xl glass-panel-subtle border border-zinc-800/80">
+            <div className="text-xs font-mono font-semibold text-sky-400 flex items-center space-x-2">
+              <i className="bi bi-box" />
+              <span>3D Spatial Canvas</span>
             </div>
+            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+              WebGL photogrammetry ingestion with interactive raycast anchors.
+            </p>
           </div>
-          <div className="p-4 rounded-2xl glass-panel-subtle border border-zinc-800 text-center">
-            <div className="text-2xl font-black text-emerald-400 font-mono">100%</div>
-            <div className="text-[11px] text-zinc-400 uppercase tracking-wider font-mono mt-1">
-              Next.js Chunks
+          <div className="p-4 rounded-xl glass-panel-subtle border border-zinc-800/80">
+            <div className="text-xs font-mono font-semibold text-emerald-400 flex items-center space-x-2">
+              <i className="bi bi-code-square" />
+              <span>Chunked Runtime</span>
             </div>
+            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+              Modular Next.js script splitting with zero monolithic HTML output.
+            </p>
           </div>
-          <div className="p-4 rounded-2xl glass-panel-subtle border border-zinc-800 text-center">
-            <div className="text-2xl font-black text-purple-400 font-mono">Dual</div>
-            <div className="text-[11px] text-zinc-400 uppercase tracking-wider font-mono mt-1">
-              Tailwind + Bootstrap
+          <div className="p-4 rounded-xl glass-panel-subtle border border-zinc-800/80">
+            <div className="text-xs font-mono font-semibold text-purple-400 flex items-center space-x-2">
+              <i className="bi bi-palette" />
+              <span>Dual Styling</span>
             </div>
+            <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
+              Tailwind CSS utility engine combined with Bootstrap icons.
+            </p>
           </div>
         </div>
       </div>
