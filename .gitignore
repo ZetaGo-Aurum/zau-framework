@@ -72,3 +72,8 @@ test.db
 
 # Vercel & Deployment
 .vercel/
+.vercel
+.vercel_python_packages/
+api/.python-version
+api/pyproject.toml
+api/uv.lock

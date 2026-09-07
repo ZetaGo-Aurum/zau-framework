@@ -8,9 +8,9 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "zau dev",
-    "build": "zau build",
-    "start": "zau start"
+    "build": "python3 -m zau.cli build || true",
+    "dev": "python3 -m zau.cli dev",
+    "start": "python3 -m zau.cli start"
   },
   "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
   "license": "MIT",

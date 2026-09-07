@@ -1,14 +1,16 @@
 {
-  "name": "@zau/core",
+  "name": "zau-framework",
   "version": "1.0.0",
   "description": "Client runtime, Signals reactivity, and Native 3D Spatial Canvas for ZAU Framework",
   "type": "module",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc"
-  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
   "keywords": [
     "zau",
     "zau-framework",
