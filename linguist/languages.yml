@@ -1,0 +1,16 @@
+# GitHub Linguist Language Definition for ZAU
+# Official submission blueprint conforming to github/linguist standard
+
+ZAU:
+  type: programming
+  color: "#f59e0b"
+  aliases:
+    - zau
+    - zau-lang
+  extensions:
+    - ".zau"
+  tm_scope: source.zau
+  ace_mode: html
+  codemirror_mode: htmlmixed
+  codemirror_mime_type: text/prs.zau
+  language_id: 899321

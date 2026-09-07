@@ -1,0 +1,11 @@
+// Sublime Text LSP settings (Preferences > Package Settings > LSP > Settings)
+{
+  "clients": {
+    "zau-lsp": {
+      "enabled": true,
+      "command": ["zau-lsp", "--stdio"],
+      "selector": "source.zau",
+      "schemes": ["file"]
+    }
+  }
+}

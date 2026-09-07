@@ -1,0 +1,20 @@
+{
+  "languages": {
+    "ZAU": {
+      "language_servers": ["zau-lsp"],
+      "formatter": {
+        "language_server": {
+          "name": "zau-lsp"
+        }
+      }
+    }
+  },
+  "lsp": {
+    "zau-lsp": {
+      "binary": {
+        "path": "zau-lsp",
+        "arguments": ["--stdio"]
+      }
+    }
+  }
+}

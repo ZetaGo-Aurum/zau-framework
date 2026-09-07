@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- JetBrains / IntelliJ Custom Language Highlighting for ZAU -->
+<filetype binary="false" default_extension="zau" description="Zau Single File Component" name="ZAU">
+  <highlighting>
+    <options>
+      <option name="LINE_COMMENT" value="//" />
+      <option name="COMMENT_START" value="<!--" />
+      <option name="COMMENT_END" value="-->" />
+      <option name="HEX_PREFIX" value="0x" />
+      <option name="NUM_POSTFIXES" value="" />
+      <option name="HAS_BRACKETS" value="true" />
+      <option name="HAS_BRACES" value="true" />
+      <option name="HAS_PARENS" value="true" />
+      <option name="HAS_STRING_ESCAPES" value="true" />
+    </options>
+    <keywords casesens="true">
+      <keyword name="template" />
+      <keyword name="script" />
+      <keyword name="style" />
+      <keyword name="z-if" />
+      <keyword name="z-else-if" />
+      <keyword name="z-else" />
+      <keyword name="z-for" />
+      <keyword name="z-model" />
+      <keyword name="z-show" />
+      <keyword name="z-slot" />
+      <keyword name="zau-canvas" />
+      <keyword name="zau-model" />
+      <keyword name="zau-camera" />
+      <keyword name="zau-light" />
+      <keyword name="zau-scene" />
+      <keyword name="zau-spatial" />
+      <keyword name="zau-mesh" />
+      <keyword name="zau-orbit-controls" />
+      <keyword name="Viewer3D" />
+      <keyword name="SceneControls" />
+    </keywords>
+    <keywords2 casesens="true">
+      <keyword name="src" />
+      <keyword name="progressiveLOD" />
+      <keyword name="tier" />
+      <keyword name="position" />
+      <keyword name="rotation" />
+      <keyword name="scale" />
+      <keyword name="fov" />
+      <keyword name="target" />
+      <keyword name="intensity" />
+      <keyword name="color" />
+      <keyword name="castShadow" />
+      <keyword name="receiveShadow" />
+      <keyword name="wireframe" />
+      <keyword name="pbr" />
+      <keyword name="metalness" />
+      <keyword name="roughness" />
+    </keywords2>
+  </highlighting>
+  <extensionMap>
+    <mapping ext="zau" />
+  </extensionMap>
+</filetype>

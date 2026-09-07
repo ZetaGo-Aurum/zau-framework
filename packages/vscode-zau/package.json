@@ -1,31 +1,53 @@
 {
-  "name": "vscode-zau",
-  "displayName": "ZAU Framework Language Support",
-  "description": "Rich syntax highlighting, spatial tags autocomplete, and tooling for .zau Single File Components",
-  "version": "1.0.1",
+  "name": "zau",
+  "displayName": "Zau Language",
+  "description": "Universal language support, spatial 3D tags IntelliSense, syntax highlighting, and LSP for .zau components",
+  "version": "1.0.3",
   "publisher": "zetago-aurum",
+  "icon": "images/icon.png",
+  "galleryBanner": {
+    "color": "#0a0b10",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Programming Languages",
-    "Snippets"
+    "Snippets",
+    "Formatters"
   ],
   "keywords": [
     "zau",
     "spatial",
     "threejs",
     "webgl",
+    "3d",
     "python",
-    "fullstack"
+    "fullstack",
+    "photogrammetry"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onLanguage:zau"
   ],
   "contributes": {
     "languages": [
       {
         "id": "zau",
-        "aliases": ["ZAU", "zau"],
-        "extensions": [".zau"],
-        "configuration": "./language-configuration.json"
+        "aliases": [
+          "Zau Language",
+          "ZAU",
+          "zau"
+        ],
+        "extensions": [
+          ".zau"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./images/icon.png",
+          "dark": "./images/icon.png"
+        }
       }
     ],
     "grammars": [
@@ -42,10 +64,31 @@
       }
     ]
   },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "convert:grammars": "node ../../scripts/convert-grammars.js",
+    "package": "vsce package --no-dependencies",
+    "publish:marketplace": "vsce publish",
+    "publish:ovsx": "ovsx publish"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ZetaGo-Aurum/zau-framework.git"
   },
+  "bugs": {
+    "url": "https://github.com/ZetaGo-Aurum/zau-framework/issues"
+  },
+  "homepage": "https://zau-framework.vercel.app",
   "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.75.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  }
 }

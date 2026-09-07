@@ -30,7 +30,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
                   ZAU
                 </span>
                 <span className="text-xs font-mono text-zinc-400 font-medium">
-                  v1.0.2
+                  v1.0.3
                 </span>
               </div>
               <p className="text-[10px] text-zinc-400 font-mono hidden sm:block">
@@ -69,6 +69,13 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
           >
             <i className="bi bi-box text-amber-400/80" />
             <span>3D Spatial</span>
+          </a>
+          <a
+            href="#zau-ecosystem"
+            className="hover:text-amber-400 transition flex items-center space-x-1.5"
+          >
+            <i className="bi bi-code-slash text-amber-400/80" />
+            <span>Ekosistem .zau</span>
           </a>
           <a
             href="#dual-styling"
@@ -157,6 +164,14 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
             >
               <i className="bi bi-box text-amber-400" />
               <span>3D Spatial Canvas (model/3d/)</span>
+            </a>
+            <a
+              href="#zau-ecosystem"
+              onClick={() => setMobileMenuOpen(false)}
+              className="p-2 rounded-lg hover:bg-zinc-800/60 flex items-center space-x-2"
+            >
+              <i className="bi bi-code-slash text-amber-400" />
+              <span>Ekosistem Bahasa .zau &amp; LSP</span>
             </a>
             <a
               href="#dual-styling"

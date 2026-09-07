@@ -1,43 +1,86 @@
 {
-  "ZAU Component": {
-    "prefix": "zau-component",
+  "ZAU Single File Component": {
+    "prefix": "zau-sfc",
     "body": [
-      "<!-- ${1:ComponentName}.zau -->",
       "<template>",
-      "  <div class=\"container py-4\">",
-      "    <h1 class=\"text-2xl font-bold\">${2:Title}</h1>",
-      "    <slot />",
+      "  <div class=\"zau-container\">",
+      "    <zau-canvas id=\"${1:canvas1}\" class=\"w-full h-96\">",
+      "      <zau-camera :position=\"[0, 1.5, 3]\" :fov=\"65\" />",
+      "      <zau-light type=\"ambient\" :intensity=\"1.2\" />",
+      "      <zau-light type=\"directional\" :position=\"[5, 10, 5]\" :intensity=\"1.5\" castShadow />",
+      "      <zau-model src=\"${2:/model/3d/salt_tower/salt_tower_8k.glb}\" progressiveLOD=\"true\" />",
+      "      <zau-orbit-controls enableDamping=\"true\" />",
+      "    </zau-canvas>",
+      "    <div class=\"content\">",
+      "      <h1>{{ title }}</h1>",
+      "      <button @click=\"toggleView\">Toggle View</button>",
+      "    </div>",
       "  </div>",
       "</template>",
       "",
       "<script lang=\"ts\">",
-      "import { ZAU, useState } from '@zau/core';",
+      "import { signal, computed } from 'zau-framework';",
       "",
-      "export default function ${1:ComponentName}() {",
-      "  const [state, setState] = useState(null);",
-      "  return { state };",
-      "}",
+      "export default {",
+      "  setup() {",
+      "    const title = signal('${3:Spatial Experience}');",
+      "    const active = signal(true);",
+      "",
+      "    function toggleView() {",
+      "      active.value = !active.value;",
+      "    }",
+      "",
+      "    return { title, active, toggleView };",
+      "  }",
+      "};",
       "</script>",
       "",
       "<style scoped>",
+      ".zau-container {",
+      "  position: relative;",
+      "  width: 100%;",
+      "  height: 100vh;",
+      "  background: #0a0b10;",
+      "}",
       "</style>"
     ],
-    "description": "Scaffold a new ZAU Single File Component"
+    "description": "Scaffold a complete ZAU 3D Spatial Component"
   },
-  "ZAU Spatial Canvas 3D": {
-    "prefix": "zau-canvas3d",
+  "ZAU Spatial Canvas": {
+    "prefix": "zau-canvas",
     "body": [
-      "<ZAU.Canvas3D",
-      "  shadows",
-      "  camera={{ position: [0, 2, 5], fov: 60 }}",
-      "  className=\"w-full h-96 rounded-2xl bg-neutral-900 border border-neutral-800\"",
-      ">",
-      "  <ZAU.AmbientLight intensity={0.6} />",
-      "  <ZAU.DirectionalLight position={[10, 10, 5]} intensity={1.5} castShadow />",
-      "  <ZAU.OrbitControls enableZoom={true} />",
-      "  <ZAU.Model src=\"${1:/models/cyber_core.glb}\" scale={1.0} />",
-      "</ZAU.Canvas3D>"
+      "<zau-canvas id=\"${1:scene3d}\" class=\"w-full h-full\">",
+      "  <zau-camera :position=\"${2:[-1.2, 1.2, 2.5]}\" :fov=\"70\" />",
+      "  <zau-light type=\"ambient\" :intensity=\"1.5\" />",
+      "  <zau-light type=\"directional\" :position=\"[0, 5, 0]\" :intensity=\"1.0\" />",
+      "  <zau-model src=\"${3:/model/3d/salt_tower/salt_tower_8k.glb}\" progressiveLOD=\"true\" tier=\"auto\" />",
+      "  <zau-orbit-controls />",
+      "</zau-canvas>"
     ],
-    "description": "Insert a Native 3D Spatial Canvas"
+    "description": "Insert a ZAU 3D Canvas element"
+  },
+  "ZAU 3D Model with Progressive LOD": {
+    "prefix": "zau-model",
+    "body": [
+      "<zau-model",
+      "  src=\"${1:/model/3d/scene.glb}\"",
+      "  progressiveLOD=\"true\"",
+      "  tier=\"auto\"",
+      "  :position=\"[0, 0, 0]\"",
+      "  :rotation=\"[0, 0, 0]\"",
+      "  :scale=\"1.0\"",
+      "  @load=\"onModelLoaded\"",
+      "/>"
+    ],
+    "description": "Insert a ZAU 3D Model with Progressive LOD"
+  },
+  "ZAU Directives": {
+    "prefix": "z-for",
+    "body": [
+      "<div z-for=\"item in ${1:items}\" :key=\"item.id\">",
+      "  {{ item.name }}",
+      "</div>"
+    ],
+    "description": "ZAU loop directive"
   }
 }

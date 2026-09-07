@@ -1,0 +1,7 @@
+id = "zau"
+name = "Zau Language"
+version = "1.0.2"
+schema_version = 1
+authors = ["ZetaGo-Aurum <admin@zetagoaurum.com>"]
+description = "Universal language support and spatial 3D tooling for .zau components in Zed"
+repository = "https://github.com/ZetaGo-Aurum/zau-framework"

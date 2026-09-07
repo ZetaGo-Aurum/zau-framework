@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zau-framework"
-version = "1.0.2"
+version = "1.0.3"
 description = "ZAU Framework (ZetaGo-Aurum Unified) - Modern Python-first fullstack web framework with native 3D spatial canvas and dual asset styling."
 readme = "README.md"
 license = { text = "MIT" }

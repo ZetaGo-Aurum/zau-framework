@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "ZAU",
+  "name": "Zau Language",
   "scopeName": "source.zau",
   "fileTypes": [
     "zau"
@@ -19,7 +19,13 @@
       "include": "#style-block"
     },
     {
-      "include": "#zau-tags"
+      "include": "#interpolation"
+    },
+    {
+      "include": "#zau-spatial-tags"
+    },
+    {
+      "include": "#zau-directives"
     }
   ],
   "repository": {
@@ -28,7 +34,12 @@
         {
           "name": "comment.block.html",
           "begin": "<!--",
-          "end": "-->"
+          "end": "-->",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.comment.html"
+            }
+          }
         },
         {
           "name": "comment.line.double-slash.js",
@@ -46,7 +57,7 @@
       ]
     },
     "template-block": {
-      "begin": "(<)(template)(>)",
+      "begin": "(<)(template)(\\s*[^>]*)?(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -55,6 +66,9 @@
           "name": "entity.name.tag.template.html"
         },
         "3": {
+          "name": "entity.other.attribute-name.html"
+        },
+        "4": {
           "name": "punctuation.definition.tag.end.html"
         }
       },
@@ -70,43 +84,30 @@
           "name": "punctuation.definition.tag.end.html"
         }
       },
+      "contentName": "text.html.derivative",
       "patterns": [
         {
           "include": "#comments"
         },
         {
-          "include": "#zau-spatial-components"
+          "include": "#interpolation"
+        },
+        {
+          "include": "#zau-spatial-tags"
         },
         {
           "include": "#zau-directives"
         },
         {
           "include": "#html-tags"
-        }
-      ]
-    },
-    "zau-spatial-components": {
-      "patterns": [
-        {
-          "name": "entity.name.tag.spatial.zau",
-          "match": "(ZAU\\.[A-Za-z0-9]+|Viewer3D|SceneControls)"
-        }
-      ]
-    },
-    "zau-directives": {
-      "patterns": [
-        {
-          "name": "keyword.operator.directive.event.zau",
-          "match": "(@[a-zA-Z0-9_-]+)"
         },
         {
-          "name": "keyword.operator.directive.binding.zau",
-          "match": "(:[a-zA-Z0-9_-]+)"
+          "include": "text.html.basic"
         }
       ]
     },
     "script-block": {
-      "begin": "(<)(script)(.*?)?(>)",
+      "begin": "(<)(script)(?:\\s+[^>]*lang=['\"](python|py)['\"][^>]*)?(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -133,6 +134,7 @@
           "name": "punctuation.definition.tag.end.html"
         }
       },
+      "contentName": "source.ts",
       "patterns": [
         {
           "include": "#comments"
@@ -149,7 +151,7 @@
       ]
     },
     "style-block": {
-      "begin": "(<)(style)(.*?)?(>)",
+      "begin": "(<)(style)(?:\\s+[^>]*lang=['\"](scss|sass|postcss)['\"][^>]*)?(>)",
       "beginCaptures": {
         "1": {
           "name": "punctuation.definition.tag.begin.html"
@@ -176,6 +178,7 @@
           "name": "punctuation.definition.tag.end.html"
         }
       },
+      "contentName": "source.css",
       "patterns": [
         {
           "include": "source.css"
@@ -185,25 +188,116 @@
         }
       ]
     },
+    "interpolation": {
+      "begin": "(\\{\\{)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.expression.begin.zau"
+        }
+      },
+      "end": "(\\}\\})",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.expression.end.zau"
+        }
+      },
+      "name": "expression.embedded.zau",
+      "patterns": [
+        {
+          "include": "source.ts"
+        },
+        {
+          "include": "source.js"
+        }
+      ]
+    },
+    "zau-spatial-tags": {
+      "patterns": [
+        {
+          "match": "(</?)(zau-(?:canvas|model|camera|light|scene|spatial|mesh|orbit-controls|shadow|skybox|env|spotlight|ambient|material|geometry)|Viewer3D|SceneControls|ZAU\\.[A-Za-z0-9]+)\\b",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            },
+            "2": {
+              "name": "entity.name.tag.zau.spatial support.class.component.zau"
+            }
+          }
+        }
+      ]
+    },
+    "zau-directives": {
+      "patterns": [
+        {
+          "name": "keyword.operator.directive.event.zau",
+          "match": "(@[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9_-]+)*)"
+        },
+        {
+          "name": "keyword.operator.directive.binding.zau",
+          "match": "(:[a-zA-Z0-9_-]+(?:\\.[a-zA-Z0-9_-]+)*)"
+        },
+        {
+          "name": "keyword.control.directive.zau",
+          "match": "\\b(z-if|z-else-if|z-else|z-for|z-model|z-show|z-slot|z-bind|z-on)\\b"
+        },
+        {
+          "name": "support.type.property-name.zau.spatial",
+          "match": "\\b(src|progressiveLOD|tier|position|pos|rotation|rot|scale|fov|target|intensity|color|castShadow|receiveShadow|wireframe|pbr|metalness|roughness|maxTextureSize)\\b"
+        }
+      ]
+    },
     "html-tags": {
       "patterns": [
         {
-          "name": "entity.name.tag.html",
-          "match": "(<\\/?)([a-zA-Z0-9_-]+)"
+          "name": "tag.open.html",
+          "match": "(<)([a-zA-Z0-9_-]+)(?=[\\s>])",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            }
+          }
+        },
+        {
+          "name": "tag.close.html",
+          "match": "(</)([a-zA-Z0-9_-]+)(>)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.tag.begin.html"
+            },
+            "2": {
+              "name": "entity.name.tag.html"
+            },
+            "3": {
+              "name": "punctuation.definition.tag.end.html"
+            }
+          }
         },
         {
           "name": "entity.other.attribute-name.html",
-          "match": "([a-zA-Z0-9_-]+)="
+          "match": "([a-zA-Z0-9_-]+)(?==)"
         },
         {
           "name": "string.quoted.double.html",
           "begin": "\"",
-          "end": "\""
+          "end": "\"",
+          "patterns": [
+            {
+              "include": "#interpolation"
+            }
+          ]
         },
         {
           "name": "string.quoted.single.html",
           "begin": "'",
-          "end": "'"
+          "end": "'",
+          "patterns": [
+            {
+              "include": "#interpolation"
+            }
+          ]
         }
       ]
     }

@@ -1,0 +1,25 @@
+{
+  "name": "zau-parser",
+  "version": "1.0.3",
+  "description": "Universal lightweight isomorphic parser and browser runtime for .zau Single File Components",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "browser": "dist/zau-browser.js",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node test.js"
+  },
+  "keywords": [
+    "zau",
+    "parser",
+    "ast",
+    "compiler",
+    "threejs",
+    "webgl",
+    "browser-runtime",
+    "wasm"
+  ],
+  "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
+  "license": "MIT"
+}

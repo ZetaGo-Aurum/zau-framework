@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FreeDesktop.org Shared MIME-Info specification for Linux -->
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="text/prs.zau">
+    <comment>ZAU Single File Component</comment>
+    <comment xml:lang="id">Komponen Berkas Tunggal ZAU</comment>
+    <acronym>ZAU</acronym>
+    <expanded-acronym>ZetaGo-Aurum Unified Component</expanded-acronym>
+    <glob pattern="*.zau"/>
+    <sub-class-of type="text/plain"/>
+    <alias type="application/prs.zau"/>
+    <generic-icon name="text-x-generic"/>
+  </mime-type>
+</mime-info>

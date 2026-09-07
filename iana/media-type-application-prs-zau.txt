@@ -1,0 +1,34 @@
+Media Type Registration Application (RFC 6838)
+
+Type name:
+   application
+
+Subtype name:
+   prs.zau
+
+Required parameters:
+   N/A
+
+Optional parameters:
+   charset: Default is UTF-8.
+
+Encoding considerations:
+   8bit / binary.
+
+Security considerations:
+   Same as text/prs.zau.
+
+Interoperability considerations:
+   Used when .zau components are bundled or served as executable application payloads.
+
+Published specification:
+   https://github.com/ZetaGo-Aurum/zau-framework/blob/main/RFC-001.md
+
+File extension(s):
+   .zau
+
+Person & email address to contact:
+   ZetaGo-Aurum Architecture Board <admin@zetagoaurum.com>
+
+Intended usage:
+   COMMON

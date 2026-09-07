@@ -97,7 +97,7 @@ export const ZAU = {
   SpatialEngine: ZAUSpatialEngine,
   HighPolyPipeline: HighPolyMeshPipeline,
   defaultShading: DEFAULT_SHADING_CONFIG,
-  version: '1.0.2'
+  version: '1.0.3'
 };
 
 export default ZAU;

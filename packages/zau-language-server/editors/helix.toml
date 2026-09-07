@@ -1,0 +1,13 @@
+# Helix editor configuration (~/.config/helix/languages.toml)
+[[language]]
+name = "zau"
+scope = "source.zau"
+injection-regex = "zau"
+file-types = ["zau"]
+roots = ["package.json", "zau.config.py", ".git"]
+language-servers = ["zau-lsp"]
+indent = { tab-width = 2, unit = "  " }
+
+[language-server.zau-lsp]
+command = "zau-lsp"
+args = ["--stdio"]

@@ -1,0 +1,3 @@
+# Apache MIME configuration for ZAU
+AddType text/prs.zau .zau
+AddType application/prs.zau .zau

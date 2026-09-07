@@ -1,0 +1,122 @@
+%YAML 1.2
+---
+# http://www.sublimetext.com/docs/syntax.html
+name: Zau Language
+file_extensions:
+  - zau
+scope: source.zau
+
+contexts:
+  main:
+    - include: comments
+    - include: template_block
+    - include: script_block
+    - include: style_block
+    - include: interpolation
+    - include: zau_spatial_tags
+    - include: zau_directives
+
+  comments:
+    - match: '<!--'
+      scope: punctuation.definition.comment.html
+      push:
+        - meta_scope: comment.block.html
+        - match: '-->'
+          scope: punctuation.definition.comment.html
+          pop: true
+    - match: '//.*$'
+      scope: comment.line.double-slash.js
+    - match: '/\*'
+      scope: punctuation.definition.comment.js
+      push:
+        - meta_scope: comment.block.js
+        - match: '\*/'
+          scope: punctuation.definition.comment.js
+          pop: true
+    - match: '#.*$'
+      scope: comment.line.number-sign.python
+
+  interpolation:
+    - match: '\{\{'
+      scope: punctuation.definition.expression.begin.zau
+      push:
+        - meta_scope: expression.embedded.zau
+        - match: '\}\}'
+          scope: punctuation.definition.expression.end.zau
+          pop: true
+        - include: scope:source.ts
+        - include: scope:source.js
+
+  template_block:
+    - match: '(<)(template)(\s*[^>]*)?(>)'
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.template.html
+        3: entity.other.attribute-name.html
+        4: punctuation.definition.tag.end.html
+      push:
+        - meta_scope: text.html.derivative
+        - match: '(</)(template)(>)'
+          captures:
+            1: punctuation.definition.tag.begin.html
+            2: entity.name.tag.template.html
+            3: punctuation.definition.tag.end.html
+          pop: true
+        - include: comments
+        - include: interpolation
+        - include: zau_spatial_tags
+        - include: zau_directives
+        - include: scope:text.html.basic
+
+  script_block:
+    - match: '(<)(script)(?:\s+[^>]*lang=['"](python|py)['"][^>]*)?(>)'
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.script.html
+        3: entity.other.attribute-name.html
+        4: punctuation.definition.tag.end.html
+      push:
+        - meta_scope: source.ts
+        - match: '(</)(script)(>)'
+          captures:
+            1: punctuation.definition.tag.begin.html
+            2: entity.name.tag.script.html
+            3: punctuation.definition.tag.end.html
+          pop: true
+        - include: scope:source.ts
+        - include: scope:source.js
+        - include: scope:source.python
+
+  style_block:
+    - match: '(<)(style)(?:\s+[^>]*lang=['"](scss|sass|postcss)['"][^>]*)?(>)'
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.style.html
+        3: entity.other.attribute-name.html
+        4: punctuation.definition.tag.end.html
+      push:
+        - meta_scope: source.css
+        - match: '(</)(style)(>)'
+          captures:
+            1: punctuation.definition.tag.begin.html
+            2: entity.name.tag.style.html
+            3: punctuation.definition.tag.end.html
+          pop: true
+        - include: scope:source.css
+        - include: scope:source.css.scss
+
+  zau_spatial_tags:
+    - match: '(</?)(zau-(?:canvas|model|camera|light|scene|spatial|mesh|orbit-controls|shadow|skybox|env|spotlight|ambient|material|geometry)|Viewer3D|SceneControls|ZAU\.[A-Za-z0-9]+)\b'
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.zau.spatial
+
+  zau_directives:
+    - match: '(@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)*)'
+      scope: keyword.operator.directive.event.zau
+    - match: '(:[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)*)'
+      scope: keyword.operator.directive.binding.zau
+    - match: '\b(z-if|z-else-if|z-else|z-for|z-model|z-show|z-slot|z-bind|z-on)\b'
+      scope: keyword.control.directive.zau
+    - match: '\b(src|progressiveLOD|tier|position|pos|rotation|rot|scale|fov|target|intensity|color|castShadow|receiveShadow|wireframe|pbr|metalness|roughness|maxTextureSize)\b'
+      scope: support.type.property-name.zau.spatial

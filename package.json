@@ -1,6 +1,6 @@
 {
   "name": "zau-framework-monorepo",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": true,
   "description": "ZetaGo-Aurum Unified Fullstack Web Framework",
   "workspaces": [
@@ -12,7 +12,12 @@
     "build": "next build",
     "start": "next start",
     "zau:build": "python3 -m zau.cli build || true",
-    "zau:dev": "python3 -m zau.cli dev"
+    "zau:dev": "python3 -m zau.cli dev",
+    "grammar:convert": "node scripts/convert-grammars.js",
+    "extension:package": "./scripts/package-extension.sh",
+    "extension:publish": "./scripts/publish-extension.sh",
+    "lsp:build": "npm --prefix packages/zau-language-server run build",
+    "parser:build": "node packages/zau-parser/build.js"
   },
   "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
   "license": "MIT",

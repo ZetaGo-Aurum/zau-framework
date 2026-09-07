@@ -1,0 +1,61 @@
+Media Type Registration Application (RFC 6838)
+
+Type name:
+   text
+
+Subtype name:
+   prs.zau
+
+Required parameters:
+   N/A
+
+Optional parameters:
+   charset: Specifies the character encoding of the ZAU source file.
+   The default character set is UTF-8.
+
+Encoding considerations:
+   8bit. ZAU files are text-based Single File Components containing UTF-8
+   encoded templates, scripts (TypeScript/JavaScript/Python), and styles.
+
+Security considerations:
+   ZAU files are declarative components intended for interpretation by
+   the ZAU compiler or runtime. As with any markup or script file, execution
+   of unverified third-party script blocks within the component should be
+   conducted in sandboxed execution environments or browser origins.
+
+Interoperability considerations:
+   ZAU files adhere to standard XML/HTML-derived Single File Component
+   conventions and UTF-8 encoding. Interoperable across all modern POSIX,
+   Windows, macOS platforms, and WebGL-capable Web Browsers.
+
+Published specification:
+   ZAU Framework Specification RFC-001:
+   https://github.com/ZetaGo-Aurum/zau-framework/blob/main/RFC-001.md
+
+Applications that use this media type:
+   ZAU Compiler, ZAU Universal Language Server, Visual Studio Code (zau),
+   Zed, Neovim, Vim, Emacs, Sublime Text, Web Browsers (V8, WebKit, Gecko).
+
+Fragment identifier considerations:
+   Standard URI fragment syntax to reference component elements by ID.
+
+Additional information:
+   Deprecated alias names for this type: application/prs.zau
+   Magic number(s): None
+   File extension(s): .zau
+   Macintosh file type code(s): TEXT
+
+Person & email address to contact for further information:
+   ZetaGo-Aurum Architecture Board <admin@zetagoaurum.com>
+
+Intended usage:
+   COMMON
+
+Restrictions on usage:
+   None
+
+Author:
+   ZetaGo-Aurum
+
+Change controller:
+   ZetaGo-Aurum Architecture Board <admin@zetagoaurum.com>
