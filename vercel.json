@@ -1,10 +1,8 @@
 {
-  "framework": null,
+  "framework": "nextjs",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/_zau/static/(.*)", "destination": "/public/_zau/static/$1" },
     { "source": "/api/(.*)", "destination": "/api/index.py" },
-    { "source": "/__zau/(.*)", "destination": "/api/index.py" },
-    { "source": "/(.*)", "destination": "/public/$1" }
+    { "source": "/__zau/(.*)", "destination": "/api/index.py" }
   ]
 }

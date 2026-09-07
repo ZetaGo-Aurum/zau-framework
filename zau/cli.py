@@ -150,5 +150,28 @@ def version():
     click.echo("Chief Architect & Lead: ZetaGo-Aurum (zetagoaurum.com)")
     click.echo("Engine: Python ASGI Core + Native 3D Spatial Canvas")
 
+@main.group("3d")
+def spatial_group():
+    """Manage 3D spatial models in model/3d/ directory."""
+    pass
+
+@spatial_group.command("list")
+def list_3d_models():
+    """List all registered 3D models in model/3d/."""
+    model_dir = os.path.join(os.getcwd(), "model", "3d")
+    if not os.path.exists(model_dir):
+        click.echo(click.style("Notice: No model/3d/ directory found in project root.", fg="yellow"))
+        return
+
+    click.echo(click.style("\n🧊 ZAU 3D Spatial Asset Registry:", fg="yellow", bold=True))
+    for entry in os.listdir(model_dir):
+        full_path = os.path.join(model_dir, entry)
+        if os.path.isdir(full_path):
+            files = os.listdir(full_path)
+            gltf_files = [f for f in files if f.endswith(('.gltf', '.glb', '.obj'))]
+            click.echo(f"  • {click.style(entry, fg='cyan', bold=True)}: {len(files)} files ({', '.join(gltf_files)})")
+    click.echo()
+
 if __name__ == "__main__":
     main()
+

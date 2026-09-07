@@ -267,6 +267,9 @@ zau db studio --port 8010
 zau build
 zau start --workers 4
 
+# 3D spatial asset pipeline
+zau 3d list
+
 # Syntax highlighter
 zau highlight path/to/component.zau --ansi
 zau highlight path/to/component.zau --html
@@ -291,3 +294,5 @@ ZAU provides zero-configuration deployment templates for leading platforms:
 - **Atelier**: [zetagoaurum.com](https://zetagoaurum.com)
 - **Contact**: `admin@zetagoaurum.com`
 - **License**: MIT License (see `LICENSE`)
+- **3D Spatial Showcase Model**: The Great Drawing Room by **The Hallwyl Museum** ([Sketchfab](https://sketchfab.com/TheHallwylMuseum)), licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/).
+
