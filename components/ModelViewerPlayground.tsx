@@ -217,7 +217,7 @@ export default {
         <div className="flex items-center space-x-3">
           <span>Format: Standalone Binary GLB</span>
           <span className="text-zinc-600">•</span>
-          <span className="text-amber-400">13 MB Optimized LOD</span>
+          <span className="text-amber-400">11 MB Lossless Draco LOD</span>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 interface Hotspot {
@@ -46,17 +47,33 @@ export default function TheGreatDrawingRoom({
     cameraRef.current = camera;
 
     // WebGL Renderer
-    const renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      powerPreference: 'high-performance',
-      alpha: false,
-    });
-    renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.35;
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    container.appendChild(renderer.domElement);
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        antialias: true,
+        powerPreference: 'high-performance',
+        alpha: false,
+      });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.35;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      container.appendChild(renderer.domElement);
+    } catch (err) {
+      console.warn('WebGL context initialization notice:', err);
+      setIsLoaded(true);
+      if (container) {
+        container.innerHTML = `
+          <div class="w-full h-full flex flex-col items-center justify-center bg-zinc-950 p-6 text-center font-mono text-zinc-400">
+            <i class="bi bi-display text-4xl text-amber-500 mb-3"></i>
+            <h4 class="text-base font-bold text-white mb-1">Spatial 3D Canvas Standby</h4>
+            <p class="text-xs text-zinc-400 max-w-md">WebGL acceleration is unaccelerated in this client environment. View with WebGL enabled for full 360° interactive rendering.</p>
+          </div>
+        `;
+      }
+      return;
+    }
 
     // OrbitControls for 360-degree room navigation
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -177,21 +194,19 @@ export default function TheGreatDrawingRoom({
       console.warn('Non-fatal asset notice:', itemUrl);
     };
 
-    // Explicitly load 4K HD texture for guaranteed binding
-    const textureLoader = new THREE.TextureLoader(loadingManager);
-    const hdTexture = textureLoader.load(
-      '/model/3d/the_great_drawing_room/textures/texture_4k.jpeg',
-      (tex) => {
-        tex.colorSpace = THREE.SRGBColorSpace;
-        tex.minFilter = THREE.LinearMipmapLinearFilter;
-        tex.magFilter = THREE.LinearFilter;
-        tex.flipY = false;
-        tex.generateMipmaps = true;
-        tex.needsUpdate = true;
-      }
-    );
+    // On-demand fallback texture loader
+    const getFallbackTexture = () => {
+      const tex = new THREE.TextureLoader().load('/model/3d/the_great_drawing_room/textures/texture_4k.jpeg');
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.flipY = false;
+      return tex;
+    };
+
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath('/draco/gltf/');
 
     const loader = new GLTFLoader(loadingManager);
+    loader.setDRACOLoader(dracoLoader);
     loader.setPath('/model/3d/the_great_drawing_room/');
     loader.setResourcePath('/model/3d/the_great_drawing_room/');
 
@@ -209,7 +224,8 @@ export default function TheGreatDrawingRoom({
       model.traverse((child) => {
         if ((child as THREE.Mesh).isMesh) {
           const mesh = child as THREE.Mesh;
-          const tex = (mesh.material as any)?.map || hdTexture;
+          const origMat = mesh.material as any;
+          const tex = origMat?.map || getFallbackTexture();
           if (tex) {
             tex.colorSpace = THREE.SRGBColorSpace;
             tex.minFilter = THREE.LinearMipmapLinearFilter;
@@ -232,10 +248,11 @@ export default function TheGreatDrawingRoom({
       });
 
       scene.add(model);
-      setIsLoaded(true);
+      setLoadProgress(100);
+      setTimeout(() => setIsLoaded(true), 250);
     };
 
-    // Primary: Load optimized web binary GLB (13MB, fast streaming)
+    // Primary: Load optimized web binary GLB (11MB Lossless Draco GLB, fast streaming)
     loader.load(
       'room_web.glb',
       (gltf) => {
@@ -267,7 +284,7 @@ export default function TheGreatDrawingRoom({
             scene.remove(ambientShell);
             const roomBoxGeo = new THREE.BoxGeometry(20, 10, 20);
             const roomBoxMat = new THREE.MeshStandardMaterial({
-              map: hdTexture,
+              map: getFallbackTexture(),
               side: THREE.BackSide,
               roughness: 0.5,
               metalness: 0.1,
@@ -339,6 +356,7 @@ export default function TheGreatDrawingRoom({
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+      dracoLoader.dispose();
       renderer.dispose();
       if (container && renderer.domElement.parentNode === container) {
         container.removeChild(renderer.domElement);
