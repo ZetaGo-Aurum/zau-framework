@@ -50,7 +50,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://zetagoaurum.com"
-Documentation = "https://zau-framework.vercel.app"
+Documentation = "https://zau.zetagoaurum.com"
 Repository = "https://github.com/ZetaGo-Aurum/zau-framework"
 
 [project.scripts]

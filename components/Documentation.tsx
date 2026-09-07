@@ -1092,7 +1092,7 @@ register(monaco);`}
                   </p>
                 </div>
                 <a
-                  href="https://zau-framework.vercel.app"
+                  href="https://zau.zetagoaurum.com"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-zinc-950 font-mono text-xs font-bold whitespace-nowrap hover:bg-amber-400 transition"

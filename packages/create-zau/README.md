@@ -17,7 +17,7 @@
 <p align="center">
   <a href="https://www.npmjs.com/package/create-zau"><img src="https://img.shields.io/npm/v/create-zau.svg?color=38bdf8&label=create-zau&logo=npm" alt="NPM Version" /></a>
   <a href="https://github.com/ZetaGo-Aurum/zau-framework/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-emerald.svg" alt="License" /></a>
-  <a href="https://zau-framework.vercel.app"><img src="https://img.shields.io/badge/live-docs-black.svg?logo=vercel" alt="Live Documentation" /></a>
+  <a href="https://zau.zetagoaurum.com"><img src="https://img.shields.io/badge/live-docs-black.svg?logo=vercel" alt="Live Documentation" /></a>
   <a href="https://zetagoaurum.com"><img src="https://img.shields.io/badge/architect-ZetaGo--Aurum-black.svg" alt="Architect" /></a>
 </p>
 
@@ -32,7 +32,7 @@
 
 <p align="center">
   <strong>Official Atelier:</strong> <a href="https://zetagoaurum.com">zetagoaurum.com</a> &middot;
-  <strong>Documentation:</strong> <a href="https://zau-framework.vercel.app">zau-framework.vercel.app</a> &middot;
+  <strong>Documentation:</strong> <a href="https://zau.zetagoaurum.com">zau.zetagoaurum.com</a> &middot;
   <strong>Contact:</strong> <a href="mailto:admin@zetagoaurum.com">admin@zetagoaurum.com</a>
 </p>
 

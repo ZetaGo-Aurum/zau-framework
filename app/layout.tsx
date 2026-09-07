@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     title: 'ZAU Framework | Modern Python-First Fullstack & Native 3D Spatial Canvas',
     description:
       'Industrial-grade Python-first web framework with native 3D spatial canvas, async ORM, and modern client chunking.',
-    url: 'https://zau-framework.vercel.app',
+    url: 'https://zau.zetagoaurum.com',
     siteName: 'ZAU Framework',
     locale: 'en_US',
     type: 'website',

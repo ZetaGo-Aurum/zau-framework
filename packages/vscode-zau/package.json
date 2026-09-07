@@ -80,7 +80,7 @@
   "bugs": {
     "url": "https://github.com/ZetaGo-Aurum/zau-framework/issues"
   },
-  "homepage": "https://zau-framework.vercel.app",
+  "homepage": "https://zau.zetagoaurum.com",
   "author": "ZetaGo-Aurum <admin@zetagoaurum.com>",
   "license": "MIT",
   "devDependencies": {
