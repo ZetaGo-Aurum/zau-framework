@@ -87,7 +87,7 @@ def get_runtime_chunk_code() -> str:
   }
 
   global.__ZAU_RUNTIME__ = {
-    version: '1.0.1',
+    version: '1.0.2',
     useState,
     useEffect,
     callAction,
@@ -353,7 +353,7 @@ def get_main_app_code() -> str:
       try { zauData = JSON.parse(dataEl.textContent); }
       catch (e) { console.error('Failed to parse __ZAU_DATA__', e); }
     }
-    console.log('%c[ZAU Framework v1.0.1]%c Chunk Hydration Completed cleanly.', 'color:#f59e0b; font-weight:bold;', 'color:#38bdf8;');
+    console.log('%c[ZAU Framework v1.0.2]%c Chunk Hydration Completed cleanly.', 'color:#f59e0b; font-weight:bold;', 'color:#38bdf8;');
 
     // Initialize 3D Spatial Canvas if container present
     if (global.__ZAUSpatialRenderer__ && document.getElementById('hero-3d-mount')) {
@@ -396,7 +396,7 @@ def generate_chunks(output_dir: str):
         f.write("/** ZAU Three.js Vendor Chunk */\nconsole.log('[ZAU Vendor] Three.js Subsystem Loaded.');\n")
 
     manifest = {
-        "release": "1.0.1",
+        "release": "1.0.2",
         "chunks": {
             "runtime": "/_zau/static/chunks/runtime.js",
             "spatial-engine": "/_zau/static/chunks/spatial-engine.js",

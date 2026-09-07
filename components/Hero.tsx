@@ -21,7 +21,7 @@ export default function Hero({ onToggleZen }: HeroProps) {
         {/* Release Tag */}
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full glass-panel-glow text-xs font-mono text-amber-300 border border-amber-500/30 shadow-gold-glow">
           <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-          <span className="font-semibold">ZAU 1.0.1 Released</span>
+          <span className="font-semibold">ZAU 1.0.2 Released</span>
           <span className="text-zinc-600">|</span>
           <span className="text-zinc-300">Next.js Chunks + 360° Spatial Room</span>
         </div>

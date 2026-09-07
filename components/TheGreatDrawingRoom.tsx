@@ -22,6 +22,7 @@ export default function TheGreatDrawingRoom({
 }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const [loadProgress, setLoadProgress] = useState<number>(0);
+  const [downloadStats, setDownloadStats] = useState<string>('Initializing 3D buffer...');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [activeHotspot, setActiveHotspot] = useState<Hotspot | null>(null);
   const [isAutoRotating, setIsAutoRotating] = useState<boolean>(true);
@@ -37,9 +38,9 @@ export default function TheGreatDrawingRoom({
 
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0a0a0d);
+    scene.background = new THREE.Color(0x090a0f);
 
-    // Camera
+    // Camera at eye level
     const camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 1000);
     camera.position.set(0, 0.2, 0.1);
     cameraRef.current = camera;
@@ -53,11 +54,11 @@ export default function TheGreatDrawingRoom({
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.3;
+    renderer.toneMappingExposure = 1.35;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     container.appendChild(renderer.domElement);
 
-    // OrbitControls for 360-degree navigation
+    // OrbitControls for 360-degree room navigation
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
     controls.dampingFactor = 0.05;
@@ -72,22 +73,22 @@ export default function TheGreatDrawingRoom({
     controlsRef.current = controls;
 
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xfff3e5, 1.8);
+    const ambientLight = new THREE.AmbientLight(0xfff3e5, 1.9);
     scene.add(ambientLight);
 
-    const chandelierLight = new THREE.PointLight(0xffb74d, 3.2, 25);
+    const chandelierLight = new THREE.PointLight(0xffb74d, 3.4, 25);
     chandelierLight.position.set(0, 3.5, 0);
     scene.add(chandelierLight);
 
-    const windowLight = new THREE.DirectionalLight(0xfff9e6, 2.0);
+    const windowLight = new THREE.DirectionalLight(0xfff9e6, 2.2);
     windowLight.position.set(8, 6, 4);
     scene.add(windowLight);
 
-    const fillLight = new THREE.PointLight(0x7dd3fc, 1.5, 20);
+    const fillLight = new THREE.PointLight(0x7dd3fc, 1.6, 20);
     fillLight.position.set(-6, 2, -5);
     scene.add(fillLight);
 
-    // Hotspot definitions in local space
+    // Hotspots
     const hotspots: Hotspot[] = [
       {
         id: 'piano',
@@ -102,7 +103,7 @@ export default function TheGreatDrawingRoom({
         title: 'Flemish Baroque Tapestry',
         category: 'High-Res Texture Subsystem',
         description:
-          'Historic woven wool & silk tapestry demonstrating ZAU 4K/8K PBR normal mapping and texture streaming.',
+          'Historic woven wool & silk tapestry demonstrating ZAU 4K PBR normal mapping and texture streaming.',
         position: new THREE.Vector3(2.4, 0.4, -2.8),
       },
       {
@@ -123,13 +124,11 @@ export default function TheGreatDrawingRoom({
       },
     ];
 
-    // Create 3D Hotspot visual beacons
     const beaconGroup = new THREE.Group();
     scene.add(beaconGroup);
 
     const beaconMeshes: THREE.Mesh[] = [];
     hotspots.forEach((h) => {
-      // Golden glowing ring
       const ringGeom = new THREE.RingGeometry(0.12, 0.16, 32);
       const ringMat = new THREE.MeshBasicMaterial({
         color: 0xf59e0b,
@@ -142,7 +141,6 @@ export default function TheGreatDrawingRoom({
       ring.lookAt(camera.position);
       ring.userData = { hotspot: h };
 
-      // Inner sphere
       const sphereGeom = new THREE.SphereGeometry(0.06, 16, 16);
       const sphereMat = new THREE.MeshBasicMaterial({ color: 0xfffbeb });
       const sphere = new THREE.Mesh(sphereGeom, sphereMat);
@@ -153,70 +151,111 @@ export default function TheGreatDrawingRoom({
       beaconMeshes.push(ring);
     });
 
-    // GLTF Loading
-    const loader = new GLTFLoader();
-    const modelUrl = '/model/3d/the_great_drawing_room/scene_web.gltf';
+    // Loading Manager for Robust Multi-Asset Tracking
+    const loadingManager = new THREE.LoadingManager();
 
-    let modelObject: THREE.Group | null = null;
+    loadingManager.onProgress = (itemUrl, itemsLoaded, itemsTotal) => {
+      const p = Math.round((itemsLoaded / itemsTotal) * 100);
+      setLoadProgress((prev) => Math.max(prev, p));
+    };
 
-    loader.load(
-      modelUrl,
-      (gltf) => {
-        modelObject = gltf.scene;
+    loadingManager.onLoad = () => {
+      setLoadProgress(100);
+      setTimeout(() => setIsLoaded(true), 350);
+    };
 
-        // Compute Bounding Box to center room at origin
-        const box = new THREE.Box3().setFromObject(modelObject);
-        const center = box.getCenter(new THREE.Vector3());
-        const size = box.getSize(new THREE.Vector3());
+    loadingManager.onError = (itemUrl) => {
+      console.warn('Non-fatal asset notice:', itemUrl);
+    };
 
-        // Offset model so room interior center sits nicely around origin
-        modelObject.position.x = -center.x;
-        modelObject.position.y = -center.y + 0.2;
-        modelObject.position.z = -center.z;
+    const loader = new GLTFLoader(loadingManager);
+    loader.setPath('/model/3d/the_great_drawing_room/');
+    loader.setResourcePath('/model/3d/the_great_drawing_room/');
 
-        // Ensure materials render double-sided and textures look crisp
-        modelObject.traverse((child) => {
-          if ((child as THREE.Mesh).isMesh) {
-            const mesh = child as THREE.Mesh;
-            if (mesh.material) {
-              const mat = mesh.material as THREE.MeshStandardMaterial;
-              mat.side = THREE.DoubleSide;
-              mat.roughness = 0.65;
-              mat.metalness = 0.25;
-              if (mat.map) {
-                mat.map.colorSpace = THREE.SRGBColorSpace;
-                mat.map.minFilter = THREE.LinearMipmapLinearFilter;
-              }
+    const applyModelTransform = (model: THREE.Group) => {
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+
+      model.position.x = -center.x;
+      model.position.y = -center.y + 0.2;
+      model.position.z = -center.z;
+
+      model.traverse((child) => {
+        if ((child as THREE.Mesh).isMesh) {
+          const mesh = child as THREE.Mesh;
+          if (mesh.material) {
+            const mat = mesh.material as THREE.MeshStandardMaterial;
+            mat.side = THREE.DoubleSide;
+            mat.roughness = 0.65;
+            mat.metalness = 0.25;
+            if (mat.map) {
+              mat.map.colorSpace = THREE.SRGBColorSpace;
+              mat.map.minFilter = THREE.LinearMipmapLinearFilter;
             }
           }
-        });
+        }
+      });
 
-        scene.add(modelObject);
-        setIsLoaded(true);
+      scene.add(model);
+      setIsLoaded(true);
+    };
+
+    // Primary: Load standalone binary GLB (no external .bin or texture 404s possible)
+    loader.load(
+      'scene.glb',
+      (gltf) => {
+        applyModelTransform(gltf.scene);
       },
       (xhr) => {
-        if (xhr.total > 0) {
+        if (xhr.lengthComputable && xhr.total > 0) {
           const percent = Math.round((xhr.loaded / xhr.total) * 100);
           setLoadProgress(percent);
-        } else {
-          // Approximate progress if total is unknown
-          setLoadProgress((prev) => Math.min(prev + 10, 95));
+          const loadedMB = (xhr.loaded / (1024 * 1024)).toFixed(1);
+          const totalMB = (xhr.total / (1024 * 1024)).toFixed(1);
+          setDownloadStats(`${loadedMB} MB / ${totalMB} MB (${percent}%)`);
+        } else if (xhr.loaded > 0) {
+          const loadedMB = (xhr.loaded / (1024 * 1024)).toFixed(1);
+          setDownloadStats(`${loadedMB} MB streamed...`);
+          setLoadProgress((prev) => Math.min(prev + 5, 92));
         }
       },
-      (error) => {
-        console.warn('The Great Drawing Room GLTF load notice:', error);
-        // Fallback: build artistic ambient architectural sanctuary
-        const fallbackGeom = new THREE.BoxGeometry(20, 12, 20);
-        const fallbackMat = new THREE.MeshStandardMaterial({
-          color: 0x181920,
-          roughness: 0.8,
-          side: THREE.BackSide,
-        });
-        const roomBox = new THREE.Mesh(fallbackGeom, fallbackMat);
-        scene.add(roomBox);
-        setIsLoaded(true);
+      (err) => {
+        console.warn('GLB load notice, switching to secondary glTF pipeline:', err);
+        // Secondary fallback: scene_web.gltf with explicit path
+        loader.load(
+          'scene_web.gltf',
+          (gltf) => {
+            applyModelTransform(gltf.scene);
+          },
+          undefined,
+          (err2) => {
+            console.warn('Rendering procedural ambient sanctuary:', err2);
+            // Architectural ambient sanctuary
+            const roomBox = new THREE.Mesh(
+              new THREE.BoxGeometry(24, 14, 24),
+              new THREE.MeshStandardMaterial({
+                color: 0x14151a,
+                roughness: 0.8,
+                side: THREE.BackSide,
+              })
+            );
+            scene.add(roomBox);
+            setIsLoaded(true);
+          }
+        );
       }
     );
+
+    // Timeout safety net: never let user be stuck indefinitely
+    const safetyTimer = setTimeout(() => {
+      setIsLoaded((loaded) => {
+        if (!loaded) {
+          console.log('[ZAU Spatial] Auto-activating viewport display.');
+          return true;
+        }
+        return true;
+      });
+    }, 15000);
 
     // Raycaster for Hotspot clicks
     const raycaster = new THREE.Raycaster();
@@ -239,7 +278,6 @@ export default function TheGreatDrawingRoom({
 
     renderer.domElement.addEventListener('pointerdown', onPointerDown);
 
-    // Resize Handler
     const handleResize = () => {
       if (!container) return;
       const w = container.clientWidth || window.innerWidth;
@@ -259,7 +297,6 @@ export default function TheGreatDrawingRoom({
       animationFrameId = requestAnimationFrame(animate);
       const elapsed = clock.getElapsedTime();
 
-      // Pulse beacon rings
       beaconGroup.children.forEach((child, i) => {
         if (child instanceof THREE.Mesh && child.geometry instanceof THREE.RingGeometry) {
           child.lookAt(camera.position);
@@ -275,6 +312,7 @@ export default function TheGreatDrawingRoom({
     animate();
 
     return () => {
+      clearTimeout(safetyTimer);
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
       renderer.domElement.removeEventListener('pointerdown', onPointerDown);
@@ -302,39 +340,54 @@ export default function TheGreatDrawingRoom({
 
   return (
     <>
-      {/* 3D Canvas Mount Point */}
       <div
         id="room-3d-canvas-container"
         ref={mountRef}
         className="cursor-grab active:cursor-grabbing"
       />
 
-      {/* Loading HUD */}
+      {/* Loading HUD with Real-Time Byte Telemetry & Skip Button */}
       {!isLoaded && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950/95 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-zinc-950/95 backdrop-blur-md transition-opacity duration-300">
           <div className="flex items-center space-x-3 mb-6">
-            <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-xl shadow-gold-glow">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-center text-amber-400 font-black text-2xl shadow-gold-glow">
               Z
             </div>
-            <span className="text-xl font-bold tracking-tight text-zinc-100">
-              ZAU Spatial Canvas
-            </span>
+            <div>
+              <span className="text-xl font-extrabold tracking-tight text-zinc-100">
+                ZAU Spatial Engine
+              </span>
+              <p className="text-[10px] text-zinc-500 font-mono">
+                Streaming 360° The Great Drawing Room
+              </p>
+            </div>
           </div>
 
-          <div className="w-80 max-w-[90vw] space-y-3">
+          <div className="w-84 max-w-[90vw] space-y-3.5">
             <div className="flex justify-between text-xs text-zinc-400 font-mono">
-              <span>Loading 360° The Great Drawing Room...</span>
-              <span className="text-amber-400 font-bold">{loadProgress}%</span>
+              <span className="truncate pr-2">{downloadStats}</span>
+              <span className="text-amber-400 font-bold ml-auto">{loadProgress}%</span>
             </div>
-            <div className="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden border border-zinc-700">
+
+            <div className="w-full h-2 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800 shadow-inner">
               <div
-                className="h-full bg-gradient-to-r from-amber-500 to-amber-300 transition-all duration-300"
-                style={{ width: `${Math.max(loadProgress, 8)}%` }}
+                className="h-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-300 transition-all duration-300 rounded-full"
+                style={{ width: `${Math.max(loadProgress, 6)}%` }}
               />
             </div>
-            <p className="text-[11px] text-zinc-500 text-center font-mono">
-              Model by The Hallwyl Museum (CC BY 4.0) • Three.js WebGL Engine
-            </p>
+
+            <div className="flex items-center justify-between pt-1">
+              <p className="text-[11px] text-zinc-500 font-mono">
+                The Hallwyl Museum • CC BY 4.0
+              </p>
+              <button
+                onClick={() => setIsLoaded(true)}
+                className="text-[11px] font-mono text-amber-400/90 hover:text-amber-300 hover:underline flex items-center space-x-1"
+              >
+                <span>Enter Canvas</span>
+                <i className="bi bi-arrow-right" />
+              </button>
+            </div>
           </div>
         </div>
       )}

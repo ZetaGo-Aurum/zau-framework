@@ -30,7 +30,7 @@ export default function Navbar({ isZenMode, onToggleZen }: NavbarProps) {
                   ZAU
                 </span>
                 <span className="text-[10px] uppercase font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
-                  v1.0.1
+                  v1.0.2
                 </span>
               </div>
               <p className="text-[10px] text-zinc-400 font-mono hidden sm:block">

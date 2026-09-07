@@ -875,7 +875,7 @@
   "buffers": [
     {
       "byteLength": 43259828,
-      "uri": "scene.bin"
+      "uri": "/model/3d/the_great_drawing_room/scene.bin"
     }
   ],
   "extensionsUsed": [
@@ -883,7 +883,7 @@
   ],
   "images": [
     {
-      "uri": "textures/texture_4k.jpeg"
+      "uri": "/model/3d/the_great_drawing_room/textures/texture_4k.jpeg"
     }
   ],
   "materials": [

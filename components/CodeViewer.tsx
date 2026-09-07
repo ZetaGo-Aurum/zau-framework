@@ -73,7 +73,7 @@ from zau.db import get_async_session, AsyncSession
 from models import SpatialAnchor, TelemetryEvent
 from typing import Dict, Any
 
-app = ZAUApp(title="ZAU Atelier App", version="1.0.1")
+app = ZAUApp(title="ZAU Atelier App", version="1.0.2")
 
 @app.action("/api/spatial/anchor/create")
 async def create_spatial_anchor(
@@ -153,7 +153,7 @@ class TelemetryEvent(Model):
 config = {
     "app": {
         "title": "The Great Drawing Room Experience",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "author": "ZetaGo-Aurum",
         "contact": "admin@zetagoaurum.com"
     },

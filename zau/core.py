@@ -35,7 +35,7 @@ class ZAUApp:
     def __init__(
         self,
         title: str = "ZAU Application",
-        version: str = "1.0.1",
+        version: str = "1.0.2",
         client_dir: Optional[str] = None,
         cors_origins: Optional[List[str]] = None,
         debug: bool = True
